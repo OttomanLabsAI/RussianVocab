@@ -157,6 +157,8 @@ td.ru{font-weight:600;font-size:1.05rem;width:21%;min-width:120px}
 td.pr{font-style:italic;font-size:.95rem;color:var(--ink-60);width:23%}
 td.en{font-size:1rem}
 td.en .gx{color:var(--ink-60);font-size:.85rem;font-style:italic;white-space:nowrap}
+td.en .when{float:right;margin-left:8px;font:500 .56rem/1.8 "Afacad Flux",system-ui,sans-serif;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--ink-35);white-space:nowrap}
 th.rm,td.rm{width:44px;text-align:center}
 td.rm{position:relative}
 .rmbtn{width:26px;height:26px;color:var(--ink-35);font-size:15px;line-height:1;
@@ -475,14 +477,24 @@ const keyOf = w => bareOf(w.ru).toLowerCase() + "|" + w.pos;
 function haveKeys(){ const s = new Set(); state.words.forEach(w => s.add(keyOf(w))); return s; }
 
 /* ---------------- rendering */
+function fmtWhen(t){
+  const d = new Date(t), now = new Date();
+  if (d.toDateString() === now.toDateString())
+    return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  const opts = { day: "numeric", month: "short" };
+  if (d.getFullYear() !== now.getFullYear()) opts.year = "numeric";
+  return d.toLocaleDateString([], opts);
+}
 function rowHTML(w, i){
   const main = w.ac ? acuteize(w.ac) : w.ru;
   const pr = w.pr ? esc(w.pr) : "";
   const gx = extraText(w.pos, w.x);
+  const when = w.t ? '<span class="when" title="Added ' +
+    esc(new Date(w.t).toLocaleString()) + '">' + esc(fmtWhen(w.t)) + '</span>' : "";
   return '<tr data-i="' + i + '">' +
     '<td class="ru"><span class="w">' + esc(main) + '</span></td>' +
     '<td class="pr"><span class="w">' + pr + '</span></td>' +
-    '<td class="en"><span class="w">' + esc(w.en) + (gx ? ' <span class="gx">' + esc(gx) + '</span>' : "") + '</span></td>' +
+    '<td class="en">' + when + '<span class="w">' + esc(w.en) + (gx ? ' <span class="gx">' + esc(gx) + '</span>' : "") + '</span></td>' +
     '<td class="rm"><button class="rmbtn" data-i="' + i + '" title="Remove from your file">×</button></td></tr>';
 }
 const THEAD = '<thead><tr><th>Russian</th><th>Pronunciation</th><th>English</th>' +
@@ -665,7 +677,7 @@ function renderSearch(qRaw){
 function addWord(di){
   const [ac, en, pos, x] = DICT[di];
   state.words.push({ ru: bareOf(ac), ac: ac, pr: translit(ac), en: en, pos: pos,
-    g: (state.settings.group || "My additions"), x: x });
+    g: (state.settings.group || "My additions"), x: x, t: Date.now() });
   scheduleSave(); renderAll();
   if (!$("#p-search").hidden) renderSearch($("#search").value);
   else if (!$("#sugg").hidden) renderSugg($("#search").value);
