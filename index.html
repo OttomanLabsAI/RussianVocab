@@ -65,7 +65,9 @@ h1{font:400 clamp(1.6rem,3.4vw,2.5rem)/1.02 "Prata",Georgia,serif;letter-spacing
 .meta{font:500 .66rem/1.6 "Afacad Flux",system-ui,sans-serif;text-transform:uppercase;
   letter-spacing:.14em;color:var(--ink-60)}
 .meta b{color:var(--ink);font-weight:600}
-.filebtns{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:flex-end}
+.hactions{display:flex;flex-direction:column;gap:8px;align-items:flex-end;margin-left:auto}
+.hbtns{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:flex-end}
+.htheme{align-self:flex-start}
 #savestat,#acctEmail{font:500 .58rem/1.4 "Afacad Flux",system-ui,sans-serif;
   text-transform:uppercase;letter-spacing:.14em;color:var(--ink-60)}
 
@@ -178,6 +180,9 @@ td.peek .w{filter:none!important;opacity:1!important}
 footer{padding:0 4px 8px;font:italic 400 .85rem/1.6 "Newsreader",Georgia,serif;color:var(--ink-60)}
 
 @media(max-width:900px){
+  .hactions{align-items:flex-start;margin-left:0}
+  .hbtns{justify-content:flex-start}
+  .htheme{align-self:auto}
   .shell{grid-template-columns:1fr}
   nav.rail{flex-direction:row;overflow-x:auto;max-height:none;position:static;padding:10px}
   .tab{width:auto;min-width:max-content}
@@ -197,19 +202,22 @@ footer{padding:0 4px 8px;font:italic 400 .85rem/1.6 "Newsreader",Georgia,serif;c
       <div class="meta"><b id="nWords">0</b> words in your file ·
         dictionary: <span id="nDict">0</span> entries</div>
     </div>
-    <div class="filebtns">
-      <span id="acctEmail"></span>
-      <button class="fbtn" id="btnAcct">Sign in</button>
-      <span id="savestat"></span>
-      <button class="fbtn" id="btnExport">Export JSON</button>
-      <button class="fbtn" id="btnImport">Import JSON</button>
-      <button class="fbtn" id="btnBackup" title="Copy or paste raw JSON">Copy / paste</button>
-      <input type="file" id="fileIn" accept="application/json,.json" class="sr">
-      <button class="mode" id="modeRu" aria-pressed="false">Hide Russian</button>
-      <button class="mode" id="modeEn" aria-pressed="false">Hide English</button>
-      <button class="mode" id="modePr" aria-pressed="false">Hide pronunciation</button>
-      <button class="fbtn" id="btnTheme">◐ Dark</button>
+    <div class="hactions">
+      <div class="hbtns">
+        <span id="acctEmail"></span>
+        <button class="fbtn" id="btnAcct">Sign in</button>
+        <span id="savestat"></span>
+        <button class="fbtn" id="btnExport">Export JSON</button>
+        <button class="fbtn" id="btnImport">Import JSON</button>
+        <input type="file" id="fileIn" accept="application/json,.json" class="sr">
+      </div>
+      <div class="hbtns">
+        <button class="mode" id="modeRu" aria-pressed="false">Hide Russian</button>
+        <button class="mode" id="modeEn" aria-pressed="false">Hide English</button>
+        <button class="mode" id="modePr" aria-pressed="false">Hide pronunciation</button>
+      </div>
     </div>
+    <div class="htheme"><button class="fbtn" id="btnTheme">◐ Dark</button></div>
   </div>
 </header>
 
@@ -658,7 +666,6 @@ $("#btnExport").addEventListener("click", () => {
     setTimeout(() => URL.revokeObjectURL(a.href), 4000);
   }catch(err){ openModal(txt); }
 });
-$("#btnBackup").addEventListener("click", () => openModal(exportJSON()));
 function openModal(text){ $("#mtext").value = text || ""; $("#modal").classList.add("open"); }
 $("#mClose").addEventListener("click", () => $("#modal").classList.remove("open"));
 $("#mCopy").addEventListener("click", async () => {
