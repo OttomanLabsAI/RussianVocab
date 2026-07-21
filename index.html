@@ -78,17 +78,34 @@ h1{font:400 clamp(1.6rem,3.4vw,2.5rem)/1.02 "Prata",Georgia,serif;letter-spacing
 .field.grow{flex:1 1 320px;max-width:720px}
 .lab{font:600 .58rem/1 "Afacad Flux",system-ui,sans-serif;text-transform:uppercase;
   letter-spacing:.2em;color:var(--ink-60)}
-input.search,input.groupin,#aEmail,#aPass{
+input.search,select.groupsel,#aEmail,#aPass{
   width:100%;padding:11px 12px;border:1px solid var(--ink);background:var(--paper);color:var(--ink);
   font:400 1.02rem/1.3 "Newsreader",Georgia,serif}
-input.groupin{width:200px}
+select.groupsel{width:220px;appearance:none;-webkit-appearance:none;cursor:pointer;
+  background-image:linear-gradient(45deg,transparent 49%,var(--ink) 50%),
+    linear-gradient(135deg,var(--ink) 50%,transparent 51%);
+  background-position:calc(100% - 18px) 55%,calc(100% - 12px) 55%;
+  background-size:6px 6px,6px 6px;background-repeat:no-repeat;padding-right:32px}
 ::placeholder{color:var(--ink-35);opacity:1;font-style:italic}
+
+/* sticky study bar */
+:root{--stickyh:50px}
+.studybar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:8px;
+  height:var(--stickyh);padding:0 10px;border:1px solid var(--ink);background:var(--paper);
+  overflow-x:auto;overflow-y:hidden;white-space:nowrap}
+.studybar .mode{padding:10px 14px;flex:none}
+.slab{font:600 .58rem/1 "Afacad Flux",system-ui,sans-serif;text-transform:uppercase;
+  letter-spacing:.2em;color:var(--ink-60);flex:none}
+.studybar .hint{display:none;font:italic 400 .9rem/1.3 "Newsreader",Georgia,serif;
+  color:var(--ink-60);margin-left:6px;min-width:0;overflow:hidden;text-overflow:ellipsis}
+body.hide-ru .studybar .hint,body.hide-en .studybar .hint,body.hide-pr .studybar .hint{display:inline-block}
 
 /* shell / rail */
 .shell{display:grid;grid-template-columns:240px minmax(0,1fr);gap:14px;align-items:start}
 nav.rail{display:flex;flex-direction:column;gap:8px;padding:clamp(12px,1.4vw,18px);
   border:1px solid var(--ink);background:var(--paper);
-  position:sticky;top:14px;max-height:calc(100vh - 28px);overflow:auto}
+  position:sticky;top:calc(var(--stickyh) + 14px);
+  max-height:calc(100vh - var(--stickyh) - 28px);overflow:auto}
 nav.rail.dim .tab:not([aria-selected="true"]){opacity:.45}
 .tab{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;
   text-align:left;padding:10px 12px}
@@ -104,8 +121,6 @@ h2{font:400 clamp(1.35rem,2.6vw,1.8rem)/1.05 "Prata",Georgia,serif;margin:0}
 .cy2{font:italic 400 .95rem/1.4 "Newsreader",Georgia,serif;color:var(--ink-60);margin:6px 0 0}
 .subtabs{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 4px}
 .sub{padding:7px 12px}
-.hintbar{display:none;font-style:italic;color:var(--ink-60);margin:0 0 12px}
-body.hide-ru .hintbar,body.hide-en .hintbar,body.hide-pr .hintbar{display:block}
 
 /* tables — boxes with dashed hairline rows */
 .blocks{margin-top:16px}
@@ -113,10 +128,11 @@ body.hide-ru .hintbar,body.hide-en .hintbar,body.hide-pr .hintbar{display:block}
 .filtered .blk h3{display:none}
 h3{margin:0;padding:11px 14px;font:600 .6rem/1 "Afacad Flux",system-ui,sans-serif;
   letter-spacing:.2em;text-transform:uppercase;color:var(--ink);border-bottom:1px solid var(--ink)}
-table{width:100%;border-collapse:collapse}
+table{width:100%;border-collapse:separate;border-spacing:0}
 thead th{font:600 .58rem/1 "Afacad Flux",system-ui,sans-serif;letter-spacing:.18em;
   text-transform:uppercase;color:var(--ink-60);text-align:left;padding:10px 14px;
-  border-bottom:1px solid var(--ink)}
+  border-bottom:1px solid var(--ink);background:var(--paper);
+  position:sticky;top:calc(var(--stickyh) - 1px);z-index:5}
 td{padding:10px 14px;border-bottom:1px dashed var(--hair);vertical-align:top}
 tbody tr:last-child td{border-bottom:none}
 td.ru{font-weight:600;font-size:1.05rem;width:21%;min-width:120px}
@@ -142,21 +158,15 @@ td.peek .w{filter:none!important;opacity:1!important}
   border:1px solid var(--ink);padding:4px 8px;white-space:nowrap}
 .rank{font:500 .58rem/1 "Afacad Flux",system-ui,sans-serif;letter-spacing:.1em;color:var(--ink-35)}
 .addbtn{padding:7px 11px;white-space:nowrap}
+td.add{width:96px;text-align:center}
 .empty{padding:26px 20px;color:var(--ink-60);font-style:italic}
 .bigempty{padding:60px 24px;text-align:center;color:var(--ink-60);font-style:italic}
 .bigempty b{color:var(--ink);font-style:normal;font-weight:600}
 
-/* modal */
-#modal{position:fixed;inset:0;background:var(--scrim);display:none;align-items:center;
-  justify-content:center;padding:20px;z-index:50}
-#modal.open{display:flex}
+/* modal box (auth) */
 .mbox{background:var(--paper);border:1px solid var(--ink);max-width:640px;width:100%;
   padding:clamp(16px,2vw,24px)}
 .mbox h4{margin:0 0 6px;font:400 1.15rem/1.15 "Prata",Georgia,serif}
-.mbox p{margin:0 0 12px;font-size:.95rem;color:var(--ink-60)}
-.mbox textarea{width:100%;height:200px;border:1px solid var(--ink);background:var(--paper);
-  color:var(--ink);padding:10px;resize:vertical;
-  font:500 .72rem/1.5 "Afacad Flux",system-ui,sans-serif;letter-spacing:.02em}
 .mrow{display:flex;gap:9px;margin-top:12px;flex-wrap:wrap;justify-content:flex-end}
 
 /* import / sync choice bar */
@@ -180,15 +190,33 @@ td.peek .w{filter:none!important;opacity:1!important}
 footer{padding:0 4px 8px;font:italic 400 .85rem/1.6 "Newsreader",Georgia,serif;color:var(--ink-60)}
 
 @media(max-width:900px){
+  body{padding:10px 10px 76px}
   .hactions{align-items:flex-start;margin-left:0}
   .hbtns{justify-content:flex-start}
-  .htheme{align-self:auto}
+  .htheme{position:fixed;right:14px;bottom:14px;z-index:40;align-self:auto}
+  .htheme .fbtn{font-size:1rem;padding:11px 13px;letter-spacing:0}
+  .htheme .tlab{display:none}
+  .fbtn,.mode,.sub,.atab,.tab{padding:11px 13px}
+  .studybar .mode{padding:11px 13px}
+  .slab{display:none}
   .shell{grid-template-columns:1fr}
   nav.rail{flex-direction:row;overflow-x:auto;max-height:none;position:static;padding:10px}
   .tab{width:auto;min-width:max-content}
-  main{padding:16px 12px}
-  td,thead th{padding:8px 10px}
-  td.ru{min-width:92px}
+  main{padding:14px 8px;border-left:none;border-right:none;margin:0 -10px}
+  select.groupsel{width:100%}
+  td,thead th{padding:9px 7px}
+  thead th{font-size:.52rem;letter-spacing:.09em}
+  table:has(th.rm){table-layout:fixed}
+  table:has(th.rm) th:first-child{width:29%}
+  table:has(th.rm) th:nth-child(2){width:27%}
+  th.rm,td.rm{width:32px}
+  .rmbtn{width:24px;height:24px}
+  td.ru{min-width:0;font-size:1rem;overflow-wrap:break-word}
+  td.pr,td.en{overflow-wrap:break-word}
+  td.en .gx{white-space:normal}
+  #rwrap table td:nth-child(4){display:none}
+  td.add{width:auto;padding:9px 5px}
+  .addbtn{padding:8px 8px;letter-spacing:.08em}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -207,17 +235,9 @@ footer{padding:0 4px 8px;font:italic 400 .85rem/1.6 "Newsreader",Georgia,serif;c
         <span id="acctEmail"></span>
         <button class="fbtn" id="btnAcct">Sign in</button>
         <span id="savestat"></span>
-        <button class="fbtn" id="btnExport">Export JSON</button>
-        <button class="fbtn" id="btnImport">Import JSON</button>
-        <input type="file" id="fileIn" accept="application/json,.json" class="sr">
-      </div>
-      <div class="hbtns">
-        <button class="mode" id="modeRu" aria-pressed="false">Hide Russian</button>
-        <button class="mode" id="modeEn" aria-pressed="false">Hide English</button>
-        <button class="mode" id="modePr" aria-pressed="false">Hide pronunciation</button>
       </div>
     </div>
-    <div class="htheme"><button class="fbtn" id="btnTheme">◐ Dark</button></div>
+    <div class="htheme"><button class="fbtn" id="btnTheme">◐<span class="tlab"> Dark</span></button></div>
   </div>
 </header>
 
@@ -226,22 +246,28 @@ footer{padding:0 4px 8px;font:italic 400 .85rem/1.6 "Newsreader",Georgia,serif;c
     <div class="field grow">
       <label class="lab" for="search">Search the dictionary</label>
       <input class="search" id="search" type="search"
-        placeholder="Russian (вода) or English (water)…"
+        placeholder="Russian (вода or voda) or English (water)…"
         aria-label="Search dictionary and your words" autocomplete="off">
     </div>
     <div class="field">
       <label class="lab" for="groupin">Add new words to</label>
-      <input class="groupin" id="groupin" list="grouplist" value="My additions">
+      <select class="groupsel" id="groupin"></select>
     </div>
-    <datalist id="grouplist"></datalist>
   </div>
 </div>
 <div id="importbar" role="alert"></div>
 
+<div class="studybar" role="group" aria-label="Study modes">
+  <span class="slab">Hide</span>
+  <button class="mode" id="modeRu" aria-pressed="false">Russian</button>
+  <button class="mode" id="modeEn" aria-pressed="false">English</button>
+  <button class="mode" id="modePr" aria-pressed="false">Pronunciation</button>
+  <span class="hint">Recall the hidden word, then tap it to peek.</span>
+</div>
+
 <div class="shell">
   <nav class="rail" id="rail" role="tablist" aria-label="Parts of speech"></nav>
   <main>
-    <div class="hintbar">Recall the hidden word, then tap it to peek.</div>
     <div id="panelHost"></div>
     <section class="panel" id="p-search" hidden>
       <div class="phead"><div class="ghost" aria-hidden="true">Поиск</div>
@@ -250,24 +276,13 @@ footer{padding:0 4px 8px;font:italic 400 .85rem/1.6 "Newsreader",Georgia,serif;c
     </section>
   </main>
 </div>
-<footer>Search → Add builds your file · sign in to sync across devices · Export JSON any time for a backup · Compiled July 2026 · Dictionary: OpenRussian (CC-BY-SA), frequency: OpenSubtitles</footer>
-
-<div id="modal"><div class="mbox">
-  <h4>Copy / paste backup</h4>
-  <p>Your whole word file as JSON. Copy it somewhere safe, or paste a backup here and load it.</p>
-  <textarea id="mtext" spellcheck="false"></textarea>
-  <div class="mrow">
-    <button class="fbtn" id="mCopy">Copy to clipboard</button>
-    <button class="fbtn" id="mLoad">Load pasted JSON</button>
-    <button class="fbtn" id="mClose">Close</button>
-  </div>
-</div></div>
+<footer>Search → Add builds your file · sign in to sync across devices · Compiled July 2026 · Dictionary: OpenRussian (CC-BY-SA), frequency: OpenSubtitles</footer>
 
 <div id="authmodal" class="authwrap"><div class="mbox">
   <h4 id="aTitle">Sign in</h4>
   <div id="aNote" class="anote" hidden>Accounts aren't set up on this copy yet — the site owner
     needs to add Firebase keys to <span class="mono">config.js</span> (see README). Your words
-    still save on this device, and Export / Import always works.</div>
+    still save on this device.</div>
   <div id="aForm">
     <div class="atabs">
       <button class="atab" data-m="in" aria-selected="true">Sign in</button>
@@ -402,7 +417,7 @@ const activeGroup = {};
 let saveT, cloudT;
 function setSaveStat(t){ $("#savestat").textContent = t; }
 function localStatText(){
-  return store.tier === "none" ? "no auto-save here — use Export"
+  return store.tier === "none" ? "no auto-save here — sign in to keep words safe"
     : "auto-saves in this " + (store.tier === "app" ? "app" : "browser");
 }
 function persistLocal(){
@@ -416,7 +431,7 @@ async function pushCloud(){
     cloudChunks = await FB.saveCloud(user.uid, state.words, state.settings, cloudChunks);
     syncHash = hashWords(state.words); persistLocal();
     setSaveStat("saved to account ✓");
-  } catch (e){ setSaveStat("cloud save failed — kept on this device (use Export)"); }
+  } catch (e){ setSaveStat("cloud save failed — kept on this device"); }
   cloudBusy = false;
   if (cloudDirty){ cloudDirty = false; pushCloud(); }
 }
@@ -501,16 +516,28 @@ function renderPanel(){
 }
 function renderMeta(){
   $("#nWords").textContent = state.words.length;
-  const dl = $("#grouplist");
-  const gs = [...new Set(state.words.map(w => w.g).filter(Boolean))];
-  dl.innerHTML = gs.map(g => '<option value="' + esc(g) + '">').join("");
+  const sel = $("#groupin");
+  const gs = [...new Set([state.settings.group, ...state.words.map(w => w.g).filter(Boolean)])];
+  sel.innerHTML = gs.map(g =>
+    '<option value="' + esc(g) + '">' + esc(g) + '</option>').join("") +
+    '<option value="__new__">+ New list…</option>';
+  sel.value = state.settings.group;
 }
 function renderAll(){ renderRail(); renderPanel(); renderMeta(); }
 
 /* ---------------- search */
+// Plain letter-by-letter transliteration (вода → "voda") so Latin queries
+// can find Russian words without a Cyrillic keyboard.
+function plainLat(s){
+  let t = "";
+  for (const ch of s.toLowerCase()){ t += (TR[ch] !== undefined ? TR[ch] : ch); }
+  return t.replace(/'/g, "");
+}
+let LAT = [];
 function searchDict(q){
   const cyr = /[а-яё]/i.test(q);
-  const starts = [], subs = [], enHits = [];
+  const qLat = q.replace(/'/g, "");
+  const starts = [], latStarts = [], subs = [], latSubs = [], enHits = [];
   for (let i = 0; i < DICT.length; i++){
     const [ac, en] = DICT[i];
     if (cyr){
@@ -518,14 +545,16 @@ function searchDict(q){
       if (b.startsWith(q)) starts.push(i);
       else if (b.includes(q)) subs.push(i);
     } else {
-      const e = en.toLowerCase();
+      const e = en.toLowerCase(), L = LAT[i];
       if (e === q || e.startsWith(q + ",") || e.startsWith(q + ";")) starts.push(i);
+      else if (L && L.startsWith(qLat)) latStarts.push(i);
       else if ((" " + e).includes(" " + q)) subs.push(i);
+      else if (L && L.includes(qLat)) latSubs.push(i);
       else if (e.includes(q)) enHits.push(i);
     }
     if (starts.length > 400) break;
   }
-  return starts.concat(subs, enHits).slice(0, 60);
+  return starts.concat(latStarts, subs, latSubs, enHits).slice(0, 60);
 }
 function renderSearch(qRaw){
   const q = qRaw.trim().toLowerCase();
@@ -536,9 +565,11 @@ function renderSearch(qRaw){
   }
   host.style.display = "none"; sp.hidden = false; $("#rail").classList.add("dim");
   const have = haveKeys();
+  const qLat = q.replace(/'/g, "");
   const mine = [];
   state.words.forEach((w, i) => {
-    if (bareOf(w.ru).toLowerCase().includes(q) || w.en.toLowerCase().includes(q)) mine.push(i);
+    if (bareOf(w.ru).toLowerCase().includes(q) || w.en.toLowerCase().includes(q) ||
+        plainLat(bareOf(w.ru)).includes(qLat)) mine.push(i);
   });
   const hits = dictReady ? searchDict(q) : [];
   $("#rmeta").textContent = mine.length + " in your file · " + (dictReady
@@ -562,7 +593,7 @@ function renderSearch(qRaw){
           '<td class="en">' + esc(en) + (gx ? ' <span class="gx">' + esc(gx) + '</span>' : "") +
           ' <span class="rank">#' + (di + 1) + '</span></td>' +
           '<td><span class="chip">' + POS[pos][0] + '</span></td>' +
-          '<td class="rm" style="width:96px">' + (inList
+          '<td class="add">' + (inList
             ? '<button class="addbtn" disabled>In file ✓</button>'
             : '<button class="addbtn" data-di="' + di + '">+ Add</button>') + '</td></tr>';
       }).join("") + '</tbody></table></div>';
@@ -581,7 +612,7 @@ function renderSearch(qRaw){
 function addWord(di){
   const [ac, en, pos, x] = DICT[di];
   state.words.push({ ru: bareOf(ac), ac: ac, pr: translit(ac), en: en, pos: pos,
-    g: ($("#groupin").value.trim() || "My additions"), x: x });
+    g: (state.settings.group || "My additions"), x: x });
   scheduleSave(); renderAll(); renderSearch($("#search").value);
 }
 document.addEventListener("click", e => {
@@ -637,8 +668,9 @@ $("#search").addEventListener("input", e => renderSearch(e.target.value));
 
 /* ---------------- dark mode — pure token inversion, persisted */
 function themeLabel(){
-  $("#btnTheme").textContent =
-    document.documentElement.dataset.theme === "dark" ? "◐ Light" : "◐ Dark";
+  const dark = document.documentElement.dataset.theme === "dark";
+  $("#btnTheme .tlab") && ($("#btnTheme .tlab").textContent = dark ? " Light" : " Dark");
+  $("#btnTheme").setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
 }
 $("#btnTheme").addEventListener("click", () => {
   const dark = document.documentElement.dataset.theme === "dark";
@@ -649,83 +681,10 @@ $("#btnTheme").addEventListener("click", () => {
 });
 themeLabel();
 
-/* ---------------- export / import */
-function exportJSON(){
-  return JSON.stringify({ app: "ru-vocab-cardfile", version: 1,
-    exported: new Date().toISOString(), settings: state.settings,
-    words: state.words }, null, 1);
-}
-$("#btnExport").addEventListener("click", () => {
-  const txt = exportJSON();
-  try{
-    const blob = new Blob([txt], { type: "application/json" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "russian-vocab-" + new Date().toISOString().slice(0,10) + ".json";
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
-  }catch(err){ openModal(txt); }
-});
-function openModal(text){ $("#mtext").value = text || ""; $("#modal").classList.add("open"); }
-$("#mClose").addEventListener("click", () => $("#modal").classList.remove("open"));
-$("#mCopy").addEventListener("click", async () => {
-  try{ await navigator.clipboard.writeText($("#mtext").value); $("#mCopy").textContent = "Copied ✓";
-    setTimeout(() => $("#mCopy").textContent = "Copy to clipboard", 1600); }
-  catch(e){ $("#mtext").select(); }
-});
-$("#mLoad").addEventListener("click", () => { stageImport($("#mtext").value); $("#modal").classList.remove("open"); });
-
-$("#btnImport").addEventListener("click", () => $("#fileIn").click());
-$("#fileIn").addEventListener("change", e => {
-  const f = e.target.files[0]; if (!f) return;
-  const r = new FileReader();
-  r.onload = () => stageImport(String(r.result));
-  r.readAsText(f); e.target.value = "";
-});
-let staged = null;
+/* ---------------- word validation (shared by cloud load + local load) */
 function validWord(w){
   return w && typeof w.ru === "string" && w.ru && typeof w.en === "string" &&
     typeof w.pos === "string" && POS[w.pos];
-}
-function stageImport(text){
-  let data;
-  try{ data = JSON.parse(text); }
-  catch(e){ showImportBar('<b>Couldn’t read that JSON.</b> Check the file and try again.', []); return; }
-  const words = Array.isArray(data) ? data : data.words;
-  if (!Array.isArray(words)){ showImportBar('<b>No “words” array found</b> in that file.', []); return; }
-  const clean = words.filter(validWord).map(w => ({
-    ru: w.ru, ac: typeof w.ac === "string" ? w.ac : "", pr: typeof w.pr === "string" ? w.pr : "",
-    en: w.en, pos: w.pos, g: typeof w.g === "string" && w.g ? w.g : "Imported",
-    x: typeof w.x === "string" ? w.x : "" }));
-  if (!clean.length){ showImportBar('<b>No valid words</b> in that file.', []); return; }
-  staged = clean;
-  showImportBar('<b>' + clean.length + ' words</b> ready to import. Merge keeps your current list and skips duplicates; Replace overwrites it.',
-    ['merge', 'replace', 'cancel']);
-}
-function showImportBar(msg, actions){
-  const bar = $("#importbar");
-  bar.innerHTML = '<span>' + msg + '</span>' +
-    (actions.includes("merge") ? '<button class="ibtn primary" id="impMerge">Merge</button>' : "") +
-    (actions.includes("replace") ? '<button class="ibtn" id="impReplace">Replace</button>' : "") +
-    '<button class="ibtn" id="impCancel">' + (actions.length > 1 ? "Cancel" : "OK") + '</button>';
-  bar.classList.add("open");
-  const close = () => { bar.classList.remove("open"); staged = null; };
-  $("#impCancel").onclick = close;
-  const mg = $("#impMerge"), rp = $("#impReplace");
-  if (mg) mg.onclick = () => {
-    const have = haveKeys();
-    let added = 0;
-    staged.forEach(w => { if (!have.has(keyOf(w))){ state.words.push(w); have.add(keyOf(w)); added++; } });
-    scheduleSave(); renderAll(); bar.classList.remove("open");
-    showImportBar('<b>Merged:</b> ' + added + (added === 1 ? ' new word' : ' new words') +
-      ' added, ' + (staged.length - added) + ' duplicates skipped.', []);
-    staged = null;
-  };
-  if (rp) rp.onclick = () => {
-    state.words = staged; staged = null;
-    scheduleSave(); renderAll(); bar.classList.remove("open");
-    showImportBar('<b>Replaced.</b> Your file now has ' + state.words.length + ' words.', []);
-  };
 }
 
 /* ---------------- accounts + sync */
@@ -852,6 +811,7 @@ $("#nDict").textContent = "loading…";
     return r.json();
   }).then(d => {
     DICT = d; dictReady = true;
+    LAT = DICT.map(e => plainLat(bareOf(e[0])));
     $("#nDict").textContent = DICT.length.toLocaleString("en-GB");
     const q = $("#search").value;
     if (q.trim().length >= 2) renderSearch(q);
@@ -860,7 +820,15 @@ $("#nDict").textContent = "loading…";
   });
 
   $("#groupin").addEventListener("change", () => {
-    state.settings.group = $("#groupin").value.trim() || "My additions";
+    const sel = $("#groupin");
+    if (sel.value === "__new__"){
+      const name = (window.prompt("Name the new list:") || "").trim();
+      if (name) state.settings.group = name;
+      renderMeta();               // rebuilds options and restores the selection
+      scheduleSave();
+      return;
+    }
+    state.settings.group = sel.value || "My additions";
     scheduleSave();
   });
 
