@@ -75,7 +75,25 @@ h1{font:400 clamp(1.6rem,3.4vw,2.5rem)/1.02 "Prata",Georgia,serif;letter-spacing
 .searchbox{border:1px solid var(--ink);background:var(--paper);padding:clamp(12px,1.6vw,20px)}
 .searchrow{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
 .field{display:flex;flex-direction:column;gap:6px}
-.field.grow{flex:1 1 320px;max-width:720px}
+.field.grow{flex:1 1 320px;max-width:720px;position:relative}
+
+/* search suggestion dropdown */
+.sugg{position:absolute;top:100%;left:0;right:0;margin-top:-1px;z-index:45;
+  border:1px solid var(--ink);background:var(--paper);
+  max-height:min(420px,62vh);overflow:auto}
+.srow{display:flex;align-items:center;gap:10px;padding:9px 12px;
+  border-bottom:1px dashed var(--hair)}
+.srow .sru{font-weight:600;flex:none}
+.srow .spr{font-style:italic;color:var(--ink-60);font-size:.9rem;flex:none}
+.srow .sen{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;font-size:.95rem}
+.srow .addbtn{flex:none}
+.srow.sempty{color:var(--ink-60);font-style:italic}
+.sall{display:block;width:100%;text-align:center;padding:11px 12px;
+  font:600 .6rem/1 "Afacad Flux",system-ui,sans-serif;text-transform:uppercase;
+  letter-spacing:.18em;color:var(--ink);background:var(--paper);border:none;
+  border-top:1px solid var(--ink);transition:background-color .15s,color .15s}
+.sall:hover{background:var(--ink);color:var(--paper)}
 .lab{font:600 .58rem/1 "Afacad Flux",system-ui,sans-serif;text-transform:uppercase;
   letter-spacing:.2em;color:var(--ink-60)}
 input.search,select.groupsel,#aEmail,#aPass{
@@ -140,10 +158,13 @@ td.pr{font-style:italic;font-size:.95rem;color:var(--ink-60);width:23%}
 td.en{font-size:1rem}
 td.en .gx{color:var(--ink-60);font-size:.85rem;font-style:italic;white-space:nowrap}
 th.rm,td.rm{width:44px;text-align:center}
+td.rm{position:relative}
 .rmbtn{width:26px;height:26px;color:var(--ink-35);font-size:15px;line-height:1;
   transition:color .15s,background-color .15s}
 .rmbtn:hover{color:var(--accent)}
-.rmbtn.arm{background:var(--accent);color:var(--paper);width:auto;height:26px;padding:0 8px;
+.rmbtn.arm{position:absolute;right:6px;top:50%;transform:translateY(-50%);z-index:7;
+  background:var(--accent);color:var(--paper);width:auto;height:26px;padding:0 10px;
+  white-space:nowrap;
   font:600 .56rem/1 "Afacad Flux",system-ui,sans-serif;text-transform:uppercase;letter-spacing:.1em}
 
 /* study modes */
@@ -248,6 +269,7 @@ footer{padding:0 4px 8px;font:italic 400 .85rem/1.6 "Newsreader",Georgia,serif;c
       <input class="search" id="search" type="search"
         placeholder="Russian (вода or voda) or English (water)…"
         aria-label="Search dictionary and your words" autocomplete="off">
+      <div id="sugg" class="sugg" hidden></div>
     </div>
     <div class="field">
       <label class="lab" for="groupin">Add new words to</label>
@@ -556,10 +578,41 @@ function searchDict(q){
   }
   return starts.concat(latStarts, subs, latSubs, enHits).slice(0, 60);
 }
+/* compact dropdown under the search box: best matches, one-tap add */
+function hideSugg(){ const b = $("#sugg"); b.hidden = true; b.innerHTML = ""; }
+function renderSugg(qRaw){
+  const q = qRaw.trim().toLowerCase();
+  const box = $("#sugg");
+  if (!dictReady){
+    box.innerHTML = '<div class="srow sempty">The dictionary is still loading — one moment…</div>';
+    box.hidden = false; return;
+  }
+  const hits = searchDict(q);
+  const have = haveKeys();
+  const top = hits.slice(0, 8);
+  let html = top.map(di => {
+    const [ac, en, pos] = DICT[di];
+    const k = bareOf(ac).toLowerCase() + "|" + pos;
+    return '<div class="srow"><span class="sru">' + esc(acuteize(ac)) + '</span>' +
+      '<span class="spr">' + esc(translit(ac)) + '</span>' +
+      '<span class="sen">' + esc(en) + '</span>' +
+      (have.has(k) ? '<button class="addbtn" disabled>In file ✓</button>'
+                   : '<button class="addbtn" data-di="' + di + '">+ Add</button>') + '</div>';
+  }).join("");
+  if (!top.length){
+    html = '<div class="srow sempty">No matches — try a shorter stem, or search in English.</div>';
+  }
+  html += '<button class="sall" id="sallBtn">All results' +
+    (hits.length ? ' (' + hits.length + (hits.length === 60 ? '+' : '') + ')' : '') + ' →</button>';
+  box.innerHTML = html; box.hidden = false;
+  $("#sallBtn").onclick = () => { hideSugg(); renderSearch($("#search").value); };
+}
+
 function renderSearch(qRaw){
   const q = qRaw.trim().toLowerCase();
   const host = $("#panelHost"), sp = $("#p-search");
   if (q.length < 2){
+    hideSugg();
     sp.hidden = true; host.style.display = ""; $("#rail").classList.remove("dim");
     return;
   }
@@ -613,7 +666,9 @@ function addWord(di){
   const [ac, en, pos, x] = DICT[di];
   state.words.push({ ru: bareOf(ac), ac: ac, pr: translit(ac), en: en, pos: pos,
     g: (state.settings.group || "My additions"), x: x });
-  scheduleSave(); renderAll(); renderSearch($("#search").value);
+  scheduleSave(); renderAll();
+  if (!$("#p-search").hidden) renderSearch($("#search").value);
+  else if (!$("#sugg").hidden) renderSugg($("#search").value);
 }
 document.addEventListener("click", e => {
   const add = e.target.closest(".addbtn[data-di]");
@@ -621,8 +676,8 @@ document.addEventListener("click", e => {
   const rm = e.target.closest(".rmbtn");
   if (rm){
     if (!rm.classList.contains("arm")){
-      rm.classList.add("arm"); rm.textContent = "sure?";
-      setTimeout(() => { rm.classList.remove("arm"); rm.textContent = "×"; }, 2200);
+      rm.classList.add("arm"); rm.textContent = "Remove?";
+      setTimeout(() => { rm.classList.remove("arm"); rm.textContent = "×"; }, 2600);
       return;
     }
     state.words.splice(Number(rm.dataset.i), 1);
@@ -664,7 +719,21 @@ function bindMode(btnId, cls, excl){
 bindMode("#modeRu", "hide-ru", ["hide-en"]);
 bindMode("#modeEn", "hide-en", ["hide-ru"]);
 bindMode("#modePr", "hide-pr", []);
-$("#search").addEventListener("input", e => renderSearch(e.target.value));
+$("#search").addEventListener("input", e => {
+  const q = e.target.value.trim();
+  if (q.length < 2){ renderSearch(""); return; }
+  if (!$("#p-search").hidden){ renderSearch(e.target.value); return; }
+  renderSugg(e.target.value);
+});
+document.addEventListener("click", e => {
+  // ignore clicks on elements the re-render just detached (e.g. an Add button)
+  if (!$("#sugg").hidden && e.target.isConnected && !e.target.closest(".field.grow")) hideSugg();
+});
+document.addEventListener("keydown", e => { if (e.key === "Escape") hideSugg(); });
+$("#search").addEventListener("focus", () => {
+  const q = $("#search").value.trim();
+  if (q.length >= 2 && $("#p-search").hidden) renderSugg(q);
+});
 
 /* ---------------- dark mode — pure token inversion, persisted */
 function themeLabel(){
@@ -814,7 +883,10 @@ $("#nDict").textContent = "loading…";
     LAT = DICT.map(e => plainLat(bareOf(e[0])));
     $("#nDict").textContent = DICT.length.toLocaleString("en-GB");
     const q = $("#search").value;
-    if (q.trim().length >= 2) renderSearch(q);
+    if (q.trim().length >= 2){
+      if (!$("#p-search").hidden) renderSearch(q);
+      else if (!$("#sugg").hidden) renderSugg(q);
+    }
   }).catch(() => {
     $("#nDict").textContent = "failed to load — refresh";
   });
