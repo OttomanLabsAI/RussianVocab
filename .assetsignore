@@ -1,0 +1,10 @@
+# Repo files that must not be uploaded/served as site assets.
+.git
+.gitignore
+.assetsignore
+wrangler.jsonc
+.wrangler
+README.md
+LICENSE
+firestore.rules
+node_modules

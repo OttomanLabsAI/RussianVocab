@@ -14,6 +14,7 @@ Firebase directly from the browser.
 | `vendor/firebase-bundle.js` | Firebase Auth + Firestore SDK, bundled and pinned |
 | `config.js` | **Your Firebase keys go here** |
 | `firestore.rules` | Security rules — paste into the Firebase console |
+| `wrangler.jsonc`, `_headers`, `.assetsignore` | Cloudflare deployment: project config, cache headers, files kept off the site |
 
 Until `config.js` is filled in, the site runs in device-only mode: words save in
 the browser, Export/Import JSON works, and the Sign in button explains that
@@ -59,19 +60,31 @@ may hardcode a colour that breaks under inversion.
    (apiKey, authDomain, projectId, appId). These keys are safe to ship in
    client code — the rules are what protect the data.
 
-Deploy the repo to any static host (Cloudflare Pages, Netlify, GitHub Pages) —
-or Firebase Hosting if you want it all in one place:
+## Deploy to Cloudflare
+
+The repo is configured as a Cloudflare Workers static-assets project
+(`wrangler.jsonc`): only the site files are served — repo files like this
+README are excluded via `.assetsignore` — and `_headers` sets the cache
+policy (long/immutable for `dict.json` and `vendor/*`; rename those files
+when they change, short cache for `index.html` and `config.js`).
+
+**Automatic deploys (recommended):** in the Cloudflare dashboard go to
+*Workers & Pages → Create → Workers → Import a repository*, pick this repo,
+and accept the detected settings (no build command, deploy command
+`npx wrangler deploy`). Every push to the default branch then deploys to
+`russianvocab.<your-subdomain>.workers.dev`; custom domains attach in the
+worker's Settings → Domains & Routes.
+
+**One-off deploy from your machine:**
 
 ```
-npm i -g firebase-tools
-firebase login
-firebase init hosting        # choose this folder as public dir, no rewrites needed
-firebase deploy
+npx wrangler login
+npx wrangler deploy
 ```
 
-Suggested cache headers if your host lets you set them: long/immutable for
-`dict.json` and `vendor/*` (rename the file when the dictionary changes), short
-for `index.html` and `config.js`.
+After the first deploy, add the `workers.dev` URL (and any custom domain) to
+Firebase **Authentication → Settings → Authorized domains**, or sign-in will
+be refused from the live site.
 
 ## How syncing behaves
 
