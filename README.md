@@ -16,9 +16,9 @@ Firebase directly from the browser.
 | `firestore.rules` | Security rules — paste into the Firebase console |
 | `wrangler.jsonc`, `_headers`, `.assetsignore` | Cloudflare deployment: project config, cache headers, files kept off the site |
 
-Until `config.js` is filled in, the site runs in device-only mode: words save in
-the browser, Export/Import JSON works, and the Sign in button explains that
-accounts aren't set up. Nothing breaks.
+`config.js` carries the project's public client keys. Without them the site
+falls back to device-only mode: words save in the browser and the Sign in
+button explains that accounts aren't set up. Nothing breaks.
 
 ## Run it locally
 
@@ -88,8 +88,7 @@ be refused from the live site.
 
 ## How syncing behaves
 
-- Signed out: words auto-save in the browser (localStorage), plus manual
-  Export/Import JSON.
+- Signed out: words auto-save in the browser (localStorage).
 - First sign-in on a device with words: the device seeds the account.
 - Sign-in where the account and the device **both** have words and they differ:
   the app asks — **Use account / Merge both / Keep this device**. If the device
