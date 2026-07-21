@@ -107,8 +107,9 @@ users/{uid}/w/{0..n} → { words: [ up to 1,000 word objects ] }
 
 Words are chunked at 1,000 per document to stay far under Firestore's 1 MB
 document limit — no practical ceiling on list size. Each word object:
-`{ ru, ac, pr, en, pos, g, x }` (word, stress-marked form, pronunciation,
-translation, part of speech, group, gender/aspect extra).
+`{ ru, ac, pr, en, pos, g, x, t }` (word, stress-marked form, pronunciation,
+translation, part of speech, group, gender/aspect extra, added-at epoch ms —
+`t` is absent on words that predate time logging).
 
 ## Releases
 
