@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Russian Vocabulary Builder — Русский словарь</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@500..600&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&family=Prata&display=swap" rel="stylesheet">
+<script>(function(){try{if(localStorage.getItem("rv_theme")==="dark")document.documentElement.dataset.theme="dark";}catch(e){}})();</script>
+<style>
+/* boxed-mosaic editorial — paper, ink, two greys, one burgundy accent */
+:root{
+  --paper:#FFFFFF; --ink:#111111; --ink-60:#5A5A5A; --ink-35:#A9A9A9;
+  --hair:#A9A9A9; --accent:#B01018; --scrim:rgba(17,17,17,.45);
+  color-scheme:light;
+}
+[data-theme="dark"]{
+  --paper:#111111; --ink:#FFFFFF; --ink-60:#A9A9A9; --ink-35:#5A5A5A;
+  --hair:#5A5A5A; --accent:#DE8286; --scrim:rgba(0,0,0,.6);
+  color-scheme:dark;
+}
+*{box-sizing:border-box;border-radius:0}
+html{background:var(--paper)}
+html,body{margin:0;padding:0}
+body{
+  background-color:var(--paper);
+  background-image:radial-gradient(var(--hair) 1px,transparent 1.6px);
+  background-size:22px 22px;
+  color:var(--ink);
+  font:400 1rem/1.55 "Newsreader",Georgia,"Times New Roman",serif;
+  max-width:1880px;margin:0 auto;
+  padding:clamp(10px,1.8vw,26px);
+  display:grid;gap:14px;align-content:start;
+  -webkit-font-smoothing:antialiased;
+}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+:is(button,input,textarea):focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.mono{font-family:"Afacad Flux",system-ui,sans-serif;font-size:.85em;letter-spacing:.06em}
+
+/* shared control voice — Afacad Flux micro-labels, invert on hover */
+.fbtn,.mode,.ibtn,.sub,.atab,.addbtn,.tab{
+  font-family:"Afacad Flux",system-ui,sans-serif;font-weight:600;font-size:.62rem;line-height:1;
+  text-transform:uppercase;letter-spacing:.16em;
+  border:1px solid var(--ink);background:var(--paper);color:var(--ink);
+  padding:9px 13px;
+  transition:background-color .15s,color .15s,border-color .15s;
+}
+:is(.fbtn,.mode,.ibtn,.sub,.atab,.addbtn,.tab):hover{background:var(--ink);color:var(--paper)}
+.mode[aria-pressed="true"],.sub[aria-selected="true"],.atab[aria-selected="true"]{
+  background:var(--ink);color:var(--paper)}
+.ibtn.primary{background:var(--ink);color:var(--paper)}
+.addbtn[disabled]{border-color:var(--hair);color:var(--ink-35);cursor:default}
+.addbtn[disabled]:hover{background:var(--paper);color:var(--ink-35)}
+
+/* header box */
+header.top{border:1px solid var(--ink);background:var(--paper);padding:clamp(14px,2vw,24px)}
+.toprow{display:flex;flex-wrap:wrap;gap:14px 28px;align-items:flex-end;justify-content:space-between}
+.kicker{display:flex;align-items:center;gap:8px;
+  font:600 .6rem/1 "Afacad Flux",system-ui,sans-serif;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--ink-60)}
+.kicker .spark{width:12px;height:12px;fill:var(--ink);flex:none}
+h1{font:400 clamp(1.6rem,3.4vw,2.5rem)/1.02 "Prata",Georgia,serif;letter-spacing:.01em;margin:10px 0 8px}
+.meta{font:500 .66rem/1.6 "Afacad Flux",system-ui,sans-serif;text-transform:uppercase;
+  letter-spacing:.14em;color:var(--ink-60)}
+.meta b{color:var(--ink);font-weight:600}
+.filebtns{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:flex-end}
+#savestat,#acctEmail{font:500 .58rem/1.4 "Afacad Flux",system-ui,sans-serif;
+  text-transform:uppercase;letter-spacing:.14em;color:var(--ink-60)}
+
+/* search box */
+.searchbox{border:1px solid var(--ink);background:var(--paper);padding:clamp(12px,1.6vw,20px)}
+.searchrow{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
+.field{display:flex;flex-direction:column;gap:6px}
+.field.grow{flex:1 1 320px;max-width:720px}
+.lab{font:600 .58rem/1 "Afacad Flux",system-ui,sans-serif;text-transform:uppercase;
+  letter-spacing:.2em;color:var(--ink-60)}
+input.search,input.groupin,#aEmail,#aPass{
+  width:100%;padding:11px 12px;border:1px solid var(--ink);background:var(--paper);color:var(--ink);
+  font:400 1.02rem/1.3 "Newsreader",Georgia,serif}
+input.groupin{width:200px}
+::placeholder{color:var(--ink-35);opacity:1;font-style:italic}
+
+/* shell / rail */
+.shell{display:grid;grid-template-columns:240px minmax(0,1fr);gap:14px;align-items:start}
+nav.rail{display:flex;flex-direction:column;gap:8px;padding:clamp(12px,1.4vw,18px);
+  border:1px solid var(--ink);background:var(--paper);
+  position:sticky;top:14px;max-height:calc(100vh - 28px);overflow:auto}
+nav.rail.dim .tab:not([aria-selected="true"]){opacity:.45}
+.tab{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;
+  text-align:left;padding:10px 12px}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--paper)}
+.tab .n{font-weight:500;letter-spacing:.08em;opacity:.65}
+
+/* panel */
+main{border:1px solid var(--ink);background:var(--paper);padding:clamp(16px,2.2vw,28px);min-width:0}
+.phead{position:relative;overflow:hidden;padding:2px 0}
+.ghost{position:absolute;right:0;top:-10px;font:400 clamp(2.2rem,6vw,4.5rem)/1 "Prata",Georgia,serif;
+  color:var(--ink);opacity:.05;white-space:nowrap;pointer-events:none;user-select:none}
+h2{font:400 clamp(1.35rem,2.6vw,1.8rem)/1.05 "Prata",Georgia,serif;margin:0}
+.cy2{font:italic 400 .95rem/1.4 "Newsreader",Georgia,serif;color:var(--ink-60);margin:6px 0 0}
+.subtabs{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 4px}
+.sub{padding:7px 12px}
+.hintbar{display:none;font-style:italic;color:var(--ink-60);margin:0 0 12px}
+body.hide-ru .hintbar,body.hide-en .hintbar,body.hide-pr .hintbar{display:block}
+
+/* tables — boxes with dashed hairline rows */
+.blocks{margin-top:16px}
+.blk{border:1px solid var(--ink);background:var(--paper);margin-bottom:14px}
+.filtered .blk h3{display:none}
+h3{margin:0;padding:11px 14px;font:600 .6rem/1 "Afacad Flux",system-ui,sans-serif;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--ink);border-bottom:1px solid var(--ink)}
+table{width:100%;border-collapse:collapse}
+thead th{font:600 .58rem/1 "Afacad Flux",system-ui,sans-serif;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--ink-60);text-align:left;padding:10px 14px;
+  border-bottom:1px solid var(--ink)}
+td{padding:10px 14px;border-bottom:1px dashed var(--hair);vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+td.ru{font-weight:600;font-size:1.05rem;width:21%;min-width:120px}
+td.pr{font-style:italic;font-size:.95rem;color:var(--ink-60);width:23%}
+td.en{font-size:1rem}
+td.en .gx{color:var(--ink-60);font-size:.85rem;font-style:italic;white-space:nowrap}
+th.rm,td.rm{width:44px;text-align:center}
+.rmbtn{width:26px;height:26px;color:var(--ink-35);font-size:15px;line-height:1;
+  transition:color .15s,background-color .15s}
+.rmbtn:hover{color:var(--accent)}
+.rmbtn.arm{background:var(--accent);color:var(--paper);width:auto;height:26px;padding:0 8px;
+  font:600 .56rem/1 "Afacad Flux",system-ui,sans-serif;text-transform:uppercase;letter-spacing:.1em}
+
+/* study modes */
+body.hide-ru td.ru .w,body.hide-en td.en .w,body.hide-pr td.pr .w{filter:blur(8px);opacity:.35}
+body.hide-ru td.ru,body.hide-en td.en,body.hide-pr td.pr{cursor:pointer}
+td.peek .w{filter:none!important;opacity:1!important}
+
+/* search results */
+#p-search .rmeta{font:italic 400 .95rem/1.5 "Newsreader",Georgia,serif;color:var(--ink-60);margin:8px 0 12px}
+.chip{display:inline-block;font:600 .56rem/1 "Afacad Flux",system-ui,sans-serif;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--ink);
+  border:1px solid var(--ink);padding:4px 8px;white-space:nowrap}
+.rank{font:500 .58rem/1 "Afacad Flux",system-ui,sans-serif;letter-spacing:.1em;color:var(--ink-35)}
+.addbtn{padding:7px 11px;white-space:nowrap}
+.empty{padding:26px 20px;color:var(--ink-60);font-style:italic}
+.bigempty{padding:60px 24px;text-align:center;color:var(--ink-60);font-style:italic}
+.bigempty b{color:var(--ink);font-style:normal;font-weight:600}
+
+/* modal */
+#modal{position:fixed;inset:0;background:var(--scrim);display:none;align-items:center;
+  justify-content:center;padding:20px;z-index:50}
+#modal.open{display:flex}
+.mbox{background:var(--paper);border:1px solid var(--ink);max-width:640px;width:100%;
+  padding:clamp(16px,2vw,24px)}
+.mbox h4{margin:0 0 6px;font:400 1.15rem/1.15 "Prata",Georgia,serif}
+.mbox p{margin:0 0 12px;font-size:.95rem;color:var(--ink-60)}
+.mbox textarea{width:100%;height:200px;border:1px solid var(--ink);background:var(--paper);
+  color:var(--ink);padding:10px;resize:vertical;
+  font:500 .72rem/1.5 "Afacad Flux",system-ui,sans-serif;letter-spacing:.02em}
+.mrow{display:flex;gap:9px;margin-top:12px;flex-wrap:wrap;justify-content:flex-end}
+
+/* import / sync choice bar */
+#importbar{display:none;border:1px solid var(--ink);background:var(--paper);
+  padding:12px 16px;font-size:.95rem;align-items:center;gap:12px;flex-wrap:wrap}
+#importbar.open{display:flex}
+#importbar b{font-weight:600}
+
+/* auth */
+.authwrap{position:fixed;inset:0;background:var(--scrim);display:none;align-items:center;
+  justify-content:center;padding:20px;z-index:60}
+.authwrap.open{display:flex}
+.authwrap .mbox{max-width:420px}
+.atabs{display:flex;gap:8px;margin-bottom:14px}
+#aEmail,#aPass{margin-bottom:9px}
+#aErr{min-height:18px;font:italic 400 .85rem/1.4 "Newsreader",Georgia,serif;
+  color:var(--accent);margin:2px 0 8px}
+#aErr.ok{color:var(--ink-60)}
+.anote{font-size:.95rem;color:var(--ink-60);line-height:1.6;margin-bottom:6px}
+
+footer{padding:0 4px 8px;font:italic 400 .85rem/1.6 "Newsreader",Georgia,serif;color:var(--ink-60)}
+
+@media(max-width:900px){
+  .shell{grid-template-columns:1fr}
+  nav.rail{flex-direction:row;overflow-x:auto;max-height:none;position:static;padding:10px}
+  .tab{width:auto;min-width:max-content}
+  main{padding:16px 12px}
+  td,thead th{padding:8px 10px}
+  td.ru{min-width:92px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="toprow">
+    <div class="brand">
+      <div class="kicker"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1C12.6 7.2 16.8 11.4 23 12 16.8 12.6 12.6 16.8 12 23 11.4 16.8 7.2 12.6 1 12 7.2 11.4 11.4 7.2 12 1Z"/></svg>Русский словарь · Card File + Dictionary</div>
+      <h1>Russian Vocabulary Builder</h1>
+      <div class="meta"><b id="nWords">0</b> words in your file ·
+        dictionary: <span id="nDict">0</span> entries</div>
+    </div>
+    <div class="filebtns">
+      <span id="acctEmail"></span>
+      <button class="fbtn" id="btnAcct">Sign in</button>
+      <span id="savestat"></span>
+      <button class="fbtn" id="btnExport">Export JSON</button>
+      <button class="fbtn" id="btnImport">Import JSON</button>
+      <button class="fbtn" id="btnBackup" title="Copy or paste raw JSON">Copy / paste</button>
+      <input type="file" id="fileIn" accept="application/json,.json" class="sr">
+      <button class="mode" id="modeRu" aria-pressed="false">Hide Russian</button>
+      <button class="mode" id="modeEn" aria-pressed="false">Hide English</button>
+      <button class="mode" id="modePr" aria-pressed="false">Hide pronunciation</button>
+      <button class="fbtn" id="btnTheme">◐ Dark</button>
+    </div>
+  </div>
+</header>
+
+<div class="searchbox">
+  <div class="searchrow">
+    <div class="field grow">
+      <label class="lab" for="search">Search the dictionary</label>
+      <input class="search" id="search" type="search"
+        placeholder="Russian (вода) or English (water)…"
+        aria-label="Search dictionary and your words" autocomplete="off">
+    </div>
+    <div class="field">
+      <label class="lab" for="groupin">Add new words to</label>
+      <input class="groupin" id="groupin" list="grouplist" value="My additions">
+    </div>
+    <datalist id="grouplist"></datalist>
+  </div>
+</div>
+<div id="importbar" role="alert"></div>
+
+<div class="shell">
+  <nav class="rail" id="rail" role="tablist" aria-label="Parts of speech"></nav>
+  <main>
+    <div class="hintbar">Recall the hidden word, then tap it to peek.</div>
+    <div id="panelHost"></div>
+    <section class="panel" id="p-search" hidden>
+      <div class="phead"><div class="ghost" aria-hidden="true">Поиск</div>
+        <h2>Search</h2><div class="rmeta" id="rmeta"></div></div>
+      <div id="rwrap"></div>
+    </section>
+  </main>
+</div>
+<footer>Search → Add builds your file · sign in to sync across devices · Export JSON any time for a backup · Compiled July 2026 · Dictionary: OpenRussian (CC-BY-SA), frequency: OpenSubtitles</footer>
+
+<div id="modal"><div class="mbox">
+  <h4>Copy / paste backup</h4>
+  <p>Your whole word file as JSON. Copy it somewhere safe, or paste a backup here and load it.</p>
+  <textarea id="mtext" spellcheck="false"></textarea>
+  <div class="mrow">
+    <button class="fbtn" id="mCopy">Copy to clipboard</button>
+    <button class="fbtn" id="mLoad">Load pasted JSON</button>
+    <button class="fbtn" id="mClose">Close</button>
+  </div>
+</div></div>
+
+<div id="authmodal" class="authwrap"><div class="mbox">
+  <h4 id="aTitle">Sign in</h4>
+  <div id="aNote" class="anote" hidden>Accounts aren't set up on this copy yet — the site owner
+    needs to add Firebase keys to <span class="mono">config.js</span> (see README). Your words
+    still save on this device, and Export / Import always works.</div>
+  <div id="aForm">
+    <div class="atabs">
+      <button class="atab" data-m="in" aria-selected="true">Sign in</button>
+      <button class="atab" data-m="up" aria-selected="false">Create account</button>
+    </div>
+    <input id="aEmail" type="email" placeholder="Email" autocomplete="email">
+    <input id="aPass" type="password" placeholder="Password" autocomplete="current-password">
+    <div id="aErr" role="alert"></div>
+    <div class="mrow" style="justify-content:space-between">
+      <button class="fbtn" id="aReset" type="button">Forgot password?</button>
+      <span style="display:flex;gap:9px">
+        <button class="fbtn" id="aGoogle" type="button">Continue with Google</button>
+        <button class="ibtn primary" id="aSubmit" type="button">Sign in</button>
+      </span>
+    </div>
+  </div>
+  <div class="mrow"><button class="fbtn" id="aClose">Close</button></div>
+</div></div>
+
+<script src="config.js"></script>
+<script src="vendor/firebase-bundle.js"></script>
+<script>
+"use strict";
+let DICT = [];              // [accented, en, pos, extra] sorted by frequency
+let dictReady = false;
+const STARTER = [{"ru": "я", "ac": "я", "pr": "ya", "en": "I", "pos": "r", "g": "Personal", "x": "", "l": 0}, {"ru": "ты", "ac": "ты", "pr": "ty", "en": "you (informal)", "pos": "r", "g": "Personal", "x": "", "l": 0}, {"ru": "он", "ac": "он", "pr": "on", "en": "he", "pos": "r", "g": "Personal", "x": "", "l": 0}, {"ru": "она", "ac": "она'", "pr": "a-NA", "en": "she", "pos": "r", "g": "Personal", "x": "", "l": 0}, {"ru": "оно", "ac": "оно'", "pr": "a-NO", "en": "it", "pos": "r", "g": "Personal", "x": "", "l": 0}, {"ru": "мы", "ac": "мы", "pr": "my", "en": "we", "pos": "r", "g": "Personal", "x": "", "l": 0}, {"ru": "вы", "ac": "вы", "pr": "vy", "en": "you (formal / plural)", "pos": "r", "g": "Personal", "x": "", "l": 0}, {"ru": "они", "ac": "они'", "pr": "a-NEE", "en": "they", "pos": "r", "g": "Personal", "x": "", "l": 0}, {"ru": "мой", "ac": "мой", "pr": "moy", "en": "my", "pos": "r", "g": "Possessive", "x": "", "l": 0}, {"ru": "твой", "ac": "твой", "pr": "tvoy", "en": "your (informal)", "pos": "r", "g": "Possessive", "x": "", "l": 0}, {"ru": "его", "ac": "его'", "pr": "ye-VO", "en": "his", "pos": "r", "g": "Possessive", "x": "", "l": 0}, {"ru": "её", "ac": "её", "pr": "ye-YO", "en": "her", "pos": "r", "g": "Possessive", "x": "", "l": 0}, {"ru": "наш", "ac": "", "pr": "nash", "en": "our", "pos": "r", "g": "Possessive", "x": "", "l": 0}, {"ru": "ваш", "ac": "", "pr": "vash", "en": "your (formal/pl)", "pos": "r", "g": "Possessive", "x": "", "l": 0}, {"ru": "их", "ac": "их", "pr": "eekh", "en": "their", "pos": "r", "g": "Possessive", "x": "", "l": 0}, {"ru": "свой", "ac": "свой", "pr": "svoy", "en": "one's own", "pos": "r", "g": "Possessive", "x": "", "l": 0}, {"ru": "этот", "ac": "э'тот", "pr": "E-tot", "en": "this", "pos": "r", "g": "Demonstrative & other", "x": "", "l": 0}, {"ru": "тот", "ac": "тот", "pr": "tot", "en": "that", "pos": "r", "g": "Demonstrative & other", "x": "", "l": 0}, {"ru": "это", "ac": "э'то", "pr": "E-ta", "en": "this / it (is)", "pos": "r", "g": "Demonstrative & other", "x": "", "l": 0}, {"ru": "весь", "ac": "весь", "pr": "vyes'", "en": "all, whole", "pos": "r", "g": "Demonstrative & other", "x": "", "l": 0}, {"ru": "каждый", "ac": "ка'ждый", "pr": "KAZH-dy", "en": "each, every", "pos": "r", "g": "Demonstrative & other", "x": "", "l": 0}, {"ru": "сам", "ac": "сам", "pr": "sam", "en": "oneself", "pos": "r", "g": "Demonstrative & other", "x": "", "l": 0}, {"ru": "человек", "ac": "челове'к", "pr": "chye-la-VYEK", "en": "person", "pos": "n", "g": "People & family", "x": "m", "l": 0}, {"ru": "люди", "ac": "", "pr": "LYU-di", "en": "people", "pos": "n", "g": "People & family", "x": "", "l": 0}, {"ru": "мужчина", "ac": "мужчи'на", "pr": "moo-SHCHEE-na", "en": "man (m!)", "pos": "n", "g": "People & family", "x": "m", "l": 0}, {"ru": "женщина", "ac": "же'нщина", "pr": "ZHEN-shchi-na", "en": "woman", "pos": "n", "g": "People & family", "x": "f", "l": 0}, {"ru": "ребёнок", "ac": "ребёнок", "pr": "rye-BYO-nak", "en": "child", "pos": "n", "g": "People & family", "x": "m", "l": 0}, {"ru": "дети", "ac": "", "pr": "DYE-ti", "en": "children", "pos": "n", "g": "People & family", "x": "", "l": 0}, {"ru": "друг", "ac": "друг", "pr": "drook", "en": "friend", "pos": "n", "g": "People & family", "x": "m", "l": 0}, {"ru": "семья", "ac": "семья'", "pr": "sye-MYA", "en": "family", "pos": "n", "g": "People & family", "x": "f", "l": 0}, {"ru": "мать / мама", "ac": "мать", "pr": "mat' / MA-ma", "en": "mother / mom", "pos": "n", "g": "People & family", "x": "f", "l": 0}, {"ru": "отец / папа", "ac": "оте'ц", "pr": "a-TYETS / PA-pa", "en": "father / dad (папа m!)", "pos": "n", "g": "People & family", "x": "m", "l": 0}, {"ru": "брат", "ac": "брат", "pr": "brat", "en": "brother", "pos": "n", "g": "People & family", "x": "m", "l": 0}, {"ru": "сестра", "ac": "сестра'", "pr": "sye-STRA", "en": "sister", "pos": "n", "g": "People & family", "x": "f", "l": 0}, {"ru": "сын", "ac": "сын", "pr": "syn", "en": "son", "pos": "n", "g": "People & family", "x": "", "l": 0}, {"ru": "дочь", "ac": "дочь", "pr": "doch", "en": "daughter (f!)", "pos": "n", "g": "People & family", "x": "f", "l": 0}, {"ru": "дом", "ac": "дом", "pr": "dom", "en": "house, home", "pos": "n", "g": "Home & objects", "x": "m", "l": 0}, {"ru": "квартира", "ac": "кварти'ра", "pr": "kvar-TEE-ra", "en": "apartment", "pos": "n", "g": "Home & objects", "x": "f", "l": 0}, {"ru": "комната", "ac": "ко'мната", "pr": "KOM-na-ta", "en": "room", "pos": "n", "g": "Home & objects", "x": "f", "l": 0}, {"ru": "дверь", "ac": "дверь", "pr": "dvyer'", "en": "door (f!)", "pos": "n", "g": "Home & objects", "x": "f", "l": 0}, {"ru": "окно", "ac": "окно'", "pr": "ak-NO", "en": "window", "pos": "n", "g": "Home & objects", "x": "n", "l": 0}, {"ru": "стол", "ac": "стол", "pr": "stol", "en": "table", "pos": "n", "g": "Home & objects", "x": "m", "l": 0}, {"ru": "стул", "ac": "стул", "pr": "stool", "en": "chair", "pos": "n", "g": "Home & objects", "x": "m", "l": 0}, {"ru": "кровать", "ac": "крова'ть", "pr": "kra-VAT'", "en": "bed (f!)", "pos": "n", "g": "Home & objects", "x": "f", "l": 0}, {"ru": "книга", "ac": "кни'га", "pr": "KNEE-ga", "en": "book", "pos": "n", "g": "Home & objects", "x": "f", "l": 0}, {"ru": "телефон", "ac": "телефо'н", "pr": "tye-lye-FON", "en": "telephone", "pos": "n", "g": "Home & objects", "x": "m", "l": 0}, {"ru": "деньги", "ac": "де'ньги", "pr": "DYEN'-gi", "en": "money (plural)", "pos": "n", "g": "Home & objects", "x": "", "l": 0}, {"ru": "вещь", "ac": "вещь", "pr": "vyeshch", "en": "thing (f!)", "pos": "n", "g": "Home & objects", "x": "f", "l": 0}, {"ru": "машина", "ac": "маши'на", "pr": "ma-SHEE-na", "en": "car", "pos": "n", "g": "Home & objects", "x": "f", "l": 0}, {"ru": "город", "ac": "го'род", "pr": "GO-rat", "en": "city", "pos": "n", "g": "Places", "x": "m", "l": 0}, {"ru": "улица", "ac": "у'лица", "pr": "OO-li-tsa", "en": "street", "pos": "n", "g": "Places", "x": "f", "l": 0}, {"ru": "страна", "ac": "страна'", "pr": "stra-NA", "en": "country", "pos": "n", "g": "Places", "x": "f", "l": 0}, {"ru": "работа", "ac": "рабо'та", "pr": "ra-BO-ta", "en": "work, job", "pos": "n", "g": "Places", "x": "f", "l": 0}, {"ru": "школа", "ac": "шко'ла", "pr": "SHKO-la", "en": "school", "pos": "n", "g": "Places", "x": "f", "l": 0}, {"ru": "магазин", "ac": "магази'н", "pr": "ma-ga-ZEEN", "en": "shop, store", "pos": "n", "g": "Places", "x": "m", "l": 0}, {"ru": "дорога", "ac": "доро'га", "pr": "da-RO-ga", "en": "road", "pos": "n", "g": "Places", "x": "f", "l": 0}, {"ru": "время", "ac": "вре'мя", "pr": "VRYE-mya", "en": "time (n!)", "pos": "n", "g": "Time", "x": "n", "l": 0}, {"ru": "день", "ac": "день", "pr": "dyen'", "en": "day", "pos": "n", "g": "Time", "x": "m", "l": 0}, {"ru": "ночь", "ac": "ночь", "pr": "noch", "en": "night (f!)", "pos": "n", "g": "Time", "x": "f", "l": 0}, {"ru": "утро", "ac": "у'тро", "pr": "OO-tra", "en": "morning", "pos": "n", "g": "Time", "x": "n", "l": 0}, {"ru": "вечер", "ac": "ве'чер", "pr": "VYE-chyer", "en": "evening", "pos": "n", "g": "Time", "x": "m", "l": 0}, {"ru": "год", "ac": "год", "pr": "got", "en": "year", "pos": "n", "g": "Time", "x": "m", "l": 0}, {"ru": "месяц", "ac": "ме'сяц", "pr": "MYE-syats", "en": "month", "pos": "n", "g": "Time", "x": "m", "l": 0}, {"ru": "неделя", "ac": "неде'ля", "pr": "nye-DYE-lya", "en": "week", "pos": "n", "g": "Time", "x": "f", "l": 0}, {"ru": "час", "ac": "час", "pr": "chas", "en": "hour", "pos": "n", "g": "Time", "x": "m", "l": 0}, {"ru": "минута", "ac": "мину'та", "pr": "mi-NOO-ta", "en": "minute", "pos": "n", "g": "Time", "x": "f", "l": 0}, {"ru": "еда", "ac": "еда'", "pr": "ye-DA", "en": "food", "pos": "n", "g": "Food & drink", "x": "f", "l": 0}, {"ru": "вода", "ac": "вода'", "pr": "va-DA", "en": "water", "pos": "n", "g": "Food & drink", "x": "f", "l": 0}, {"ru": "хлеб", "ac": "хлеб", "pr": "khlyep", "en": "bread", "pos": "n", "g": "Food & drink", "x": "m", "l": 0}, {"ru": "чай", "ac": "чай", "pr": "chai", "en": "tea", "pos": "n", "g": "Food & drink", "x": "m", "l": 0}, {"ru": "кофе", "ac": "ко'фе", "pr": "KO-fye", "en": "coffee (m!)", "pos": "n", "g": "Food & drink", "x": "m", "l": 0}, {"ru": "молоко", "ac": "молоко'", "pr": "ma-la-KO", "en": "milk", "pos": "n", "g": "Food & drink", "x": "n", "l": 0}, {"ru": "мясо", "ac": "мя'со", "pr": "MYA-sa", "en": "meat", "pos": "n", "g": "Food & drink", "x": "n", "l": 0}, {"ru": "фрукт", "ac": "фрукт", "pr": "frookt", "en": "fruit", "pos": "n", "g": "Food & drink", "x": "m", "l": 0}, {"ru": "овощ", "ac": "о'вощ", "pr": "O-vashch", "en": "vegetable", "pos": "n", "g": "Food & drink", "x": "m", "l": 0}, {"ru": "голова", "ac": "голова'", "pr": "ga-la-VA", "en": "head", "pos": "n", "g": "Body", "x": "f", "l": 0}, {"ru": "рука", "ac": "рука'", "pr": "roo-KA", "en": "hand, arm", "pos": "n", "g": "Body", "x": "f", "l": 0}, {"ru": "нога", "ac": "нога'", "pr": "na-GA", "en": "leg, foot", "pos": "n", "g": "Body", "x": "f", "l": 0}, {"ru": "глаз", "ac": "глаз", "pr": "glas", "en": "eye", "pos": "n", "g": "Body", "x": "m", "l": 0}, {"ru": "сердце", "ac": "се'рдце", "pr": "SYER-tse", "en": "heart", "pos": "n", "g": "Body", "x": "n", "l": 0}, {"ru": "солнце", "ac": "со'лнце", "pr": "SON-tse", "en": "sun", "pos": "n", "g": "Nature", "x": "n", "l": 0}, {"ru": "небо", "ac": "не'бо", "pr": "NYE-ba", "en": "sky", "pos": "n", "g": "Nature", "x": "n", "l": 0}, {"ru": "земля", "ac": "земля'", "pr": "zyem-LYA", "en": "earth, land", "pos": "n", "g": "Nature", "x": "f", "l": 0}, {"ru": "дерево", "ac": "де'рево", "pr": "DYE-rye-va", "en": "tree", "pos": "n", "g": "Nature", "x": "n", "l": 0}, {"ru": "цветок", "ac": "цвето'к", "pr": "tsvye-TOK", "en": "flower", "pos": "n", "g": "Nature", "x": "", "l": 0}, {"ru": "погода", "ac": "пого'да", "pr": "pa-GO-da", "en": "weather", "pos": "n", "g": "Nature", "x": "f", "l": 0}, {"ru": "дождь", "ac": "дождь", "pr": "dozhd'", "en": "rain", "pos": "n", "g": "Nature", "x": "m", "l": 0}, {"ru": "снег", "ac": "снег", "pr": "snyek", "en": "snow", "pos": "n", "g": "Nature", "x": "m", "l": 0}, {"ru": "море", "ac": "мо'ре", "pr": "MO-rye", "en": "sea", "pos": "n", "g": "Nature", "x": "n", "l": 0}, {"ru": "лес", "ac": "лес", "pr": "lyes", "en": "forest", "pos": "n", "g": "Nature", "x": "m", "l": 0}, {"ru": "жизнь", "ac": "жизнь", "pr": "zhizn'", "en": "life (f!)", "pos": "n", "g": "Abstract & common", "x": "f", "l": 0}, {"ru": "мир", "ac": "мир", "pr": "meer", "en": "world; peace", "pos": "n", "g": "Abstract & common", "x": "m", "l": 0}, {"ru": "слово", "ac": "сло'во", "pr": "SLO-va", "en": "word", "pos": "n", "g": "Abstract & common", "x": "n", "l": 0}, {"ru": "язык", "ac": "язы'к", "pr": "ya-ZYK", "en": "language; tongue", "pos": "n", "g": "Abstract & common", "x": "m", "l": 0}, {"ru": "вопрос", "ac": "вопро'с", "pr": "va-PROS", "en": "question", "pos": "n", "g": "Abstract & common", "x": "m", "l": 0}, {"ru": "ответ", "ac": "отве'т", "pr": "at-VYET", "en": "answer", "pos": "n", "g": "Abstract & common", "x": "m", "l": 0}, {"ru": "имя", "ac": "и'мя", "pr": "EE-mya", "en": "name (n!)", "pos": "n", "g": "Abstract & common", "x": "n", "l": 0}, {"ru": "место", "ac": "ме'сто", "pr": "MYES-ta", "en": "place", "pos": "n", "g": "Abstract & common", "x": "n", "l": 0}, {"ru": "дело", "ac": "де'ло", "pr": "DYE-la", "en": "matter, business", "pos": "n", "g": "Abstract & common", "x": "n", "l": 0}, {"ru": "проблема", "ac": "пробле'ма", "pr": "pra-BLYE-ma", "en": "problem", "pos": "n", "g": "Abstract & common", "x": "f", "l": 0}, {"ru": "большой", "ac": "большо'й", "pr": "bal'-SHOY", "en": "big", "pos": "a", "g": "Core", "x": "", "l": 0}, {"ru": "маленький", "ac": "ма'ленький", "pr": "MA-lyen'-ki", "en": "small", "pos": "a", "g": "Core", "x": "", "l": 0}, {"ru": "новый", "ac": "но'вый", "pr": "NO-vy", "en": "new", "pos": "a", "g": "Core", "x": "", "l": 0}, {"ru": "старый", "ac": "ста'рый", "pr": "STA-ry", "en": "old", "pos": "a", "g": "Core", "x": "", "l": 0}, {"ru": "хороший", "ac": "хоро'ший", "pr": "kha-RO-shi", "en": "good", "pos": "a", "g": "Core", "x": "", "l": 0}, {"ru": "плохой", "ac": "плохо'й", "pr": "pla-KHOY", "en": "bad", "pos": "a", "g": "Core", "x": "", "l": 0}, {"ru": "красивый", "ac": "краси'вый", "pr": "kra-SEE-vy", "en": "beautiful", "pos": "a", "g": "Core", "x": "", "l": 0}, {"ru": "молодой", "ac": "молодо'й", "pr": "ma-la-DOY", "en": "young", "pos": "a", "g": "Core", "x": "", "l": 0}, {"ru": "высокий", "ac": "высо'кий", "pr": "vy-SO-ki", "en": "tall, high", "pos": "a", "g": "Core", "x": "", "l": 0}, {"ru": "низкий", "ac": "ни'зкий", "pr": "NEES-ki", "en": "low, short", "pos": "a", "g": "Core", "x": "", "l": 0}, {"ru": "длинный", "ac": "дли'нный", "pr": "DLEE-ny", "en": "long", "pos": "a", "g": "Core", "x": "", "l": 0}, {"ru": "короткий", "ac": "коро'ткий", "pr": "ka-ROT-ki", "en": "short", "pos": "a", "g": "Core", "x": "", "l": 0}, {"ru": "горячий", "ac": "горя'чий", "pr": "ga-RYA-chi", "en": "hot", "pos": "a", "g": "Core", "x": "", "l": 0}, {"ru": "холодный", "ac": "холо'дный", "pr": "kha-LOD-ny", "en": "cold", "pos": "a", "g": "Core", "x": "", "l": 0}, {"ru": "тёплый", "ac": "тёплый", "pr": "TYOP-ly", "en": "warm", "pos": "a", "g": "Core", "x": "", "l": 0}, {"ru": "быстрый", "ac": "бы'стрый", "pr": "BYST-ry", "en": "fast", "pos": "a", "g": "Core", "x": "", "l": 0}, {"ru": "медленный", "ac": "ме'дленный", "pr": "MYED-lye-ny", "en": "slow", "pos": "a", "g": "Core", "x": "", "l": 0}, {"ru": "лёгкий", "ac": "лёгкий", "pr": "LYOKH-ki", "en": "easy, light", "pos": "a", "g": "Core", "x": "", "l": 0}, {"ru": "трудный", "ac": "тру'дный", "pr": "TROOD-ny", "en": "difficult", "pos": "a", "g": "Core", "x": "", "l": 0}, {"ru": "дорогой", "ac": "дорого'й", "pr": "da-ra-GOY", "en": "expensive; dear", "pos": "a", "g": "Core", "x": "", "l": 0}, {"ru": "дешёвый", "ac": "дешёвый", "pr": "dye-SHO-vy", "en": "cheap", "pos": "a", "g": "Core", "x": "", "l": 0}, {"ru": "интересный", "ac": "интере'сный", "pr": "in-tye-RYES-ny", "en": "interesting", "pos": "a", "g": "Core", "x": "", "l": 0}, {"ru": "важный", "ac": "ва'жный", "pr": "VAZH-ny", "en": "important", "pos": "a", "g": "Core", "x": "", "l": 0}, {"ru": "счастливый", "ac": "счастли'вый", "pr": "shchast-LEE-vy", "en": "happy", "pos": "a", "g": "Core", "x": "", "l": 0}, {"ru": "грустный", "ac": "гру'стный", "pr": "GROOS-ny", "en": "sad", "pos": "a", "g": "Core", "x": "", "l": 0}, {"ru": "умный", "ac": "у'мный", "pr": "OOM-ny", "en": "smart", "pos": "a", "g": "Core", "x": "", "l": 0}, {"ru": "сильный", "ac": "си'льный", "pr": "SEEL'-ny", "en": "strong", "pos": "a", "g": "Core", "x": "", "l": 0}, {"ru": "слабый", "ac": "сла'бый", "pr": "SLA-by", "en": "weak", "pos": "a", "g": "Core", "x": "", "l": 0}, {"ru": "вкусный", "ac": "вку'сный", "pr": "FKOOS-ny", "en": "tasty", "pos": "a", "g": "Core", "x": "", "l": 0}, {"ru": "свободный", "ac": "свобо'дный", "pr": "sva-BOD-ny", "en": "free", "pos": "a", "g": "Core", "x": "", "l": 0}, {"ru": "белый", "ac": "бе'лый", "pr": "BYE-ly", "en": "white", "pos": "a", "g": "Colors", "x": "", "l": 0}, {"ru": "чёрный", "ac": "чёрный", "pr": "CHOR-ny", "en": "black", "pos": "a", "g": "Colors", "x": "", "l": 0}, {"ru": "красный", "ac": "кра'сный", "pr": "KRAS-ny", "en": "red", "pos": "a", "g": "Colors", "x": "", "l": 0}, {"ru": "синий", "ac": "си'ний", "pr": "SEE-ni", "en": "blue", "pos": "a", "g": "Colors", "x": "", "l": 0}, {"ru": "зелёный", "ac": "зелёный", "pr": "zye-LYO-ny", "en": "green", "pos": "a", "g": "Colors", "x": "", "l": 0}, {"ru": "жёлтый", "ac": "жёлтый", "pr": "ZHOL-ty", "en": "yellow", "pos": "a", "g": "Colors", "x": "", "l": 0}, {"ru": "быть", "ac": "быть", "pr": "byt'", "en": "to be", "pos": "v", "g": "Starter set", "x": "i", "l": 0}, {"ru": "делать [сделать]", "ac": "", "pr": "DYE-lat'", "en": "to do, make", "pos": "v", "g": "Starter set", "x": "", "l": 0}, {"ru": "говорить [сказать]", "ac": "", "pr": "ga-va-REET'", "en": "to speak, say", "pos": "v", "g": "Starter set", "x": "", "l": 0}, {"ru": "знать", "ac": "знать", "pr": "znat'", "en": "to know", "pos": "v", "g": "Starter set", "x": "i|узнать", "l": 0}, {"ru": "думать", "ac": "ду'мать", "pr": "DOO-mat'", "en": "to think", "pos": "v", "g": "Starter set", "x": "i|подумать", "l": 0}, {"ru": "хотеть", "ac": "хоте'ть", "pr": "kha-TYET'", "en": "to want", "pos": "v", "g": "Starter set", "x": "i|захотеть", "l": 0}, {"ru": "мочь", "ac": "мочь", "pr": "moch", "en": "to be able, can", "pos": "v", "g": "Starter set", "x": "i|смочь", "l": 0}, {"ru": "идти", "ac": "идти'", "pr": "it-TEE", "en": "to go (on foot)", "pos": "v", "g": "Starter set", "x": "i|-", "l": 0}, {"ru": "ехать", "ac": "е'хать", "pr": "YE-khat'", "en": "to go (by vehicle)", "pos": "v", "g": "Starter set", "x": "i|поехать", "l": 0}, {"ru": "жить", "ac": "жить", "pr": "zhit'", "en": "to live", "pos": "v", "g": "Starter set", "x": "i|прожить", "l": 0}, {"ru": "работать", "ac": "рабо'тать", "pr": "ra-BO-tat'", "en": "to work", "pos": "v", "g": "Starter set", "x": "i|поработать", "l": 0}, {"ru": "любить", "ac": "люби'ть", "pr": "lyu-BEET'", "en": "to love, like", "pos": "v", "g": "Starter set", "x": "i|полюбить", "l": 0}, {"ru": "видеть", "ac": "ви'деть", "pr": "VEE-dyet'", "en": "to see", "pos": "v", "g": "Starter set", "x": "i|завидеть", "l": 0}, {"ru": "смотреть", "ac": "смотре'ть", "pr": "smat-RYET'", "en": "to watch, look", "pos": "v", "g": "Starter set", "x": "i|посмотреть", "l": 0}, {"ru": "слышать", "ac": "слы'шать", "pr": "SLY-shat'", "en": "to hear", "pos": "v", "g": "Starter set", "x": "i|услышать", "l": 0}, {"ru": "слушать", "ac": "слу'шать", "pr": "SLOO-shat'", "en": "to listen", "pos": "v", "g": "Starter set", "x": "i|послушать", "l": 0}, {"ru": "читать [прочитать]", "ac": "", "pr": "chi-TAT'", "en": "to read", "pos": "v", "g": "Starter set", "x": "", "l": 0}, {"ru": "писать [написать]", "ac": "", "pr": "pi-SAT'", "en": "to write", "pos": "v", "g": "Starter set", "x": "", "l": 0}, {"ru": "понимать [понять]", "ac": "", "pr": "pa-ni-MAT'", "en": "to understand", "pos": "v", "g": "Starter set", "x": "", "l": 0}, {"ru": "есть [съесть]", "ac": "", "pr": "yest'", "en": "to eat", "pos": "v", "g": "Starter set", "x": "", "l": 0}, {"ru": "пить [выпить]", "ac": "", "pr": "peet'", "en": "to drink", "pos": "v", "g": "Starter set", "x": "", "l": 0}, {"ru": "спать", "ac": "спать", "pr": "spat'", "en": "to sleep", "pos": "v", "g": "Starter set", "x": "i", "l": 0}, {"ru": "давать [дать]", "ac": "", "pr": "da-VAT'", "en": "to give", "pos": "v", "g": "Starter set", "x": "", "l": 0}, {"ru": "брать [взять]", "ac": "", "pr": "brat'", "en": "to take", "pos": "v", "g": "Starter set", "x": "", "l": 0}, {"ru": "покупать [купить]", "ac": "", "pr": "pa-koo-PAT'", "en": "to buy", "pos": "v", "g": "Starter set", "x": "", "l": 0}, {"ru": "играть", "ac": "игра'ть", "pr": "ig-RAT'", "en": "to play", "pos": "v", "g": "Starter set", "x": "i|сыграть", "l": 0}, {"ru": "учиться", "ac": "учи'ться", "pr": "oo-CHEET-sya", "en": "to study, learn", "pos": "v", "g": "Starter set", "x": "i|выучиться", "l": 0}, {"ru": "помогать [помочь]", "ac": "", "pr": "pa-ma-GAT'", "en": "to help", "pos": "v", "g": "Starter set", "x": "", "l": 0}, {"ru": "спрашивать [спросить]", "ac": "", "pr": "SPRA-shi-vat'", "en": "to ask", "pos": "v", "g": "Starter set", "x": "", "l": 0}, {"ru": "отвечать [ответить]", "ac": "", "pr": "at-vye-CHAT'", "en": "to answer", "pos": "v", "g": "Starter set", "x": "", "l": 0}, {"ru": "открывать [открыть]", "ac": "", "pr": "at-kry-VAT'", "en": "to open", "pos": "v", "g": "Starter set", "x": "", "l": 0}, {"ru": "закрывать [закрыть]", "ac": "", "pr": "za-kry-VAT'", "en": "to close", "pos": "v", "g": "Starter set", "x": "", "l": 0}, {"ru": "начинать [начать]", "ac": "", "pr": "na-chi-NAT'", "en": "to begin", "pos": "v", "g": "Starter set", "x": "", "l": 0}, {"ru": "приходить [прийти]", "ac": "", "pr": "pri-kha-DEET'", "en": "to arrive, come", "pos": "v", "g": "Starter set", "x": "", "l": 0}, {"ru": "находить [найти]", "ac": "", "pr": "na-kha-DEET'", "en": "to find", "pos": "v", "g": "Starter set", "x": "", "l": 0}, {"ru": "ждать", "ac": "ждать", "pr": "zhdat'", "en": "to wait", "pos": "v", "g": "Starter set", "x": "i|подождать", "l": 0}, {"ru": "здесь", "ac": "здесь", "pr": "zdyes'", "en": "here", "pos": "d", "g": "Starter set", "x": "", "l": 0}, {"ru": "там", "ac": "там", "pr": "tam", "en": "there", "pos": "d", "g": "Starter set", "x": "", "l": 0}, {"ru": "сейчас", "ac": "сейча'с", "pr": "sye-CHAS", "en": "now", "pos": "d", "g": "Starter set", "x": "", "l": 0}, {"ru": "потом", "ac": "пото'м", "pr": "pa-TOM", "en": "later, then", "pos": "d", "g": "Starter set", "x": "", "l": 0}, {"ru": "сегодня", "ac": "сего'дня", "pr": "sye-VOD-nya", "en": "today", "pos": "d", "g": "Starter set", "x": "", "l": 0}, {"ru": "вчера", "ac": "вчера'", "pr": "fchye-RA", "en": "yesterday", "pos": "d", "g": "Starter set", "x": "", "l": 0}, {"ru": "завтра", "ac": "за'втра", "pr": "ZAF-tra", "en": "tomorrow", "pos": "d", "g": "Starter set", "x": "", "l": 0}, {"ru": "всегда", "ac": "всегда'", "pr": "fsyeg-DA", "en": "always", "pos": "d", "g": "Starter set", "x": "", "l": 0}, {"ru": "никогда", "ac": "никогда'", "pr": "ni-kag-DA", "en": "never", "pos": "d", "g": "Starter set", "x": "", "l": 0}, {"ru": "часто", "ac": "ча'сто", "pr": "CHAS-ta", "en": "often", "pos": "d", "g": "Starter set", "x": "", "l": 0}, {"ru": "редко", "ac": "ре'дко", "pr": "RYET-ka", "en": "rarely", "pos": "d", "g": "Starter set", "x": "", "l": 0}, {"ru": "иногда", "ac": "иногда'", "pr": "i-nag-DA", "en": "sometimes", "pos": "d", "g": "Starter set", "x": "", "l": 0}, {"ru": "очень", "ac": "о'чень", "pr": "O-chyen'", "en": "very", "pos": "d", "g": "Starter set", "x": "", "l": 0}, {"ru": "хорошо", "ac": "хорошо'", "pr": "kha-ra-SHO", "en": "well", "pos": "d", "g": "Starter set", "x": "", "l": 0}, {"ru": "плохо", "ac": "пло'хо", "pr": "PLO-kha", "en": "badly", "pos": "d", "g": "Starter set", "x": "", "l": 0}, {"ru": "быстро", "ac": "бы'стро", "pr": "BYST-ra", "en": "quickly", "pos": "d", "g": "Starter set", "x": "", "l": 0}, {"ru": "медленно", "ac": "ме'дленно", "pr": "MYED-lye-na", "en": "slowly", "pos": "d", "g": "Starter set", "x": "", "l": 0}, {"ru": "много", "ac": "мно'го", "pr": "MNO-ga", "en": "a lot, many", "pos": "d", "g": "Starter set", "x": "", "l": 0}, {"ru": "мало", "ac": "ма'ло", "pr": "MA-la", "en": "little, few", "pos": "d", "g": "Starter set", "x": "", "l": 0}, {"ru": "уже", "ac": "уже'", "pr": "oo-ZHE", "en": "already", "pos": "d", "g": "Starter set", "x": "", "l": 0}, {"ru": "ещё", "ac": "ещё", "pr": "ye-SHCHO", "en": "still, yet, more", "pos": "d", "g": "Starter set", "x": "", "l": 0}, {"ru": "тоже", "ac": "то'же", "pr": "TO-zhe", "en": "also", "pos": "d", "g": "Starter set", "x": "", "l": 0}, {"ru": "только", "ac": "то'лько", "pr": "TOL'-ka", "en": "only", "pos": "d", "g": "Starter set", "x": "", "l": 0}, {"ru": "вместе", "ac": "вме'сте", "pr": "VMYES-tye", "en": "together", "pos": "d", "g": "Starter set", "x": "", "l": 0}, {"ru": "дома", "ac": "до'ма", "pr": "DO-ma", "en": "at home", "pos": "d", "g": "Starter set", "x": "", "l": 0}, {"ru": "в", "ac": "в", "pr": "v", "en": "in, into, at", "pos": "p", "g": "Starter set", "x": "", "l": 0}, {"ru": "на", "ac": "на", "pr": "na", "en": "on, onto, at", "pos": "p", "g": "Starter set", "x": "", "l": 0}, {"ru": "с", "ac": "с", "pr": "s", "en": "with; from", "pos": "p", "g": "Starter set", "x": "", "l": 0}, {"ru": "у", "ac": "у", "pr": "oo", "en": "at, by (у меня = I have)", "pos": "p", "g": "Starter set", "x": "", "l": 0}, {"ru": "к", "ac": "к", "pr": "k", "en": "to, toward", "pos": "p", "g": "Starter set", "x": "", "l": 0}, {"ru": "от", "ac": "от", "pr": "ot", "en": "from", "pos": "p", "g": "Starter set", "x": "", "l": 0}, {"ru": "до", "ac": "до", "pr": "do", "en": "until, up to", "pos": "p", "g": "Starter set", "x": "", "l": 0}, {"ru": "из", "ac": "из", "pr": "iz", "en": "from, out of", "pos": "p", "g": "Starter set", "x": "", "l": 0}, {"ru": "за", "ac": "за", "pr": "za", "en": "behind; for", "pos": "p", "g": "Starter set", "x": "", "l": 0}, {"ru": "под", "ac": "под", "pr": "pot", "en": "under", "pos": "p", "g": "Starter set", "x": "", "l": 0}, {"ru": "над", "ac": "над", "pr": "nat", "en": "above", "pos": "p", "g": "Starter set", "x": "", "l": 0}, {"ru": "о / об", "ac": "о", "pr": "o / ob", "en": "about", "pos": "p", "g": "Starter set", "x": "", "l": 0}, {"ru": "по", "ac": "по", "pr": "po", "en": "along, according to", "pos": "p", "g": "Starter set", "x": "", "l": 0}, {"ru": "для", "ac": "для", "pr": "dlya", "en": "for", "pos": "p", "g": "Starter set", "x": "", "l": 0}, {"ru": "без", "ac": "без", "pr": "byes", "en": "without", "pos": "p", "g": "Starter set", "x": "", "l": 0}, {"ru": "через", "ac": "че'рез", "pr": "CHYE-ryes", "en": "through; in (time)", "pos": "p", "g": "Starter set", "x": "", "l": 0}, {"ru": "после", "ac": "по'сле", "pr": "POS-lye", "en": "after", "pos": "p", "g": "Starter set", "x": "", "l": 0}, {"ru": "перед", "ac": "пе'ред", "pr": "PYE-ryet", "en": "before, in front of", "pos": "p", "g": "Starter set", "x": "", "l": 0}, {"ru": "между", "ac": "ме'жду", "pr": "MYEZH-doo", "en": "between", "pos": "p", "g": "Starter set", "x": "", "l": 0}, {"ru": "и", "ac": "и", "pr": "ee", "en": "and", "pos": "c", "g": "Starter set", "x": "", "l": 0}, {"ru": "а", "ac": "а", "pr": "a", "en": "and / but (contrast)", "pos": "c", "g": "Starter set", "x": "", "l": 0}, {"ru": "но", "ac": "но", "pr": "no", "en": "but", "pos": "c", "g": "Starter set", "x": "", "l": 0}, {"ru": "или", "ac": "и'ли", "pr": "EE-li", "en": "or", "pos": "c", "g": "Starter set", "x": "", "l": 0}, {"ru": "потому что", "ac": "потому' что", "pr": "pa-ta-MOO shto", "en": "because", "pos": "c", "g": "Starter set", "x": "", "l": 0}, {"ru": "если", "ac": "е'сли", "pr": "YES-li", "en": "if", "pos": "c", "g": "Starter set", "x": "", "l": 0}, {"ru": "что", "ac": "что", "pr": "shto", "en": "that (conjunction)", "pos": "c", "g": "Starter set", "x": "", "l": 0}, {"ru": "когда", "ac": "когда'", "pr": "kag-DA", "en": "when", "pos": "c", "g": "Starter set", "x": "", "l": 0}, {"ru": "чтобы", "ac": "что'бы", "pr": "SHTO-by", "en": "in order to", "pos": "c", "g": "Starter set", "x": "", "l": 0}, {"ru": "как", "ac": "как", "pr": "kak", "en": "how, as, like", "pos": "c", "g": "Starter set", "x": "", "l": 0}, {"ru": "не", "ac": "не", "pr": "nye", "en": "not", "pos": "t", "g": "Starter set", "x": "", "l": 0}, {"ru": "да", "ac": "да", "pr": "da", "en": "yes", "pos": "t", "g": "Starter set", "x": "", "l": 0}, {"ru": "нет", "ac": "нет", "pr": "nyet", "en": "no", "pos": "t", "g": "Starter set", "x": "", "l": 0}, {"ru": "ли", "ac": "ли", "pr": "li", "en": "whether (question particle)", "pos": "t", "g": "Starter set", "x": "", "l": 0}, {"ru": "же", "ac": "же", "pr": "zhe", "en": "emphasis particle", "pos": "t", "g": "Starter set", "x": "", "l": 0}, {"ru": "вот", "ac": "вот", "pr": "vot", "en": "here (is), there", "pos": "t", "g": "Starter set", "x": "", "l": 0}, {"ru": "кто", "ac": "кто", "pr": "kto", "en": "who", "pos": "r", "g": "Question words", "x": "", "l": 0}, {"ru": "что", "ac": "что", "pr": "shto", "en": "what", "pos": "r", "g": "Question words", "x": "", "l": 0}, {"ru": "где", "ac": "где", "pr": "gdye", "en": "where", "pos": "d", "g": "Question words", "x": "", "l": 0}, {"ru": "куда", "ac": "куда'", "pr": "koo-DA", "en": "where to", "pos": "d", "g": "Question words", "x": "", "l": 0}, {"ru": "откуда", "ac": "отку'да", "pr": "at-KOO-da", "en": "where from", "pos": "d", "g": "Question words", "x": "", "l": 0}, {"ru": "когда", "ac": "когда'", "pr": "kag-DA", "en": "when", "pos": "d", "g": "Question words", "x": "", "l": 0}, {"ru": "почему", "ac": "почему'", "pr": "pa-chye-MOO", "en": "why", "pos": "d", "g": "Question words", "x": "", "l": 0}, {"ru": "зачем", "ac": "зачем", "pr": "za-CHYEM", "en": "what for", "pos": "d", "g": "Question words", "x": "", "l": 0}, {"ru": "как", "ac": "как", "pr": "kak", "en": "how", "pos": "d", "g": "Question words", "x": "", "l": 0}, {"ru": "сколько", "ac": "ско'лько", "pr": "SKOL'-ka", "en": "how much / many", "pos": "d", "g": "Question words", "x": "", "l": 0}, {"ru": "какой", "ac": "како'й", "pr": "ka-KOY", "en": "which, what kind", "pos": "r", "g": "Question words", "x": "", "l": 0}, {"ru": "чей", "ac": "чей", "pr": "chey", "en": "whose", "pos": "r", "g": "Question words", "x": "", "l": 0}, {"ru": "один", "ac": "оди'н", "pr": "a-DEEN", "en": "one", "pos": "m", "g": "Starter set", "x": "", "l": 0}, {"ru": "два", "ac": "два", "pr": "dva", "en": "two", "pos": "m", "g": "Starter set", "x": "", "l": 0}, {"ru": "три", "ac": "три", "pr": "tree", "en": "three", "pos": "m", "g": "Starter set", "x": "", "l": 0}, {"ru": "четыре", "ac": "четы'ре", "pr": "chye-TY-rye", "en": "four", "pos": "m", "g": "Starter set", "x": "", "l": 0}, {"ru": "пять", "ac": "пять", "pr": "pyat'", "en": "five", "pos": "m", "g": "Starter set", "x": "", "l": 0}, {"ru": "шесть", "ac": "шесть", "pr": "shest'", "en": "six", "pos": "m", "g": "Starter set", "x": "", "l": 0}, {"ru": "семь", "ac": "семь", "pr": "syem'", "en": "seven", "pos": "m", "g": "Starter set", "x": "", "l": 0}, {"ru": "восемь", "ac": "во'семь", "pr": "VO-syem'", "en": "eight", "pos": "m", "g": "Starter set", "x": "", "l": 0}, {"ru": "девять", "ac": "де'вять", "pr": "DYE-vyat'", "en": "nine", "pos": "m", "g": "Starter set", "x": "", "l": 0}, {"ru": "десять", "ac": "де'сять", "pr": "DYE-syat'", "en": "ten", "pos": "m", "g": "Starter set", "x": "", "l": 0}, {"ru": "двадцать", "ac": "два'дцать", "pr": "DVAT-tsat'", "en": "twenty", "pos": "m", "g": "Starter set", "x": "", "l": 0}, {"ru": "сто", "ac": "сто", "pr": "sto", "en": "hundred", "pos": "m", "g": "Starter set", "x": "", "l": 0}, {"ru": "тысяча", "ac": "ты'сяча", "pr": "TY-sya-cha", "en": "thousand", "pos": "m", "g": "Starter set", "x": "", "l": 0}, {"ru": "первый", "ac": "пе'рвый", "pr": "PYER-vy", "en": "first", "pos": "m", "g": "Starter set", "x": "", "l": 0}, {"ru": "второй", "ac": "второ'й", "pr": "fta-ROY", "en": "second", "pos": "m", "g": "Starter set", "x": "", "l": 0}, {"ru": "третий", "ac": "тре'тий", "pr": "TRYE-ti", "en": "third", "pos": "m", "g": "Starter set", "x": "", "l": 0}, {"ru": "последний", "ac": "после'дний", "pr": "pas-LYED-ni", "en": "last", "pos": "m", "g": "Starter set", "x": "", "l": 0}, {"ru": "привет", "ac": "приве'т", "pr": "pri-VYET", "en": "hi", "pos": "e", "g": "Essentials", "x": "", "l": 0}, {"ru": "здравствуйте", "ac": "здра'вствуйте", "pr": "ZDRAST-vooy-tye", "en": "hello (formal)", "pos": "e", "g": "Essentials", "x": "", "l": 0}, {"ru": "до свидания", "ac": "до свида'ния", "pr": "da svi-DA-ni-ya", "en": "goodbye", "pos": "e", "g": "Essentials", "x": "", "l": 0}, {"ru": "пока", "ac": "пока'", "pr": "pa-KA", "en": "bye (informal)", "pos": "e", "g": "Essentials", "x": "", "l": 0}, {"ru": "спасибо", "ac": "спаси'бо", "pr": "spa-SEE-ba", "en": "thank you", "pos": "e", "g": "Essentials", "x": "", "l": 0}, {"ru": "пожалуйста", "ac": "пожа'луйста", "pr": "pa-ZHA-loo-sta", "en": "please / you're welcome", "pos": "e", "g": "Essentials", "x": "", "l": 0}, {"ru": "извините", "ac": "извини'те", "pr": "iz-vi-NEE-tye", "en": "excuse me, sorry", "pos": "e", "g": "Essentials", "x": "", "l": 0}, {"ru": "конечно", "ac": "коне'чно", "pr": "ka-NYESH-na", "en": "of course", "pos": "e", "g": "Essentials", "x": "", "l": 0}, {"ru": "может быть", "ac": "", "pr": "MO-zhet byt'", "en": "maybe", "pos": "e", "g": "Essentials", "x": "", "l": 0}];
+
+const POS = {
+  n:["Nouns","Существительные"], v:["Verbs","Глаголы"],
+  a:["Adjectives","Прилагательные"], d:["Adverbs","Наречия"],
+  r:["Pronouns","Местоимения"], p:["Prepositions","Предлоги"],
+  c:["Conjunctions","Союзы"], t:["Particles","Частицы"],
+  m:["Numerals","Числительные"], e:["Expressions","Выражения"],
+  o:["Other","Разное"]};
+const ORDER = ["n","v","a","d","r","p","c","t","m","e","o"];
+
+/* ---------------- cyrillic helpers */
+const VOW = "аеёиоуыэюя";
+function bareOf(ac){ return ac.replace(/['\u0301]/g,""); }
+function acuteize(ac){ return ac.replace(/([аеёиоуыэюяАЕЁИОУЫЭЮЯ])'/g,"$1\u0301"); }
+const TR = {"а":"a","б":"b","в":"v","г":"g","д":"d","е":"e","ё":"yo","ж":"zh","з":"z",
+  "и":"i","й":"y","к":"k","л":"l","м":"m","н":"n","о":"o","п":"p","р":"r","с":"s",
+  "т":"t","у":"u","ф":"f","х":"kh","ц":"ts","ч":"ch","ш":"sh","щ":"shch","ъ":"",
+  "ы":"y","ь":"'","э":"e","ю":"yu","я":"ya"};
+function translitWord(word){
+  let stress = -1, letters = [];
+  for (const ch of word){
+    if (ch === "'" || ch === "\u0301"){ stress = letters.length - 1; continue; }
+    letters.push(ch);
+  }
+  const lower = letters.map(c => c.toLowerCase());
+  const isV = lower.map(c => VOW.includes(c));
+  if (stress < 0){
+    const yo = lower.indexOf("ё");
+    if (yo >= 0) stress = yo;
+  }
+  const vIdx = []; lower.forEach((c, i) => { if (isV[i]) vIdx.push(i); });
+  const syl = new Array(lower.length).fill(0);
+  for (let s = 1; s < vIdx.length; s++){
+    const prevV = vIdx[s-1], thisV = vIdx[s];
+    let boundary = thisV;                       // vowels adjacent: split between them
+    if (thisV - prevV > 1) boundary = thisV - 1; // one consonant starts the new syllable
+    while (boundary < thisV && (lower[boundary] === "ь" || lower[boundary] === "ъ")) boundary++;
+    for (let i = boundary; i < lower.length; i++) syl[i] = s;
+  }
+  const nSyl = vIdx.length || 1;
+  const stressSyl = stress >= 0 ? syl[stress] : (nSyl === 1 ? 0 : -1);
+  const parts = [];
+  for (let s = 0; s < nSyl; s++){
+    let t = "";
+    for (let i = 0; i < lower.length; i++){
+      if (syl[i] !== s) continue;
+      let lat = TR[lower[i]] !== undefined ? TR[lower[i]] : letters[i];
+      if (lower[i] === "е" && (i === 0 || isV[i-1] || lower[i-1] === "ь" || lower[i-1] === "ъ")) lat = "ye";
+      t += lat;
+    }
+    parts.push(nSyl > 1 && s === stressSyl ? t.toUpperCase() : t);
+  }
+  return parts.filter(Boolean).join("-");
+}
+function translit(ac){ return ac.split(" ").map(translitWord).join(" "); }
+
+/* ---------------- extras display */
+function extraText(pos, x){
+  if (!x) return "";
+  if (pos === "n") return "(" + x + ")";
+  if (pos === "v"){
+    const [asp, partner] = x.split("|");
+    let t = asp === "p" ? "pf" : "impf";
+    if (partner) t += " · pair: " + partner;
+    return "(" + t + ")";
+  }
+  return "";
+}
+
+/* ---------------- persistence shim */
+const store = (() => {
+  const KEY = "ru_vocab_builder_v1";
+  const hasWS = typeof window !== "undefined" && window.storage &&
+    typeof window.storage.get === "function";
+  let ls = null;
+  try { ls = window.localStorage; ls.setItem("__t","1"); ls.removeItem("__t"); } catch(e){ ls = null; }
+  return {
+    tier: hasWS ? "app" : (ls ? "browser" : "none"),
+    async load(){
+      try{
+        if (hasWS){ const r = await window.storage.get(KEY); return r ? JSON.parse(r.value) : null; }
+        if (ls){ const v = ls.getItem(KEY); return v ? JSON.parse(v) : null; }
+      }catch(e){}
+      return null;
+    },
+    async save(obj){
+      try{
+        if (hasWS){ await window.storage.set(KEY, JSON.stringify(obj)); return true; }
+        if (ls){ ls.setItem(KEY, JSON.stringify(obj)); return true; }
+      }catch(e){}
+      return false;
+    }
+  };
+})();
+
+/* ---------------- state */
+let state = { words: [], settings: { group: "My additions" } };   // words: {ru,ac,pr,en,pos,g,x}
+let user = null, cloudChunks = 0, cloudBusy = false, cloudDirty = false, syncHash = "";
+function hashWords(words){
+  const s = JSON.stringify(words); let h = 5381;
+  for (let i = 0; i < s.length; i++){ h = ((h << 5) + h + s.charCodeAt(i)) | 0; }
+  return String(h) + ":" + words.length;
+}
+let activePos = null;
+const activeGroup = {};
+let saveT, cloudT;
+function setSaveStat(t){ $("#savestat").textContent = t; }
+function localStatText(){
+  return store.tier === "none" ? "no auto-save here — use Export"
+    : "auto-saves in this " + (store.tier === "app" ? "app" : "browser");
+}
+function persistLocal(){
+  store.save({ v: 1, words: state.words, settings: state.settings, syncHash: syncHash });
+}
+async function pushCloud(){
+  if (!user) return;
+  if (cloudBusy){ cloudDirty = true; return; }
+  cloudBusy = true; setSaveStat("saving to account…");
+  try {
+    cloudChunks = await FB.saveCloud(user.uid, state.words, state.settings, cloudChunks);
+    syncHash = hashWords(state.words); persistLocal();
+    setSaveStat("saved to account ✓");
+  } catch (e){ setSaveStat("cloud save failed — kept on this device (use Export)"); }
+  cloudBusy = false;
+  if (cloudDirty){ cloudDirty = false; pushCloud(); }
+}
+function scheduleSave(){
+  clearTimeout(saveT); saveT = setTimeout(persistLocal, 350);
+  if (user){ clearTimeout(cloudT); cloudT = setTimeout(pushCloud, 900); }
+}
+function flushSave(){
+  clearTimeout(saveT); persistLocal();
+  if (user){ clearTimeout(cloudT); pushCloud(); }
+}
+window.addEventListener("pagehide", flushSave);
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden") flushSave();
+});
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const keyOf = w => bareOf(w.ru).toLowerCase() + "|" + w.pos;
+function haveKeys(){ const s = new Set(); state.words.forEach(w => s.add(keyOf(w))); return s; }
+
+/* ---------------- rendering */
+function rowHTML(w, i){
+  const main = w.ac ? acuteize(w.ac) : w.ru;
+  const pr = w.pr ? esc(w.pr) : "";
+  const gx = extraText(w.pos, w.x);
+  return '<tr data-i="' + i + '">' +
+    '<td class="ru"><span class="w">' + esc(main) + '</span></td>' +
+    '<td class="pr"><span class="w">' + pr + '</span></td>' +
+    '<td class="en"><span class="w">' + esc(w.en) + (gx ? ' <span class="gx">' + esc(gx) + '</span>' : "") + '</span></td>' +
+    '<td class="rm"><button class="rmbtn" data-i="' + i + '" title="Remove from your file">×</button></td></tr>';
+}
+const THEAD = '<thead><tr><th>Russian</th><th>Pronunciation</th><th>English</th>' +
+  '<th class="rm"></th></tr></thead>';
+
+function counts(){
+  const c = {}; state.words.forEach(w => c[w.pos] = (c[w.pos]||0)+1); return c;
+}
+function renderRail(){
+  const c = counts();
+  const rail = $("#rail");
+  rail.innerHTML = ORDER.filter(p => c[p]).map(p =>
+    '<button class="tab" role="tab" data-pos="' + p + '" aria-selected="' +
+    (p === activePos ? "true" : "false") + '"><span>' + POS[p][0] + '</span><span class="n">' + c[p] + '</span></button>'
+  ).join("");
+  if (!c[activePos]){ activePos = ORDER.find(p => c[p]) || null; }
+  rail.querySelectorAll(".tab").forEach(b =>
+    b.setAttribute("aria-selected", String(b.dataset.pos === activePos)));
+}
+function renderPanel(){
+  const host = $("#panelHost");
+  if (!activePos){
+    host.innerHTML = '<div class="bigempty"><b>Your file is empty.</b><br>' +
+      'Search the dictionary above and press Add — words land in their part-of-speech tab.</div>';
+    return;
+  }
+  const [en, cy] = POS[activePos];
+  const idx = [];
+  state.words.forEach((w, i) => { if (w.pos === activePos) idx.push(i); });
+  const groups = [];
+  idx.forEach(i => { const g = state.words[i].g || "Ungrouped";
+    if (!groups.includes(g)) groups.push(g); });
+  const sel = groups.includes(activeGroup[activePos]) ? activeGroup[activePos] : "all";
+  let subtabs = "";
+  if (groups.length > 1){
+    subtabs = '<div class="subtabs" role="tablist">' +
+      '<button class="sub" data-g="all" aria-selected="' + (sel === "all") + '">All</button>' +
+      groups.map(g => '<button class="sub" data-g="' + esc(g) + '" aria-selected="' + (sel === g) + '">' +
+        esc(g) + '</button>').join("") + '</div>';
+  }
+  const shown = groups.filter(g => sel === "all" || g === sel);
+  const blocks = shown.map(g => {
+    const rows = idx.filter(i => (state.words[i].g || "Ungrouped") === g)
+      .map(i => rowHTML(state.words[i], i)).join("");
+    return '<div class="blk">' + (groups.length > 1 ? '<h3>' + esc(g) + '</h3>' : "") +
+      '<table>' + THEAD + '<tbody>' + rows + '</tbody></table></div>';
+  }).join("");
+  host.innerHTML =
+    '<section class="panel' + (sel === "all" ? "" : " filtered") + '">' +
+    '<div class="phead"><div class="ghost" aria-hidden="true">' + cy + '</div>' +
+    '<h2>' + en + '</h2><div class="cy2">' + cy + ' · ' + idx.length + ' words</div></div>' +
+    subtabs + '<div class="blocks">' + blocks + '</div></section>';
+}
+function renderMeta(){
+  $("#nWords").textContent = state.words.length;
+  const dl = $("#grouplist");
+  const gs = [...new Set(state.words.map(w => w.g).filter(Boolean))];
+  dl.innerHTML = gs.map(g => '<option value="' + esc(g) + '">').join("");
+}
+function renderAll(){ renderRail(); renderPanel(); renderMeta(); }
+
+/* ---------------- search */
+function searchDict(q){
+  const cyr = /[а-яё]/i.test(q);
+  const starts = [], subs = [], enHits = [];
+  for (let i = 0; i < DICT.length; i++){
+    const [ac, en] = DICT[i];
+    if (cyr){
+      const b = bareOf(ac).toLowerCase();
+      if (b.startsWith(q)) starts.push(i);
+      else if (b.includes(q)) subs.push(i);
+    } else {
+      const e = en.toLowerCase();
+      if (e === q || e.startsWith(q + ",") || e.startsWith(q + ";")) starts.push(i);
+      else if ((" " + e).includes(" " + q)) subs.push(i);
+      else if (e.includes(q)) enHits.push(i);
+    }
+    if (starts.length > 400) break;
+  }
+  return starts.concat(subs, enHits).slice(0, 60);
+}
+function renderSearch(qRaw){
+  const q = qRaw.trim().toLowerCase();
+  const host = $("#panelHost"), sp = $("#p-search");
+  if (q.length < 2){
+    sp.hidden = true; host.style.display = ""; $("#rail").classList.remove("dim");
+    return;
+  }
+  host.style.display = "none"; sp.hidden = false; $("#rail").classList.add("dim");
+  const have = haveKeys();
+  const mine = [];
+  state.words.forEach((w, i) => {
+    if (bareOf(w.ru).toLowerCase().includes(q) || w.en.toLowerCase().includes(q)) mine.push(i);
+  });
+  const hits = dictReady ? searchDict(q) : [];
+  $("#rmeta").textContent = mine.length + " in your file · " + (dictReady
+    ? hits.length + (hits.length === 60 ? "+" : "") + " dictionary matches"
+    : "dictionary loading…") + " for “" + qRaw.trim() + "”";
+  let html = "";
+  if (mine.length){
+    html += '<div class="blk"><h3>In your file</h3><table>' + THEAD + '<tbody>' +
+      mine.slice(0, 40).map(i => rowHTML(state.words[i], i)).join("") + '</tbody></table></div>';
+  }
+  if (hits.length){
+    html += '<div class="blk"><h3>Dictionary — tap Add</h3>' +
+      '<table><thead><tr><th>Russian</th><th>Pronunciation</th><th>English</th><th></th></tr></thead><tbody>' +
+      hits.map(di => {
+        const [ac, en, pos, x] = DICT[di];
+        const k = bareOf(ac).toLowerCase() + "|" + pos;
+        const inList = have.has(k);
+        const gx = extraText(pos, x);
+        return '<tr><td class="ru">' + esc(acuteize(ac)) + '</td>' +
+          '<td class="pr">' + esc(translit(ac)) + '</td>' +
+          '<td class="en">' + esc(en) + (gx ? ' <span class="gx">' + esc(gx) + '</span>' : "") +
+          ' <span class="rank">#' + (di + 1) + '</span></td>' +
+          '<td><span class="chip">' + POS[pos][0] + '</span></td>' +
+          '<td class="rm" style="width:96px">' + (inList
+            ? '<button class="addbtn" disabled>In file ✓</button>'
+            : '<button class="addbtn" data-di="' + di + '">+ Add</button>') + '</td></tr>';
+      }).join("") + '</tbody></table></div>';
+  }
+  if (!dictReady && !mine.length){
+    html += '<div class="blk"><div class="empty">The dictionary is still loading — one moment…</div></div>';
+  }
+  if (dictReady && !mine.length && !hits.length){
+    html = '<div class="blk"><div class="empty">No matches. Words are listed in dictionary form ' +
+      '(покупать, not покупаю) — try a shorter stem, or search in English.</div></div>';
+  }
+  $("#rwrap").innerHTML = html;
+}
+
+/* ---------------- add / remove / tick */
+function addWord(di){
+  const [ac, en, pos, x] = DICT[di];
+  state.words.push({ ru: bareOf(ac), ac: ac, pr: translit(ac), en: en, pos: pos,
+    g: ($("#groupin").value.trim() || "My additions"), x: x });
+  scheduleSave(); renderAll(); renderSearch($("#search").value);
+}
+document.addEventListener("click", e => {
+  const add = e.target.closest(".addbtn[data-di]");
+  if (add){ addWord(Number(add.dataset.di)); return; }
+  const rm = e.target.closest(".rmbtn");
+  if (rm){
+    if (!rm.classList.contains("arm")){
+      rm.classList.add("arm"); rm.textContent = "sure?";
+      setTimeout(() => { rm.classList.remove("arm"); rm.textContent = "×"; }, 2200);
+      return;
+    }
+    state.words.splice(Number(rm.dataset.i), 1);
+    scheduleSave(); renderAll();
+    if (!$("#p-search").hidden) renderSearch($("#search").value);
+    return;
+  }
+  const td = e.target.closest("td.ru, td.en, td.pr");
+  if (td){
+    const hidden = (td.classList.contains("ru") && document.body.classList.contains("hide-ru")) ||
+                   (td.classList.contains("en") && document.body.classList.contains("hide-en")) ||
+                   (td.classList.contains("pr") && document.body.classList.contains("hide-pr"));
+    if (hidden) td.classList.toggle("peek");
+  }
+});
+document.addEventListener("click", e => {
+  const tab = e.target.closest(".rail .tab");
+  if (tab){ activePos = tab.dataset.pos; $("#search").value = ""; renderSearch("");
+    renderRail(); renderPanel(); }
+  const sub = e.target.closest(".sub");
+  if (sub){ activeGroup[activePos] = sub.dataset.g === "all" ? "all" : sub.dataset.g; renderPanel(); }
+});
+
+/* ---------------- study modes */
+const MODE_BTN = { "hide-ru": "#modeRu", "hide-en": "#modeEn", "hide-pr": "#modePr" };
+function bindMode(btnId, cls, excl){
+  const b = $(btnId);
+  b.addEventListener("click", () => {
+    const on = !document.body.classList.contains(cls);
+    document.body.classList.toggle(cls, on);
+    b.setAttribute("aria-pressed", String(on));
+    if (on) excl.forEach(c => {
+      document.body.classList.remove(c);
+      $(MODE_BTN[c]).setAttribute("aria-pressed", "false");
+    });
+    document.querySelectorAll(".peek").forEach(td => td.classList.remove("peek"));
+  });
+}
+bindMode("#modeRu", "hide-ru", ["hide-en"]);
+bindMode("#modeEn", "hide-en", ["hide-ru"]);
+bindMode("#modePr", "hide-pr", []);
+$("#search").addEventListener("input", e => renderSearch(e.target.value));
+
+/* ---------------- dark mode — pure token inversion, persisted */
+function themeLabel(){
+  $("#btnTheme").textContent =
+    document.documentElement.dataset.theme === "dark" ? "◐ Light" : "◐ Dark";
+}
+$("#btnTheme").addEventListener("click", () => {
+  const dark = document.documentElement.dataset.theme === "dark";
+  if (dark) delete document.documentElement.dataset.theme;
+  else document.documentElement.dataset.theme = "dark";
+  try{ localStorage.setItem("rv_theme", dark ? "light" : "dark"); }catch(e){}
+  themeLabel();
+});
+themeLabel();
+
+/* ---------------- export / import */
+function exportJSON(){
+  return JSON.stringify({ app: "ru-vocab-cardfile", version: 1,
+    exported: new Date().toISOString(), settings: state.settings,
+    words: state.words }, null, 1);
+}
+$("#btnExport").addEventListener("click", () => {
+  const txt = exportJSON();
+  try{
+    const blob = new Blob([txt], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "russian-vocab-" + new Date().toISOString().slice(0,10) + ".json";
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  }catch(err){ openModal(txt); }
+});
+$("#btnBackup").addEventListener("click", () => openModal(exportJSON()));
+function openModal(text){ $("#mtext").value = text || ""; $("#modal").classList.add("open"); }
+$("#mClose").addEventListener("click", () => $("#modal").classList.remove("open"));
+$("#mCopy").addEventListener("click", async () => {
+  try{ await navigator.clipboard.writeText($("#mtext").value); $("#mCopy").textContent = "Copied ✓";
+    setTimeout(() => $("#mCopy").textContent = "Copy to clipboard", 1600); }
+  catch(e){ $("#mtext").select(); }
+});
+$("#mLoad").addEventListener("click", () => { stageImport($("#mtext").value); $("#modal").classList.remove("open"); });
+
+$("#btnImport").addEventListener("click", () => $("#fileIn").click());
+$("#fileIn").addEventListener("change", e => {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = () => stageImport(String(r.result));
+  r.readAsText(f); e.target.value = "";
+});
+let staged = null;
+function validWord(w){
+  return w && typeof w.ru === "string" && w.ru && typeof w.en === "string" &&
+    typeof w.pos === "string" && POS[w.pos];
+}
+function stageImport(text){
+  let data;
+  try{ data = JSON.parse(text); }
+  catch(e){ showImportBar('<b>Couldn’t read that JSON.</b> Check the file and try again.', []); return; }
+  const words = Array.isArray(data) ? data : data.words;
+  if (!Array.isArray(words)){ showImportBar('<b>No “words” array found</b> in that file.', []); return; }
+  const clean = words.filter(validWord).map(w => ({
+    ru: w.ru, ac: typeof w.ac === "string" ? w.ac : "", pr: typeof w.pr === "string" ? w.pr : "",
+    en: w.en, pos: w.pos, g: typeof w.g === "string" && w.g ? w.g : "Imported",
+    x: typeof w.x === "string" ? w.x : "" }));
+  if (!clean.length){ showImportBar('<b>No valid words</b> in that file.', []); return; }
+  staged = clean;
+  showImportBar('<b>' + clean.length + ' words</b> ready to import. Merge keeps your current list and skips duplicates; Replace overwrites it.',
+    ['merge', 'replace', 'cancel']);
+}
+function showImportBar(msg, actions){
+  const bar = $("#importbar");
+  bar.innerHTML = '<span>' + msg + '</span>' +
+    (actions.includes("merge") ? '<button class="ibtn primary" id="impMerge">Merge</button>' : "") +
+    (actions.includes("replace") ? '<button class="ibtn" id="impReplace">Replace</button>' : "") +
+    '<button class="ibtn" id="impCancel">' + (actions.length > 1 ? "Cancel" : "OK") + '</button>';
+  bar.classList.add("open");
+  const close = () => { bar.classList.remove("open"); staged = null; };
+  $("#impCancel").onclick = close;
+  const mg = $("#impMerge"), rp = $("#impReplace");
+  if (mg) mg.onclick = () => {
+    const have = haveKeys();
+    let added = 0;
+    staged.forEach(w => { if (!have.has(keyOf(w))){ state.words.push(w); have.add(keyOf(w)); added++; } });
+    scheduleSave(); renderAll(); bar.classList.remove("open");
+    showImportBar('<b>Merged:</b> ' + added + (added === 1 ? ' new word' : ' new words') +
+      ' added, ' + (staged.length - added) + ' duplicates skipped.', []);
+    staged = null;
+  };
+  if (rp) rp.onclick = () => {
+    state.words = staged; staged = null;
+    scheduleSave(); renderAll(); bar.classList.remove("open");
+    showImportBar('<b>Replaced.</b> Your file now has ' + state.words.length + ' words.', []);
+  };
+}
+
+/* ---------------- accounts + sync */
+const configured = typeof window.FIREBASE_CONFIG === "object" && window.FIREBASE_CONFIG &&
+  !String(window.FIREBASE_CONFIG.apiKey || "").startsWith("PASTE");
+function renderAcct(){
+  const b = $("#btnAcct"), em = $("#acctEmail");
+  if (user){ em.textContent = user.email || "account"; b.textContent = "Sign out"; }
+  else { em.textContent = ""; b.textContent = "Sign in"; }
+}
+let authMode = "in";
+function openAuth(){
+  $("#aNote").hidden = configured; $("#aForm").style.display = configured ? "" : "none";
+  $("#aErr").textContent = ""; $("#aErr").classList.remove("ok");
+  $("#authmodal").classList.add("open");
+  if (configured) $("#aEmail").focus();
+}
+function closeAuth(){ $("#authmodal").classList.remove("open"); }
+$("#aClose").addEventListener("click", closeAuth);
+$("#btnAcct").addEventListener("click", () => {
+  if (user){ FB.doSignOut(); return; }
+  openAuth();
+});
+document.querySelectorAll(".atab").forEach(t => t.addEventListener("click", () => {
+  authMode = t.dataset.m;
+  document.querySelectorAll(".atab").forEach(x =>
+    x.setAttribute("aria-selected", String(x === t)));
+  $("#aTitle").textContent = authMode === "in" ? "Sign in" : "Create account";
+  $("#aSubmit").textContent = authMode === "in" ? "Sign in" : "Create account";
+  $("#aPass").autocomplete = authMode === "in" ? "current-password" : "new-password";
+}));
+function aFail(e){ const el = $("#aErr"); el.classList.remove("ok"); el.textContent = FB.friendlyError(e); }
+$("#aSubmit").addEventListener("click", async () => {
+  const email = $("#aEmail").value.trim(), pass = $("#aPass").value;
+  try {
+    if (authMode === "in") await FB.signInEmail(email, pass);
+    else await FB.signUpEmail(email, pass);
+  } catch (e){ aFail(e); }
+});
+$("#aPass").addEventListener("keydown", e => { if (e.key === "Enter") $("#aSubmit").click(); });
+$("#aGoogle").addEventListener("click", async () => {
+  try { await FB.signInGoogle(); } catch (e){ aFail(e); }
+});
+$("#aReset").addEventListener("click", async () => {
+  const email = $("#aEmail").value.trim();
+  if (!email){ aFail({ code: "auth/invalid-email" }); return; }
+  try { await FB.resetPassword(email);
+    const el = $("#aErr"); el.classList.add("ok"); el.textContent = "Reset email sent ✓";
+  } catch (e){ aFail(e); }
+});
+function offerCloudChoice(cloud){
+  const bar = $("#importbar");
+  bar.innerHTML = '<span><b>Your account has ' + cloud.words.length + ' words</b>; this device has ' +
+    state.words.length + '. Which should we keep?</span>' +
+    '<button class="ibtn primary" id="ccCloud">Use account</button>' +
+    '<button class="ibtn" id="ccMerge">Merge both</button>' +
+    '<button class="ibtn" id="ccLocal">Keep this device</button>';
+  bar.classList.add("open");
+  const done = () => { bar.classList.remove("open"); renderAll(); pushCloud(); };
+  $("#ccCloud").onclick = () => {
+    state.words = cloud.words.filter(validWord);
+    if (cloud.settings && cloud.settings.group) state.settings.group = cloud.settings.group;
+    $("#groupin").value = state.settings.group; done();
+  };
+  $("#ccMerge").onclick = () => {
+    const have = haveKeys();
+    cloud.words.filter(validWord).forEach(w => {
+      if (!have.has(keyOf(w))){ state.words.push(w); have.add(keyOf(w)); } });
+    done();
+  };
+  $("#ccLocal").onclick = done;
+}
+async function handleAuth(u){
+  user = u; renderAcct();
+  if (!u){ setSaveStat(localStatText()); return; }
+  closeAuth();
+  setSaveStat("loading your account…");
+  try {
+    const cloud = await FB.loadCloud(u.uid);
+    if (!cloud || !cloud.words.length){
+      cloudChunks = cloud ? cloud.chunks : 0;
+      await pushCloud();                       // first sign-in: this device seeds the account
+    } else {
+      cloudChunks = cloud.chunks;
+      const localHash = hashWords(state.words);
+      const cloudHash = hashWords(cloud.words.filter(validWord));
+      if (!state.words.length || localHash === cloudHash || localHash === syncHash){
+        state.words = cloud.words.filter(validWord);
+        if (cloud.settings && cloud.settings.group){
+          state.settings.group = cloud.settings.group;
+          $("#groupin").value = state.settings.group;
+        }
+        syncHash = cloudHash; persistLocal();
+        renderAll(); setSaveStat("saved to account ✓");
+      } else {
+        setSaveStat("choose which words to keep");
+        offerCloudChoice(cloud);
+      }
+    }
+  } catch (e){ setSaveStat("couldn't reach your account — working on this device"); }
+}
+
+/* ---------------- boot */
+$("#nDict").textContent = "loading…";
+(async () => {
+  const saved = await store.load();
+  const stripL = w => { const c = Object.assign({}, w); delete c.l; return c; };
+  if (saved && Array.isArray(saved.words)){
+    state.words = saved.words.filter(validWord).map(stripL);
+    if (saved.settings && typeof saved.settings.group === "string" && saved.settings.group)
+      state.settings.group = saved.settings.group;
+    if (typeof saved.syncHash === "string") syncHash = saved.syncHash;
+  } else {
+    state.words = STARTER.map(stripL);
+  }
+  $("#groupin").value = state.settings.group;
+  activePos = ORDER.find(p => state.words.some(w => w.pos === p)) || null;
+  setSaveStat(localStatText());
+  renderAcct();
+  renderAll();
+
+  fetch("dict.json").then(r => {
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    return r.json();
+  }).then(d => {
+    DICT = d; dictReady = true;
+    $("#nDict").textContent = DICT.length.toLocaleString("en-GB");
+    const q = $("#search").value;
+    if (q.trim().length >= 2) renderSearch(q);
+  }).catch(() => {
+    $("#nDict").textContent = "failed to load — refresh";
+  });
+
+  $("#groupin").addEventListener("change", () => {
+    state.settings.group = $("#groupin").value.trim() || "My additions";
+    scheduleSave();
+  });
+
+  if (configured){
+    try { FB.init(window.FIREBASE_CONFIG, !!window.USE_EMULATORS); FB.onUser(handleAuth); }
+    catch (e){ setSaveStat("account system failed to start — working locally"); }
+  }
+})();
+</script>
+</body>
+</html>

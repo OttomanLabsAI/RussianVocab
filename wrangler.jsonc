@@ -1,0 +1,12 @@
+// Cloudflare Workers config — the site deploys as static assets, no worker code.
+// Deploy: `npx wrangler deploy` (or connect the repo to Workers Builds in the
+// Cloudflare dashboard for automatic deploys on every push).
+{
+  "name": "russianvocab",
+  "compatibility_date": "2026-07-21",
+  "assets": {
+    "directory": ".",
+    // Any unknown path serves the app; real files (dict.json, vendor/*) win first.
+    "not_found_handling": "single-page-application"
+  }
+}
