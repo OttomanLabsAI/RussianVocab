@@ -1,13 +1,20 @@
 # Cache policy (see README): long/immutable for the dictionary and pinned
 # vendor bundle — rename those files when they change. Short for the app
-# shell and config so updates land quickly.
+# shell and config so updates land quickly. The service worker must never
+# be long-cached or updates would stall.
 /dict.json
   Cache-Control: public, max-age=31536000, immutable
 /vendor/*
   Cache-Control: public, max-age=31536000, immutable
+/icons/*
+  Cache-Control: public, max-age=604800
 /
   Cache-Control: public, max-age=300
 /index.html
   Cache-Control: public, max-age=300
 /config.js
   Cache-Control: public, max-age=300
+/manifest.json
+  Cache-Control: public, max-age=300
+/sw.js
+  Cache-Control: no-cache
