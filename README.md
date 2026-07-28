@@ -86,6 +86,18 @@ After the first deploy, add the `workers.dev` URL (and any custom domain) to
 Firebase **Authentication → Settings → Authorized domains**, or sign-in will
 be refused from the live site.
 
+## Installable app (PWA)
+
+The site is a progressive web app: `manifest.json` + `icons/` make it
+installable ("Add to Home Screen" on iOS Safari, the install prompt on
+Android/desktop Chrome), and `sw.js` caches the app shell and the whole
+dictionary so it opens and searches offline. Word edits made offline save
+locally and sync the next time the device is online and signed in.
+
+When changing any precached file (`index.html`, `config.js`, `dict.json`,
+the vendor bundle), bump `VERSION` at the top of `sw.js` in the same push so
+installed clients pick up the new copy.
+
 ## How syncing behaves
 
 - Signed out: words auto-save in the browser (localStorage).
