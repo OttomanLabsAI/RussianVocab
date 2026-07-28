@@ -4,6 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Russian Vocabulary Builder — Русский словарь</title>
+<meta name="description" content="Search a 45,698-entry Russian–English dictionary, build a personal word file organised by part of speech, and study with hide-and-peek — synced across devices.">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="RusVocab">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@500..600&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&family=Prata&display=swap" rel="stylesheet">
@@ -919,6 +929,10 @@ $("#nDict").textContent = "loading…";
   if (configured){
     try { FB.init(window.FIREBASE_CONFIG, !!window.USE_EMULATORS); FB.onUser(handleAuth); }
     catch (e){ setSaveStat("account system failed to start — working locally"); }
+  }
+
+  if ("serviceWorker" in navigator){
+    try { navigator.serviceWorker.register("sw.js"); } catch (e){}
   }
 })();
 </script>
