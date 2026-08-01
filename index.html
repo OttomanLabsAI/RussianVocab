@@ -267,6 +267,8 @@ footer{padding:0 4px 8px;font:italic 400 .85rem/1.6 "Newsreader",Georgia,serif;c
       <div class="hbtns">
         <span id="acctEmail"></span>
         <button class="fbtn" id="btnAcct">Sign in</button>
+        <button class="fbtn" id="btnImport">Add from JSON</button>
+        <input type="file" id="fileIn" accept="application/json,.json" class="sr">
         <span id="savestat"></span>
       </div>
     </div>
@@ -777,6 +779,67 @@ function validWord(w){
   return w && typeof w.ru === "string" && w.ru && typeof w.en === "string" &&
     typeof w.pos === "string" && POS[w.pos];
 }
+
+/* ---------------- add words from a JSON file (merge only, duplicates skipped) */
+let staged = null;
+function showImportBar(msg, buttons){
+  const bar = $("#importbar");
+  bar.innerHTML = '<span>' + msg + '</span>' + buttons;
+  bar.classList.add("open");
+}
+function hideImportBar(){ $("#importbar").classList.remove("open"); staged = null; }
+function stageImport(text){
+  const okBtn = '<button class="ibtn" id="impCancel">OK</button>';
+  let data;
+  try{ data = JSON.parse(text); }
+  catch(e){
+    showImportBar("<b>Couldn’t read that JSON.</b> Check the file and try again.", okBtn);
+    $("#impCancel").onclick = hideImportBar; return;
+  }
+  const words = Array.isArray(data) ? data : data.words;
+  if (!Array.isArray(words)){
+    showImportBar("<b>No “words” array found</b> in that file.", okBtn);
+    $("#impCancel").onclick = hideImportBar; return;
+  }
+  const have = haveKeys();
+  const clean = []; let dup = 0;
+  words.filter(validWord).forEach(w => {
+    const ac = typeof w.ac === "string" ? w.ac : "";
+    const c = { ru: w.ru, ac: ac,
+      pr: typeof w.pr === "string" && w.pr ? w.pr
+        : (/[а-яё]/i.test(w.ru) ? translit(ac || w.ru) : ""),
+      en: w.en, pos: w.pos,
+      g: typeof w.g === "string" && w.g ? w.g : (state.settings.group || "My additions"),
+      x: typeof w.x === "string" ? w.x : "",
+      t: typeof w.t === "number" ? w.t : Date.now() };
+    if (have.has(keyOf(c))) dup++;
+    else { clean.push(c); have.add(keyOf(c)); }
+  });
+  if (!clean.length){
+    showImportBar("<b>No new words</b> in that file — everything is already in your list (or not readable).", okBtn);
+    $("#impCancel").onclick = hideImportBar; return;
+  }
+  staged = clean;
+  showImportBar('<b>' + clean.length + ' new words</b> ready to add' +
+    (dup ? ' · ' + dup + ' already in your file' : '') + '.',
+    '<button class="ibtn primary" id="impAdd">Add words</button>' +
+    '<button class="ibtn" id="impCancel">Cancel</button>');
+  $("#impCancel").onclick = hideImportBar;
+  $("#impAdd").onclick = () => {
+    const n = staged.length;
+    state.words.push(...staged);
+    scheduleSave(); renderAll(); hideImportBar();
+    showImportBar('<b>Added ' + n + (n === 1 ? ' word.' : ' words.') + '</b>', okBtn);
+    $("#impCancel").onclick = hideImportBar;
+  };
+}
+$("#btnImport").addEventListener("click", () => $("#fileIn").click());
+$("#fileIn").addEventListener("change", e => {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = () => stageImport(String(r.result));
+  r.readAsText(f); e.target.value = "";
+});
 
 /* ---------------- accounts + sync */
 const configured = typeof window.FIREBASE_CONFIG === "object" && window.FIREBASE_CONFIG &&
