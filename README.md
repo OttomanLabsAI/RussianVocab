@@ -11,7 +11,9 @@ Firebase directly from the browser.
 |---|---|
 | `index.html` | The whole app (UI + logic) |
 | `dict.json` | The dictionary (2.7 MB, fetched once and cached) |
-| `vendor/firebase-bundle.js` | Firebase Auth + Firestore SDK, bundled and pinned |
+| `vendor/firebase-bundle-2.js` | Firebase Auth + Firestore SDK plus the app's sync/sets/log API, bundled and pinned |
+| `vendor/fsrs-bundle.js` | The ts-fsrs spaced-repetition scheduler, bundled and pinned |
+| `tools/` | Source + build script for the vendor bundles (`npm install && npm run build`, commit the output; not needed to deploy) |
 | `config.js` | **Your Firebase keys go here** |
 | `firestore.rules` | Security rules — paste into the Firebase console |
 | `wrangler.jsonc`, `_headers`, `.assetsignore` | Cloudflare deployment: project config, cache headers, files kept off the site |
@@ -110,18 +112,63 @@ installed clients pick up the new copy.
 - Conflict model is last-write-wins per save — fine for one person across
   devices, not built for simultaneous editing.
 
+## Review mode (FSRS)
+
+The word file doubles as a spaced-repetition queue, scheduled by
+[ts-fsrs](https://github.com/open-spaced-repetition/ts-fsrs) with default
+parameters. A word's card state lives on the word object itself as `c`
+(state, due, stability, difficulty, reps, lapses, learning step, last
+review — compact keys), so it syncs through the existing chunk mechanism
+with no schema migration: **a word without `c` is a new card**, which is
+also what makes the change reversible — delete `c` and you're back to a
+plain word list. New cards enter at a user-adjustable daily cap (default
+20, `settings.newPerDay`); the day's intake is tracked in
+`settings.introDay`/`introCount`. Every grade appends to a per-day log for
+future parameter optimisation, buffered locally when offline
+(`pendingLog` in localStorage) and flushed when back online — a rating is
+never lost to a dropped connection.
+
+## Pronunciation audio
+
+The dictionary data carries no recordings, so audio is resolved at play
+time: single words first check Wikimedia Commons for a Wiktionary
+`Ru-<word>.ogg` recording (cached by the service worker once heard);
+phrases and anything without a recording fall through silently to browser
+SpeechSynthesis with a ru-RU voice. Auto-play on reveal during reviews is
+a setting, default off.
+
+## Word sets (teacher → student)
+
+A signed-in user picks words from their file, names the set, and gets a
+7-character code (unambiguous alphabet — no 0/O/1/I/l) plus a share link
+at `/s/CODE`. Redeeming merges the set's words into the redeemer's file:
+duplicates skipped, imported words tagged with the set name, newcomers
+entering the review queue as new cards under the daily cap. Sets are
+snapshots — later edits by the creator never touch a student's file.
+
 ## Data model
 
 ```
-users/{uid}          → { v, chunks, count, settings: {group}, updated }
-users/{uid}/w/{0..n} → { words: [ up to 1,000 word objects ] }
+users/{uid}                    → { v, chunks, count, settings: {group, newPerDay,
+                                   introDay, introCount, autoSay}, updated }
+users/{uid}/w/{0..n}           → { words: [ up to 1,000 word objects ] }
+users/{uid}/log/{YYYYMMDD}     → { e: [ {w, r, at, el, sc, st} ], updated }   ← review log
+sets/{CODE}                    → { owner, name, desc, words[], count, created }
+sets/{CODE}/redemptions/{uid}  → { user, at }
 ```
 
 Words are chunked at 1,000 per document to stay far under Firestore's 1 MB
 document limit — no practical ceiling on list size. Each word object:
-`{ ru, ac, pr, en, pos, g, x, t }` (word, stress-marked form, pronunciation,
-translation, part of speech, group, gender/aspect extra, added-at epoch ms —
-`t` is absent on words that predate time logging).
+`{ ru, ac, pr, en, pos, g, x, t, c }` (word, stress-marked form,
+pronunciation, translation, part of speech, group, gender/aspect extra,
+added-at epoch ms, FSRS card state — `t` and `c` are absent on words that
+predate those features). The redemptions subcollection is one doc per
+redeeming user, so a per-student progress dashboard can be added later
+without migration.
+
+**After deploying a version that adds collections (like this one): re-paste
+`firestore.rules` into the Firebase console and Publish** — sets and review
+logs are denied by the old rules until you do.
 
 ## Releases
 

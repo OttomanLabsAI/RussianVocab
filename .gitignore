@@ -3,3 +3,5 @@
 node_modules/
 .firebase/
 firebase-debug.log
+tools/node_modules/
+tools/package-lock.json
