@@ -7,6 +7,28 @@ service cloud.firestore {
       match /w/{chunk} {
         allow read, write: if request.auth != null && request.auth.uid == uid;
       }
+      // Append-only review log, one doc per day.
+      match /log/{day} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+      }
+    }
+    // Shareable word sets. Anyone signed in can fetch a set by its code;
+    // only the owner can list their own sets or change them.
+    match /sets/{code} {
+      allow get: if request.auth != null;
+      allow list: if request.auth != null && resource.data.owner == request.auth.uid;
+      allow create: if request.auth != null && request.resource.data.owner == request.auth.uid;
+      allow update, delete: if request.auth != null && resource.data.owner == request.auth.uid;
+      // One redemption record per redeeming user; the set owner can read
+      // them all (that is what the import count — and a future per-student
+      // dashboard — is built on).
+      match /redemptions/{ruid} {
+        allow get: if request.auth != null && (request.auth.uid == ruid ||
+          get(/databases/$(database)/documents/sets/$(code)).data.owner == request.auth.uid);
+        allow list: if request.auth != null &&
+          get(/databases/$(database)/documents/sets/$(code)).data.owner == request.auth.uid;
+        allow create, update: if request.auth != null && request.auth.uid == ruid;
+      }
     }
   }
 }

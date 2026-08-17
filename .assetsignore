@@ -4,6 +4,7 @@
 .assetsignore
 wrangler.jsonc
 .wrangler
+tools
 README.md
 LICENSE
 firestore.rules

@@ -1,6 +1,6 @@
 // Service worker — offline app shell + dictionary cache.
 // Bump VERSION whenever a precached file changes so clients refresh it.
-const VERSION = "v1.8";
+const VERSION = "v1.9";
 const SHELL = "shell-" + VERSION;
 const RUNTIME = "runtime-" + VERSION;
 const PRECACHE = [
@@ -8,7 +8,8 @@ const PRECACHE = [
   "index.html",
   "config.js",
   "dict.json",
-  "vendor/firebase-bundle.js",
+  "vendor/firebase-bundle-2.js",
+  "vendor/fsrs-bundle.js",
   "manifest.json",
   "icons/favicon.svg",
   "icons/icon-192.png",
@@ -30,7 +31,10 @@ self.addEventListener("activate", e => {
 // index.html and config.js should update promptly; the dictionary and vendor
 // bundle are immutable (renamed when they change), so cache-first is safe.
 const NETWORK_FIRST = new Set(["/", "/index.html", "/config.js"]);
-const FONT_HOSTS = new Set(["fonts.googleapis.com", "fonts.gstatic.com"]);
+// Fonts plus pronunciation audio (Wikimedia Commons lookups and files) —
+// cache-first so heard-once words replay offline.
+const FONT_HOSTS = new Set(["fonts.googleapis.com", "fonts.gstatic.com",
+  "commons.wikimedia.org", "upload.wikimedia.org"]);
 
 self.addEventListener("fetch", e => {
   const req = e.request;

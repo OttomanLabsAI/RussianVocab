@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Russian Vocabulary Builder — Русский словарь</title>
 <meta name="description" content="Search a 45,698-entry Russian–English dictionary, build a personal word file organised by part of speech, and study with hide-and-peek — synced across devices.">
-<link rel="manifest" href="manifest.json">
-<link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/icons/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icons/icon-180.png">
 <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)">
 <meta name="mobile-web-app-capable" content="yes">
@@ -220,6 +220,73 @@ td.add{width:96px;text-align:center}
 #aErr.ok{color:var(--ink-60)}
 .anote{font-size:.95rem;color:var(--ink-60);line-height:1.6;margin-bottom:6px}
 
+/* speaker buttons */
+.spk{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;
+  color:var(--ink-60);vertical-align:middle;margin-left:6px;padding:0;
+  transition:color .15s,background-color .15s}
+.spk:hover{color:var(--ink)}
+.spk svg{width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none;
+  stroke-linecap:round;stroke-linejoin:round}
+
+/* review mode */
+.rvbtn[data-due="1"]{background:var(--ink);color:var(--paper)}
+.rvset{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:14px 0 0;
+  padding:10px 12px;border:1px dashed var(--hair)}
+.rvset .lab{margin-left:8px}
+.rvset .lab:first-child{margin-left:0}
+#setNewCap{width:74px;padding:8px 10px;border:1px solid var(--ink);background:var(--paper);
+  color:var(--ink);font:400 1rem/1.2 "Newsreader",Georgia,serif}
+.rvcard{border:1px solid var(--ink);background:var(--paper);margin-top:16px;
+  padding:clamp(22px,4vw,44px);text-align:center}
+.rvru{font:400 clamp(1.9rem,5vw,3.2rem)/1.15 "Prata",Georgia,serif;margin:8px 0 4px}
+.rvtap{font:italic 400 .95rem/1.5 "Newsreader",Georgia,serif;color:var(--ink-35);margin-top:18px}
+.rvans{border-top:1px dashed var(--hair);margin-top:20px;padding-top:18px}
+.rven{font:400 1.25rem/1.4 "Newsreader",Georgia,serif}
+.rven .gx{color:var(--ink-60);font-size:.9rem;font-style:italic}
+.rvpr{font:italic 400 1rem/1.5 "Newsreader",Georgia,serif;color:var(--ink-60);margin-top:4px}
+.rvgrades{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px}
+.gbtn{display:flex;flex-direction:column;gap:5px;align-items:center;min-width:82px;
+  padding:11px 14px;border:1px solid var(--ink);background:var(--paper);color:var(--ink);
+  font:600 .62rem/1 "Afacad Flux",system-ui,sans-serif;text-transform:uppercase;
+  letter-spacing:.16em;transition:background-color .15s,color .15s}
+.gbtn:hover{background:var(--ink);color:var(--paper)}
+.gbtn .ivl{font-weight:500;letter-spacing:.08em;opacity:.65}
+.gbtn.again{border-color:var(--accent);color:var(--accent)}
+.gbtn.again:hover{background:var(--accent);border-color:var(--accent);color:var(--paper)}
+.rvprog{font:500 .6rem/1 "Afacad Flux",system-ui,sans-serif;text-transform:uppercase;
+  letter-spacing:.18em;color:var(--ink-60);margin-top:16px;text-align:center}
+.rvdone{border:1px solid var(--ink);background:var(--paper);margin-top:16px;
+  padding:clamp(24px,4vw,44px);text-align:center}
+.rvdone h3{border:none;padding:0;margin-bottom:10px;font-size:.7rem}
+.rvdone .big{font:400 clamp(1.4rem,3vw,2rem)/1.3 "Prata",Georgia,serif}
+.rvdone p{font:italic 400 1rem/1.6 "Newsreader",Georgia,serif;color:var(--ink-60);margin:8px 0 0}
+
+/* word sets */
+.setbox{border:1px solid var(--ink);background:var(--paper);margin-top:16px;padding:0}
+.setbox h3{border-bottom:1px solid var(--ink)}
+.setbody{padding:14px}
+.setform{display:flex;flex-direction:column;gap:10px;max-width:560px}
+.setform input[type="text"]{width:100%;padding:10px 12px;border:1px solid var(--ink);
+  background:var(--paper);color:var(--ink);font:400 1rem/1.3 "Newsreader",Georgia,serif}
+.pickgrp{border:1px dashed var(--hair);margin-top:10px}
+.pickgrp header{display:flex;align-items:center;gap:8px;padding:8px 10px;
+  border-bottom:1px dashed var(--hair);
+  font:600 .58rem/1 "Afacad Flux",system-ui,sans-serif;text-transform:uppercase;letter-spacing:.16em}
+.pickrow{display:flex;align-items:baseline;gap:8px;padding:6px 10px;
+  border-bottom:1px dashed var(--hair);font-size:.95rem}
+.pickrow:last-child{border-bottom:none}
+.pickrow .pen{color:var(--ink-60);font-size:.9rem;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;min-width:0}
+.pickrow b{font-weight:600}
+input[type="checkbox"]{accent-color:var(--ink);width:15px;height:15px;flex:none}
+.setrow{display:flex;align-items:center;gap:10px;padding:10px 14px;
+  border-bottom:1px dashed var(--hair);flex-wrap:wrap}
+.setrow:last-child{border-bottom:none}
+.setrow .scode{font:600 .72rem/1 "Afacad Flux",system-ui,sans-serif;letter-spacing:.2em;
+  border:1px solid var(--ink);padding:6px 8px}
+.setrow .smeta{font:italic 400 .9rem/1.4 "Newsreader",Georgia,serif;color:var(--ink-60);flex:1;min-width:0}
+.setnote{font:italic 400 .95rem/1.6 "Newsreader",Georgia,serif;color:var(--ink-60);margin:0}
+
 footer{padding:0 4px 8px;font:italic 400 .85rem/1.6 "Newsreader",Georgia,serif;color:var(--ink-60)}
 
 @media(max-width:900px){
@@ -250,6 +317,9 @@ footer{padding:0 4px 8px;font:italic 400 .85rem/1.6 "Newsreader",Georgia,serif;c
   #rwrap table td:nth-child(4){display:none}
   td.add{width:auto;padding:9px 5px}
   .addbtn{padding:8px 8px;letter-spacing:.08em}
+  .rvgrades{gap:6px}
+  .gbtn{min-width:0;flex:1 1 21%;padding:11px 6px}
+  .rvset{gap:8px}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -267,6 +337,7 @@ footer{padding:0 4px 8px;font:italic 400 .85rem/1.6 "Newsreader",Georgia,serif;c
       <div class="hbtns">
         <span id="acctEmail"></span>
         <button class="fbtn" id="btnAcct">Sign in</button>
+        <button class="fbtn" id="btnSets">Sets</button>
         <button class="fbtn" id="btnImport">Add from JSON</button>
         <input type="file" id="fileIn" accept="application/json,.json" class="sr">
         <span id="savestat"></span>
@@ -294,6 +365,7 @@ footer{padding:0 4px 8px;font:italic 400 .85rem/1.6 "Newsreader",Georgia,serif;c
 <div id="importbar" role="alert"></div>
 
 <div class="studybar" role="group" aria-label="Study modes">
+  <button class="mode rvbtn" id="btnReview">Review · <span id="nDue">0</span> due</button>
   <span class="slab">Hide</span>
   <button class="mode" id="modeRu" aria-pressed="false">Russian</button>
   <button class="mode" id="modeEn" aria-pressed="false">English</button>
@@ -310,9 +382,28 @@ footer{padding:0 4px 8px;font:italic 400 .85rem/1.6 "Newsreader",Georgia,serif;c
         <h2>Search</h2><div class="rmeta" id="rmeta"></div></div>
       <div id="rwrap"></div>
     </section>
+
+    <section class="panel" id="p-review" hidden>
+      <div class="phead"><div class="ghost" aria-hidden="true">Повторение</div>
+        <h2>Review</h2><div class="rmeta" id="rvmeta"></div></div>
+      <div class="rvset">
+        <span class="lab">New cards per day</span>
+        <input type="number" id="setNewCap" min="0" max="500" step="1">
+        <span class="lab">Auto-play audio on reveal</span>
+        <button class="mode" id="setAutoSay" aria-pressed="false">Off</button>
+      </div>
+      <div id="rvwrap"></div>
+    </section>
+
+    <section class="panel" id="p-sets" hidden>
+      <div class="phead"><div class="ghost" aria-hidden="true">Наборы</div>
+        <h2>Word Sets</h2><div class="rmeta">Share a batch of words with a code — the other person
+          adds them to their own file in one tap.</div></div>
+      <div id="setswrap"></div>
+    </section>
   </main>
 </div>
-<footer>Search → Add builds your file · sign in to sync across devices · Compiled July 2026 · Dictionary: OpenRussian (CC-BY-SA), frequency: OpenSubtitles</footer>
+<footer>Search → Add builds your file · sign in to sync across devices · Compiled July 2026 · Dictionary: OpenRussian (CC-BY-SA), frequency: OpenSubtitles · Recorded audio: Wiktionary contributors via Wikimedia Commons (CC BY-SA)</footer>
 
 <div id="authmodal" class="authwrap"><div class="mbox">
   <h4 id="aTitle">Sign in</h4>
@@ -338,8 +429,9 @@ footer{padding:0 4px 8px;font:italic 400 .85rem/1.6 "Newsreader",Georgia,serif;c
   <div class="mrow"><button class="fbtn" id="aClose">Close</button></div>
 </div></div>
 
-<script src="config.js"></script>
-<script src="vendor/firebase-bundle.js"></script>
+<script src="/config.js"></script>
+<script src="/vendor/firebase-bundle-2.js"></script>
+<script src="/vendor/fsrs-bundle.js"></script>
 <script>
 "use strict";
 let DICT = [];              // [accented, en, pos, extra] sorted by frequency
@@ -457,7 +549,8 @@ function localStatText(){
     : "auto-saves in this " + (store.tier === "app" ? "app" : "browser");
 }
 function persistLocal(){
-  store.save({ v: 1, words: state.words, settings: state.settings, syncHash: syncHash });
+  store.save({ v: 1, words: state.words, settings: state.settings, syncHash: syncHash,
+    pendingLog: pendingLog });
 }
 async function pushCloud(){
   if (!user) return;
@@ -480,6 +573,7 @@ function flushSave(){
   if (user){ clearTimeout(cloudT); pushCloud(); }
 }
 window.addEventListener("pagehide", flushSave);
+window.addEventListener("online", () => { flushSave(); flushLog(); });
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "hidden") flushSave();
 });
@@ -504,7 +598,7 @@ function rowHTML(w, i){
   const when = w.t ? '<span class="when" title="Added ' +
     esc(new Date(w.t).toLocaleString()) + '">' + esc(fmtWhen(w.t)) + '</span>' : "";
   return '<tr data-i="' + i + '">' +
-    '<td class="ru"><span class="w">' + esc(main) + '</span></td>' +
+    '<td class="ru"><span class="w">' + esc(main) + '</span>' + spkBtn(bareOf(w.ru)) + '</td>' +
     '<td class="pr"><span class="w">' + pr + '</span></td>' +
     '<td class="en">' + when + '<span class="w">' + esc(w.en) + (gx ? ' <span class="gx">' + esc(gx) + '</span>' : "") + '</span></td>' +
     '<td class="rm"><button class="rmbtn" data-i="' + i + '" title="Remove from your file">×</button></td></tr>';
@@ -569,7 +663,19 @@ function renderMeta(){
     '<option value="__new__">+ New list…</option>';
   sel.value = state.settings.group;
 }
-function renderAll(){ renderRail(); renderPanel(); renderMeta(); }
+function renderAll(){ renderRail(); renderPanel(); renderMeta(); renderDue(); }
+
+/* Four views share the main column: the word file, search results,
+   the review session, and word sets. */
+function showView(v){
+  $("#p-search").hidden = v !== "search";
+  $("#p-review").hidden = v !== "review";
+  $("#p-sets").hidden = v !== "sets";
+  $("#panelHost").style.display = v === "file" ? "" : "none";
+  $("#rail").classList.toggle("dim", v !== "file");
+  rvOpen = v === "review";
+  if (v !== "review"){ rvCur = null; rvQueue = []; }
+}
 
 /* ---------------- search */
 // Plain letter-by-letter transliteration (вода → "voda") so Latin queries
@@ -617,7 +723,7 @@ function renderSugg(qRaw){
   let html = top.map(di => {
     const [ac, en, pos] = DICT[di];
     const k = bareOf(ac).toLowerCase() + "|" + pos;
-    return '<div class="srow"><span class="sru">' + esc(acuteize(ac)) + '</span>' +
+    return '<div class="srow"><span class="sru">' + esc(acuteize(ac)) + '</span>' + spkBtn(bareOf(ac)) +
       '<span class="spr">' + esc(translit(ac)) + '</span>' +
       '<span class="sen">' + esc(en) + '</span>' +
       (have.has(k) ? '<button class="addbtn" disabled>In file ✓</button>'
@@ -634,13 +740,12 @@ function renderSugg(qRaw){
 
 function renderSearch(qRaw){
   const q = qRaw.trim().toLowerCase();
-  const host = $("#panelHost"), sp = $("#p-search");
   if (q.length < 2){
     hideSugg();
-    sp.hidden = true; host.style.display = ""; $("#rail").classList.remove("dim");
+    showView("file");
     return;
   }
-  host.style.display = "none"; sp.hidden = false; $("#rail").classList.add("dim");
+  showView("search");
   const have = haveKeys();
   const qLat = q.replace(/'/g, "");
   const mine = [];
@@ -665,7 +770,7 @@ function renderSearch(qRaw){
         const k = bareOf(ac).toLowerCase() + "|" + pos;
         const inList = have.has(k);
         const gx = extraText(pos, x);
-        return '<tr><td class="ru">' + esc(acuteize(ac)) + '</td>' +
+        return '<tr><td class="ru">' + esc(acuteize(ac)) + spkBtn(bareOf(ac)) + '</td>' +
           '<td class="pr">' + esc(translit(ac)) + '</td>' +
           '<td class="en">' + esc(en) + (gx ? ' <span class="gx">' + esc(gx) + '</span>' : "") +
           ' <span class="rank">#' + (di + 1) + '</span></td>' +
@@ -695,6 +800,18 @@ function addWord(di){
   else if (!$("#sugg").hidden) renderSugg($("#search").value);
 }
 document.addEventListener("click", e => {
+  const sp = e.target.closest(".spk");
+  if (sp){ speak(sp.dataset.say); return; }
+  const gb = e.target.closest(".gbtn");
+  if (gb){ gradeCur(Number(gb.dataset.g)); return; }
+  const rvc = e.target.closest("#rvcard");
+  if (rvc && !rvRevealed){ rvRevealed = true; renderReviewCard(); return; }
+  const sc = e.target.closest(".scopy");
+  if (sc){
+    navigator.clipboard.writeText(shareUrl(sc.dataset.code))
+      .then(() => { sc.textContent = "Copied ✓"; }).catch(() => {});
+    return;
+  }
   const add = e.target.closest(".addbtn[data-di]");
   if (add){ addWord(Number(add.dataset.di)); return; }
   const rm = e.target.closest(".rmbtn");
@@ -900,8 +1017,8 @@ function offerCloudChoice(cloud){
   const done = () => { bar.classList.remove("open"); renderAll(); pushCloud(); };
   $("#ccCloud").onclick = () => {
     state.words = cloud.words.filter(validWord);
-    if (cloud.settings && cloud.settings.group) state.settings.group = cloud.settings.group;
-    $("#groupin").value = state.settings.group; done();
+    if (cloud.settings) state.settings = Object.assign({}, state.settings, cloud.settings);
+    $("#groupin").value = state.settings.group || "My additions"; done();
   };
   $("#ccMerge").onclick = () => {
     const have = haveKeys();
@@ -913,7 +1030,12 @@ function offerCloudChoice(cloud){
 }
 async function handleAuth(u){
   user = u; renderAcct();
-  if (!u){ setSaveStat(localStatText()); return; }
+  if (!u){
+    setSaveStat(localStatText());
+    if (!$("#p-sets").hidden) renderSets();
+    if (pendingRedeem) openAuth();
+    return;
+  }
   closeAuth();
   setSaveStat("loading your account…");
   try {
@@ -927,10 +1049,8 @@ async function handleAuth(u){
       const cloudHash = hashWords(cloud.words.filter(validWord));
       if (!state.words.length || localHash === cloudHash || localHash === syncHash){
         state.words = cloud.words.filter(validWord);
-        if (cloud.settings && cloud.settings.group){
-          state.settings.group = cloud.settings.group;
-          $("#groupin").value = state.settings.group;
-        }
+        if (cloud.settings) state.settings = Object.assign({}, state.settings, cloud.settings);
+        $("#groupin").value = state.settings.group || "My additions";
         syncHash = cloudHash; persistLocal();
         renderAll(); setSaveStat("saved to account ✓");
       } else {
@@ -939,18 +1059,475 @@ async function handleAuth(u){
       }
     }
   } catch (e){ setSaveStat("couldn't reach your account — working on this device"); }
+  flushLog();
+  if (!$("#p-sets").hidden) renderSets();
+  if (pendingRedeem){ const c = pendingRedeem; pendingRedeem = null; beginRedeem(c); }
 }
+
+/* ---------------- pronunciation audio */
+// Recorded files from Wikimedia Commons (Wiktionary "Ru-<word>.ogg") where one
+// exists; SpeechSynthesis ru-RU everywhere else. Any failure falls through to
+// TTS silently — audio must never show an error state.
+const SPK_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>';
+function spkBtn(text){
+  return '<button class="spk" data-say="' + esc(text) +
+    '" title="Play pronunciation" aria-label="Play pronunciation">' + SPK_SVG + '</button>';
+}
+const audioMemo = {};
+async function commonsUrl(word){
+  if (word in audioMemo) return audioMemo[word];
+  let url = null;
+  try {
+    const r = await fetch("https://commons.wikimedia.org/w/api.php?action=query&titles=" +
+      encodeURIComponent("File:Ru-" + word + ".ogg") +
+      "&prop=imageinfo&iiprop=url&format=json&origin=*");
+    const j = await r.json();
+    const pages = j.query && j.query.pages;
+    for (const k in pages){
+      const ii = pages[k].imageinfo;
+      if (ii && ii[0] && ii[0].url) url = ii[0].url;
+    }
+  } catch (e){}
+  audioMemo[word] = url;
+  return url;
+}
+let playingAudio = null;
+function tts(text){
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "ru-RU";
+    const v = speechSynthesis.getVoices().find(x => x.lang && x.lang.toLowerCase().startsWith("ru"));
+    if (v) u.voice = v;
+    u.rate = 0.9;
+    speechSynthesis.speak(u);
+  } catch (e){}
+}
+async function speak(text){
+  const bare = bareOf(String(text || "")).trim();
+  if (!bare) return;
+  if (!/\s/.test(bare)){                       // single words may have a recording
+    const url = await commonsUrl(bare.toLowerCase());
+    if (url){
+      try {
+        if (playingAudio) playingAudio.pause();
+        playingAudio = new Audio(url);
+        await playingAudio.play();
+        return;
+      } catch (e){}
+    }
+  }
+  tts(bare);
+}
+
+/* ---------------- FSRS review mode */
+// Scheduling comes from ts-fsrs with default parameters. Card state lives on
+// each word object as w.c (compact keys); a word with no w.c IS a new card —
+// that makes the migration of existing files implicit and fully reversible.
+const FS = FSRS.fsrs(FSRS.generatorParameters());
+let rvOpen = false, rvQueue = [], rvCur = null, rvRevealed = false;
+let rvStats = { done: 0, again: 0 };
+let pendingLog = [], logT;
+
+function cardOf(w){
+  if (!w.c) return FSRS.createEmptyCard(new Date(w.t || Date.now()));
+  return { due: new Date(w.c.d), stability: w.c.sb, difficulty: w.c.df,
+    elapsed_days: w.c.ed || 0, scheduled_days: w.c.sd || 0, reps: w.c.r || 0,
+    lapses: w.c.l || 0, state: w.c.s || 0, learning_steps: w.c.ls || 0,
+    last_review: w.c.lr ? new Date(w.c.lr) : undefined };
+}
+function storeCard(w, card){
+  w.c = { d: +card.due, sb: card.stability, df: card.difficulty,
+    ed: card.elapsed_days, sd: card.scheduled_days, r: card.reps, l: card.lapses,
+    s: card.state, ls: card.learning_steps || 0,
+    lr: card.last_review ? +card.last_review : 0 };
+}
+function todayStr(){
+  const d = new Date();
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") +
+    "-" + String(d.getDate()).padStart(2, "0");
+}
+function newCapLeft(){
+  const s = state.settings;
+  const cap = (typeof s.newPerDay === "number" && s.newPerDay >= 0) ? s.newPerDay : 20;
+  if (s.introDay !== todayStr()) return cap;
+  return Math.max(0, cap - (s.introCount || 0));
+}
+function bumpIntro(){
+  const s = state.settings, day = todayStr();
+  if (s.introDay !== day){ s.introDay = day; s.introCount = 0; }
+  s.introCount = (s.introCount || 0) + 1;
+}
+function dueCounts(){
+  const now = Date.now();
+  let due = 0, fresh = 0;
+  state.words.forEach(w => {
+    if (w.c && w.c.s !== 0){ if (w.c.d <= now) due++; }
+    else fresh++;
+  });
+  return { due: due, fresh: Math.min(fresh, newCapLeft()) };
+}
+function renderDue(){
+  const c = dueCounts(), total = c.due + c.fresh;
+  $("#nDue").textContent = total;
+  $("#btnReview").dataset.due = total > 0 ? "1" : "0";
+}
+function fmtIvl(dueMs, nowMs){
+  const ms = dueMs - nowMs;
+  if (ms < 3600e3) return Math.max(1, Math.round(ms / 60e3)) + "m";
+  if (ms < 86400e3) return Math.round(ms / 3600e3) + "h";
+  const d = Math.round(ms / 86400e3);
+  if (d < 30) return d + "d";
+  if (d < 365) return Math.round(d / 30) + "mo";
+  return (Math.round(d / 36.5) / 10) + "y";
+}
+function nextDueText(){
+  const now = Date.now();
+  let next = null;
+  state.words.forEach(w => {
+    if (w.c && w.c.s !== 0 && w.c.d > now) next = next === null ? w.c.d : Math.min(next, w.c.d);
+  });
+  const capReached = state.words.some(w => !w.c || w.c.s === 0) && newCapLeft() === 0;
+  let t = "";
+  if (next !== null){
+    const d = next - now;
+    const when = d < 3600e3 ? "in " + Math.max(1, Math.round(d / 60e3)) + " min"
+      : d < 86400e3 ? "in " + Math.round(d / 3600e3) + " h"
+      : "in " + Math.round(d / 86400e3) + " d";
+    t = "Next review " + when + ".";
+  }
+  if (capReached) t += (t ? " " : "") + "New cards resume tomorrow — the daily cap is done.";
+  return t || "Search the dictionary and add words to keep the queue alive.";
+}
+function startReview(){
+  const now = Date.now();
+  const due = [], fresh = [];
+  state.words.forEach(w => {
+    if (w.c && w.c.s !== 0){ if (w.c.d <= now) due.push(w); }
+    else fresh.push(w);
+  });
+  due.sort((a, b) => a.c.d - b.c.d);
+  rvQueue = due.concat(fresh.slice(0, newCapLeft()));
+  rvStats = { done: 0, again: 0 };
+  nextCard();
+}
+function nextCard(){
+  rvCur = rvQueue.shift() || null;
+  rvRevealed = false;
+  renderReviewCard();
+}
+function renderReviewCard(){
+  const box = $("#rvwrap"), meta = $("#rvmeta");
+  if (!state.words.length){
+    meta.textContent = "";
+    box.innerHTML = '<div class="rvdone"><div class="big">Your file is empty.</div>' +
+      '<p>Search the dictionary above and add words — they come up for review here.</p></div>';
+    return;
+  }
+  if (!rvCur){
+    meta.textContent = "";
+    if (rvStats.done){
+      const rate = Math.round(100 * rvStats.again / rvStats.done);
+      box.innerHTML = '<div class="rvdone"><h3>Session complete</h3>' +
+        '<div class="big">' + rvStats.done + (rvStats.done === 1 ? " card" : " cards") + ' reviewed</div>' +
+        '<p>' + rvStats.again + ' marked Again (' + rate + '%). ' + esc(nextDueText()) + '</p></div>';
+    } else {
+      box.innerHTML = '<div class="rvdone"><div class="big">Nothing due right now.</div>' +
+        '<p>' + esc(nextDueText()) + '</p></div>';
+    }
+    return;
+  }
+  const w = rvCur;
+  const main = w.ac ? acuteize(w.ac) : w.ru;
+  const gx = extraText(w.pos, w.x);
+  let html = '<div class="rvcard" id="rvcard"><div class="rvru">' + esc(main) + '</div>';
+  if (!rvRevealed){
+    html += '<div class="rvtap">tap to reveal · space</div></div>';
+  } else {
+    const now = new Date();
+    const rec = FS.repeat(cardOf(w), now);
+    const ivl = r => fmtIvl(+rec[r].card.due, +now);
+    html += '<div class="rvans"><div class="rven">' + esc(w.en) +
+      (gx ? ' <span class="gx">' + esc(gx) + '</span>' : "") + '</div>' +
+      (w.pr ? '<div class="rvpr">' + esc(w.pr) + '</div>' : "") +
+      '<div style="margin-top:8px">' + spkBtn(bareOf(w.ru)) + '</div>' +
+      '<div class="rvgrades">' +
+      '<button class="gbtn again" data-g="1">Again<span class="ivl">' + ivl(1) + '</span></button>' +
+      '<button class="gbtn" data-g="2">Hard<span class="ivl">' + ivl(2) + '</span></button>' +
+      '<button class="gbtn" data-g="3">Good<span class="ivl">' + ivl(3) + '</span></button>' +
+      '<button class="gbtn" data-g="4">Easy<span class="ivl">' + ivl(4) + '</span></button>' +
+      '</div></div></div>';
+  }
+  html += '<div class="rvprog">' + (rvQueue.length + 1) + ' in session · ' + rvStats.done + ' done</div>';
+  box.innerHTML = html;
+  meta.textContent = "Recall it, reveal, then grade yourself — 1 Again · 2 Hard · 3 Good · 4 Easy.";
+  if (rvRevealed && state.settings.autoSay) speak(bareOf(w.ru));
+}
+function gradeCur(r){
+  const w = rvCur;
+  if (!w || !rvRevealed || !(r >= 1 && r <= 4)) return;
+  const wasNew = !w.c || w.c.s === 0;
+  const now = new Date();
+  const rec = FS.repeat(cardOf(w), now);
+  const res = rec[r];
+  storeCard(w, res.card);
+  if (wasNew) bumpIntro();
+  rvStats.done++;
+  if (r === 1) rvStats.again++;
+  queueLog({ w: keyOf(w), r: r, at: +now,
+    el: res.log.elapsed_days, sc: res.log.scheduled_days, st: res.log.state });
+  if (+res.card.due <= Date.now() + 20 * 60e3) rvQueue.push(w);  // short steps return this session
+  scheduleSave();
+  renderDue();
+  nextCard();
+}
+
+// Ratings ride to Firestore in an append-only per-day log. Grades always
+// persist locally first; the cloud copy catches up whenever we're online.
+function queueLog(entry){
+  pendingLog.push(entry);
+  persistLocal();
+  clearTimeout(logT);
+  logT = setTimeout(flushLog, 1500);
+}
+async function flushLog(){
+  if (!user || !pendingLog.length || !navigator.onLine) return;
+  const taken = pendingLog;
+  pendingLog = [];
+  const byDay = {};
+  taken.forEach(e => {
+    const d = new Date(e.at);
+    const day = d.getFullYear() + String(d.getMonth() + 1).padStart(2, "0") +
+      String(d.getDate()).padStart(2, "0");
+    (byDay[day] = byDay[day] || []).push(e);
+  });
+  try {
+    for (const day in byDay) await FB.appendReviewLog(user.uid, day, byDay[day]);
+    persistLocal();
+  } catch (e){
+    pendingLog = taken.concat(pendingLog);
+    persistLocal();
+  }
+}
+function syncReviewSettings(){
+  $("#setNewCap").value = (typeof state.settings.newPerDay === "number") ? state.settings.newPerDay : 20;
+  const on = !!state.settings.autoSay;
+  $("#setAutoSay").setAttribute("aria-pressed", String(on));
+  $("#setAutoSay").textContent = on ? "On" : "Off";
+}
+$("#btnReview").addEventListener("click", () => {
+  if (rvOpen){ showView("file"); return; }
+  $("#search").value = ""; hideSugg();
+  syncReviewSettings();
+  showView("review");
+  rvOpen = true;
+  startReview();
+});
+$("#setNewCap").addEventListener("change", () => {
+  let v = parseInt($("#setNewCap").value, 10);
+  if (!(v >= 0)) v = 20;
+  if (v > 500) v = 500;
+  state.settings.newPerDay = v;
+  $("#setNewCap").value = v;
+  scheduleSave(); renderDue();
+});
+$("#setAutoSay").addEventListener("click", () => {
+  state.settings.autoSay = !state.settings.autoSay;
+  syncReviewSettings(); scheduleSave();
+});
+document.addEventListener("keydown", e => {
+  if (!rvOpen || e.target.matches("input,textarea,select")) return;
+  if (e.key === " "){
+    e.preventDefault();
+    if (!rvRevealed && rvCur){ rvRevealed = true; renderReviewCard(); }
+  } else if (rvRevealed && rvCur && ["1","2","3","4"].includes(e.key)){
+    gradeCur(Number(e.key));
+  }
+});
+
+/* ---------------- shareable word sets */
+const CODE_ALPHA = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";   // no 0/O/1/I/l lookalikes
+function genCode(){
+  const buf = new Uint32Array(7);
+  crypto.getRandomValues(buf);
+  let s = "";
+  for (let i = 0; i < 7; i++) s += CODE_ALPHA[buf[i] % CODE_ALPHA.length];
+  return s;
+}
+function shareUrl(code){ return location.origin + "/s/" + code; }
+let pendingRedeem = null;
+
+function renderSets(){
+  const wrap = $("#setswrap");
+  if (!user){
+    wrap.innerHTML = '<div class="setbox"><div class="setbody">' +
+      '<p class="setnote">Sign in to create and redeem word sets — they need an account ' +
+      'so the words can travel between people.</p></div></div>';
+    return;
+  }
+  wrap.innerHTML =
+    '<div class="setbox"><h3>Redeem a code</h3><div class="setbody">' +
+      '<div class="setform" style="flex-direction:row;flex-wrap:wrap;align-items:center">' +
+      '<input type="text" id="redeemIn" placeholder="e.g. K7MPQ2A" style="max-width:220px;text-transform:uppercase" autocomplete="off">' +
+      '<button class="ibtn primary" id="redeemBtn">Redeem</button></div></div></div>' +
+    '<div class="setbox"><h3>Create a set</h3><div class="setbody"><div class="setform">' +
+      '<span class="lab">Set name</span><input type="text" id="setName" placeholder="Week 3 — food words">' +
+      '<span class="lab">Description (optional)</span><input type="text" id="setDesc">' +
+      '<span class="lab">Words · <span id="pickN">0</span> selected</span>' +
+      '<div id="pickWrap"></div>' +
+      '<div><button class="ibtn primary" id="setCreate">Create set</button> ' +
+      '<span id="setMsg" class="setnote"></span></div>' +
+    '</div></div></div>' +
+    '<div class="setbox"><h3>My sets</h3><div id="mySets">' +
+      '<div class="setbody"><p class="setnote">Loading…</p></div></div></div>';
+  renderPicker();
+  $("#redeemBtn").onclick = () => {
+    const c = $("#redeemIn").value.trim().toUpperCase();
+    if (c) beginRedeem(c);
+  };
+  $("#setCreate").onclick = createSetFlow;
+  loadMySets();
+}
+function renderPicker(){
+  const groups = {};
+  state.words.forEach((w, i) => {
+    const g = w.g || "Ungrouped";
+    (groups[g] = groups[g] || []).push(i);
+  });
+  const names = Object.keys(groups);
+  $("#pickWrap").innerHTML = names.length ? names.map(g =>
+    '<div class="pickgrp"><header><input type="checkbox" class="pickall"><span>' + esc(g) +
+    '</span><span style="opacity:.55">' + groups[g].length + '</span></header>' +
+    groups[g].map(i => {
+      const w = state.words[i];
+      return '<label class="pickrow"><input type="checkbox" class="pick" data-i="' + i + '">' +
+        '<b>' + esc(w.ru) + '</b><span class="pen">' + esc(w.en) + '</span></label>';
+    }).join("") + '</div>').join("")
+    : '<p class="setnote">Your file is empty — add words first.</p>';
+  $("#pickWrap").addEventListener("change", e => {
+    if (e.target.classList.contains("pickall"))
+      e.target.closest(".pickgrp").querySelectorAll(".pick").forEach(c => c.checked = e.target.checked);
+    $("#pickN").textContent = document.querySelectorAll("#pickWrap .pick:checked").length;
+  });
+}
+async function createSetFlow(){
+  const name = $("#setName").value.trim();
+  const desc = $("#setDesc").value.trim();
+  const picked = [...document.querySelectorAll("#pickWrap .pick:checked")]
+    .map(c => state.words[Number(c.dataset.i)]).filter(Boolean);
+  const msg = $("#setMsg");
+  if (!name){ msg.textContent = "Give the set a name first."; return; }
+  if (!picked.length){ msg.textContent = "Tick at least one word."; return; }
+  if (picked.length > 500){ msg.textContent = "Sets are capped at 500 words."; return; }
+  msg.textContent = "Creating…";
+  // snapshot: word data only — no groups, timestamps, or review state travels
+  const words = picked.map(w => ({ ru: w.ru, ac: w.ac || "", pr: w.pr || "",
+    en: w.en, pos: w.pos, x: w.x || "" }));
+  let code = genCode();
+  try {
+    try { await FB.createSet(user.uid, code, name, desc, words); }
+    catch (e){ code = genCode(); await FB.createSet(user.uid, code, name, desc, words); }
+    msg.textContent = "";
+    renderSets();
+    showImportBar('<b>“' + esc(name) + '”</b> is live — code <b>' + esc(code) +
+      '</b>, link <span class="mono">' + esc(shareUrl(code)) + '</span>',
+      '<button class="ibtn primary" id="impAdd">Copy link</button>' +
+      '<button class="ibtn" id="impCancel">Close</button>');
+    $("#impCancel").onclick = hideImportBar;
+    $("#impAdd").onclick = async () => {
+      try { await navigator.clipboard.writeText(shareUrl(code));
+        $("#impAdd").textContent = "Copied ✓"; } catch (e){}
+    };
+  } catch (e){
+    msg.textContent = "Couldn’t create the set — " + FB.friendlyError(e);
+  }
+}
+async function loadMySets(){
+  const box = $("#mySets");
+  if (!box) return;
+  try {
+    const sets = await FB.listMySets(user.uid);
+    if (!sets.length){
+      box.innerHTML = '<div class="setbody"><p class="setnote">No sets yet — tick some words above and create one.</p></div>';
+      return;
+    }
+    const rows = await Promise.all(sets.map(async s => {
+      let n = 0;
+      try { n = await FB.countRedemptions(s.code); } catch (e){}
+      return '<div class="setrow"><span class="scode">' + esc(s.code) + '</span>' +
+        '<span class="smeta"><b>' + esc(s.name) + '</b> · ' + s.count + ' words · ' +
+        n + (n === 1 ? ' import' : ' imports') + '</span>' +
+        '<button class="fbtn scopy" data-code="' + esc(s.code) + '">Copy link</button></div>';
+    }));
+    box.innerHTML = rows.join("");
+  } catch (e){
+    box.innerHTML = '<div class="setbody"><p class="setnote">Couldn’t load your sets — ' +
+      esc(FB.friendlyError(e)) + '</p></div>';
+  }
+}
+async function beginRedeem(code){
+  if (!user){ pendingRedeem = code; openAuth(); return; }
+  const okBtn = '<button class="ibtn" id="impCancel">OK</button>';
+  let set = null;
+  try { set = await FB.getSet(code); } catch (e){}
+  if (!set){
+    showImportBar('<b>No set found</b> for code ' + esc(code) + ' — check it and try again.', okBtn);
+    $("#impCancel").onclick = hideImportBar;
+    return;
+  }
+  const have = haveKeys();
+  const all = (set.words || []).filter(validWord);
+  const fresh = all.filter(w => !have.has(keyOf(w)));
+  const dup = all.length - fresh.length;
+  if (!fresh.length){
+    showImportBar('<b>“' + esc(set.name) + '”</b> — all ' + all.length +
+      ' words are already in your file.', okBtn);
+    $("#impCancel").onclick = () => { FB.redeemSet(code, user.uid).catch(() => {}); hideImportBar(); };
+    return;
+  }
+  showImportBar('<b>“' + esc(set.name) + '”</b>' + (set.desc ? ' — ' + esc(set.desc) : "") +
+    ': ' + fresh.length + ' new words' + (dup ? ' (' + dup + ' already in your file)' : "") + '.',
+    '<button class="ibtn primary" id="impAdd">Add to my file</button>' +
+    '<button class="ibtn" id="impCancel">Cancel</button>');
+  $("#impCancel").onclick = hideImportBar;
+  $("#impAdd").onclick = async () => {
+    fresh.forEach(w => state.words.push({
+      ru: w.ru, ac: w.ac || "",
+      pr: w.pr || (/[а-яё]/i.test(w.ru) ? translit(w.ac || w.ru) : ""),
+      en: w.en, pos: w.pos, g: set.name, x: w.x || "", t: Date.now(),
+    }));
+    scheduleSave(); renderAll();
+    try { await FB.redeemSet(code, user.uid); } catch (e){}
+    showImportBar('<b>Added ' + fresh.length + ' words</b> from “' + esc(set.name) +
+      '” — they join the review queue as new cards.', okBtn);
+    $("#impCancel").onclick = hideImportBar;
+  };
+}
+$("#btnSets").addEventListener("click", () => {
+  if (!$("#p-sets").hidden){ showView("file"); return; }
+  $("#search").value = ""; hideSugg();
+  showView("sets");
+  renderSets();
+});
 
 /* ---------------- boot */
 $("#nDict").textContent = "loading…";
 (async () => {
+  const shareMatch = location.pathname.match(/^\/s\/([A-Za-z0-9]{4,12})\/?$/);
+  if (shareMatch){
+    pendingRedeem = shareMatch[1].toUpperCase();
+    history.replaceState({}, "", "/");
+  }
   const saved = await store.load();
   const stripL = w => { const c = Object.assign({}, w); delete c.l; return c; };
   if (saved && Array.isArray(saved.words)){
     state.words = saved.words.filter(validWord).map(stripL);
-    if (saved.settings && typeof saved.settings.group === "string" && saved.settings.group)
-      state.settings.group = saved.settings.group;
+    if (saved.settings && typeof saved.settings === "object")
+      state.settings = Object.assign({}, state.settings, saved.settings);
+    if (typeof state.settings.group !== "string" || !state.settings.group)
+      state.settings.group = "My additions";
     if (typeof saved.syncHash === "string") syncHash = saved.syncHash;
+    if (Array.isArray(saved.pendingLog)) pendingLog = saved.pendingLog;
   } else {
     state.words = STARTER.map(stripL);
   }
@@ -960,7 +1537,7 @@ $("#nDict").textContent = "loading…";
   renderAcct();
   renderAll();
 
-  fetch("dict.json").then(r => {
+  fetch("/dict.json").then(r => {
     if (!r.ok) throw new Error("HTTP " + r.status);
     return r.json();
   }).then(d => {
@@ -992,10 +1569,14 @@ $("#nDict").textContent = "loading…";
   if (configured){
     try { FB.init(window.FIREBASE_CONFIG, !!window.USE_EMULATORS); FB.onUser(handleAuth); }
     catch (e){ setSaveStat("account system failed to start — working locally"); }
+  } else if (pendingRedeem){
+    showImportBar("<b>Word sets need accounts</b>, which aren't set up on this copy of the site.",
+      '<button class="ibtn" id="impCancel">OK</button>');
+    $("#impCancel").onclick = hideImportBar;
   }
 
   if ("serviceWorker" in navigator){
-    try { navigator.serviceWorker.register("sw.js"); } catch (e){}
+    try { navigator.serviceWorker.register("/sw.js"); } catch (e){}
   }
 })();
 </script>
