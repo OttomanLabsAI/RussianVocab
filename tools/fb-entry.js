@@ -1,4 +1,4 @@
-// Source for vendor/firebase-bundle-2.js — the pinned Firebase Auth+Firestore
+// Source for vendor/firebase-bundle-3.js — the pinned Firebase Auth+Firestore
 // bundle plus this app's sync API. Rebuild with: npm run build (see tools/README.md).
 // The users/{uid} layout must stay wire-compatible with existing accounts:
 // users/{uid} → {v, chunks, count, settings, updated}, users/{uid}/w/{n} → {words}.
@@ -46,16 +46,19 @@ export async function loadCloud(uid){
   return {
     words: [].concat(...parts.map(p => p[1])),
     settings: data.settings || {},
+    stats: data.stats || {},
     chunks: data.chunks || parts.length,
   };
 }
 
-export async function saveCloud(uid, words, settings, prevChunks){
+// stats = { days: { YYYYMMDD: { n: reviews, a: agains } } } — the daily
+// aggregate behind the progress calendar; the per-day log holds the detail.
+export async function saveCloud(uid, words, settings, prevChunks, stats){
   const batch = writeBatch(db);
   const n = Math.max(1, Math.ceil(words.length / CHUNK));
   batch.set(doc(db, "users", uid), {
     v: 1, chunks: n, count: words.length,
-    settings: settings || {}, updated: serverTimestamp(),
+    settings: settings || {}, stats: stats || {}, updated: serverTimestamp(),
   });
   for (let i = 0; i < n; i++)
     batch.set(doc(db, "users", uid, "w", String(i)),

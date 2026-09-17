@@ -5,3 +5,8 @@ node_modules/
 firebase-debug.log
 tools/node_modules/
 tools/package-lock.json
+ios/*.xcodeproj/
+ios/*.xcworkspace/
+ios/DerivedData/
+ios/**/xcuserdata/
+ios/GoogleService-Info.plist
