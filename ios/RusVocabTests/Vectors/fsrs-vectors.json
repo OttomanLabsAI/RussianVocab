@@ -1,0 +1,2257 @@
+{
+ "generated_from": "ts-fsrs v5.4.2 using FSRS-6.0",
+ "t0": "2026-09-17T09:00:00.000Z",
+ "params": {
+  "request_retention": 0.9,
+  "maximum_interval": 36500,
+  "w": [
+   0.212,
+   1.2931,
+   2.3065,
+   8.2956,
+   6.4133,
+   0.8334,
+   3.0194,
+   0.001,
+   1.8722,
+   0.1666,
+   0.796,
+   1.4835,
+   0.0614,
+   0.2629,
+   1.6483,
+   0.6014,
+   1.8729,
+   0.5425,
+   0.0912,
+   0.0658,
+   0.1542
+  ],
+  "enable_fuzz": false,
+  "enable_short_term": true,
+  "learning_steps": [
+   "1m",
+   "10m"
+  ],
+  "relearning_steps": [
+   "10m"
+  ]
+ },
+ "scenarios": {
+  "new_good_chain": [
+   {
+    "now": "2026-09-17T09:00:00.000Z",
+    "rating": 3,
+    "options": {
+     "1": {
+      "due": "2026-09-17T09:01:00.000Z",
+      "stability": 0.212,
+      "difficulty": 6.4133,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 1,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:00:00.000Z"
+     },
+     "2": {
+      "due": "2026-09-17T09:06:00.000Z",
+      "stability": 1.2931,
+      "difficulty": 5.11217071,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 1,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:00:00.000Z"
+     },
+     "3": {
+      "due": "2026-09-17T09:10:00.000Z",
+      "stability": 2.3065,
+      "difficulty": 2.11810397,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 1,
+      "reps": 1,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:00:00.000Z"
+     },
+     "4": {
+      "due": "2026-09-25T09:00:00.000Z",
+      "stability": 8.2956,
+      "difficulty": 1,
+      "elapsed_days": 0,
+      "scheduled_days": 8,
+      "learning_steps": 0,
+      "reps": 1,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-17T09:00:00.000Z"
+     }
+    },
+    "result": {
+     "due": "2026-09-17T09:10:00.000Z",
+     "stability": 2.3065,
+     "difficulty": 2.11810397,
+     "elapsed_days": 0,
+     "scheduled_days": 0,
+     "learning_steps": 1,
+     "reps": 1,
+     "lapses": 0,
+     "state": 1,
+     "last_review": "2026-09-17T09:00:00.000Z"
+    },
+    "log": {
+     "elapsed_days": 0,
+     "scheduled_days": 0,
+     "state": 0
+    }
+   },
+   {
+    "now": "2026-09-17T09:10:00.000Z",
+    "rating": 3,
+    "options": {
+     "1": {
+      "due": "2026-09-17T09:11:00.000Z",
+      "stability": 0.77508398,
+      "difficulty": 7.39450274,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 2,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:10:00.000Z"
+     },
+     "2": {
+      "due": "2026-09-17T09:16:00.000Z",
+      "stability": 2.3065,
+      "difficulty": 4.75285849,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 1,
+      "reps": 2,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:10:00.000Z"
+     },
+     "3": {
+      "due": "2026-09-19T09:10:00.000Z",
+      "stability": 2.3065,
+      "difficulty": 2.11121424,
+      "elapsed_days": 0,
+      "scheduled_days": 2,
+      "learning_steps": 0,
+      "reps": 2,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-17T09:10:00.000Z"
+     },
+     "4": {
+      "due": "2026-09-21T09:10:00.000Z",
+      "stability": 3.94605407,
+      "difficulty": 1,
+      "elapsed_days": 0,
+      "scheduled_days": 4,
+      "learning_steps": 0,
+      "reps": 2,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-17T09:10:00.000Z"
+     }
+    },
+    "result": {
+     "due": "2026-09-19T09:10:00.000Z",
+     "stability": 2.3065,
+     "difficulty": 2.11121424,
+     "elapsed_days": 0,
+     "scheduled_days": 2,
+     "learning_steps": 0,
+     "reps": 2,
+     "lapses": 0,
+     "state": 2,
+     "last_review": "2026-09-17T09:10:00.000Z"
+    },
+    "log": {
+     "elapsed_days": 0,
+     "scheduled_days": 0,
+     "state": 1
+    }
+   },
+   {
+    "now": "2026-09-18T09:10:00.000Z",
+    "rating": 3,
+    "options": {
+     "1": {
+      "due": "2026-09-18T09:20:00.000Z",
+      "stability": 0.57141348,
+      "difficulty": 7.39223814,
+      "elapsed_days": 1,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 3,
+      "lapses": 1,
+      "state": 3,
+      "last_review": "2026-09-18T09:10:00.000Z"
+     },
+     "2": {
+      "due": "2026-09-23T09:10:00.000Z",
+      "stability": 5.32112938,
+      "difficulty": 4.74828477,
+      "elapsed_days": 1,
+      "scheduled_days": 5,
+      "learning_steps": 0,
+      "reps": 3,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-18T09:10:00.000Z"
+     },
+     "3": {
+      "due": "2026-09-25T09:10:00.000Z",
+      "stability": 7.31918604,
+      "difficulty": 2.1043314,
+      "elapsed_days": 1,
+      "scheduled_days": 7,
+      "learning_steps": 0,
+      "reps": 3,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-18T09:10:00.000Z"
+     },
+     "4": {
+      "due": "2026-09-30T09:10:00.000Z",
+      "stability": 11.69475968,
+      "difficulty": 1,
+      "elapsed_days": 1,
+      "scheduled_days": 12,
+      "learning_steps": 0,
+      "reps": 3,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-18T09:10:00.000Z"
+     }
+    },
+    "result": {
+     "due": "2026-09-25T09:10:00.000Z",
+     "stability": 7.31918604,
+     "difficulty": 2.1043314,
+     "elapsed_days": 1,
+     "scheduled_days": 7,
+     "learning_steps": 0,
+     "reps": 3,
+     "lapses": 0,
+     "state": 2,
+     "last_review": "2026-09-18T09:10:00.000Z"
+    },
+    "log": {
+     "elapsed_days": 1,
+     "scheduled_days": 2,
+     "state": 2
+    }
+   },
+   {
+    "now": "2026-09-21T09:10:00.000Z",
+    "rating": 3,
+    "options": {
+     "1": {
+      "due": "2026-09-21T09:20:00.000Z",
+      "stability": 1.14856324,
+      "difficulty": 7.38997579,
+      "elapsed_days": 3,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 4,
+      "lapses": 1,
+      "state": 3,
+      "last_review": "2026-09-21T09:10:00.000Z"
+     },
+     "2": {
+      "due": "2026-10-06T09:10:00.000Z",
+      "stability": 14.85340355,
+      "difficulty": 4.74371562,
+      "elapsed_days": 3,
+      "scheduled_days": 15,
+      "learning_steps": 0,
+      "reps": 4,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-21T09:10:00.000Z"
+     },
+     "3": {
+      "due": "2026-10-11T09:10:00.000Z",
+      "stability": 19.8469837,
+      "difficulty": 2.09745544,
+      "elapsed_days": 3,
+      "scheduled_days": 20,
+      "learning_steps": 0,
+      "reps": 4,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-21T09:10:00.000Z"
+     },
+     "4": {
+      "due": "2026-10-22T09:10:00.000Z",
+      "stability": 30.78249828,
+      "difficulty": 1,
+      "elapsed_days": 3,
+      "scheduled_days": 31,
+      "learning_steps": 0,
+      "reps": 4,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-21T09:10:00.000Z"
+     }
+    },
+    "result": {
+     "due": "2026-10-11T09:10:00.000Z",
+     "stability": 19.8469837,
+     "difficulty": 2.09745544,
+     "elapsed_days": 3,
+     "scheduled_days": 20,
+     "learning_steps": 0,
+     "reps": 4,
+     "lapses": 0,
+     "state": 2,
+     "last_review": "2026-09-21T09:10:00.000Z"
+    },
+    "log": {
+     "elapsed_days": 3,
+     "scheduled_days": 7,
+     "state": 2
+    }
+   },
+   {
+    "now": "2026-10-01T09:10:00.000Z",
+    "rating": 3,
+    "options": {
+     "1": {
+      "due": "2026-10-01T09:20:00.000Z",
+      "stability": 1.91263897,
+      "difficulty": 7.38771571,
+      "elapsed_days": 10,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 5,
+      "lapses": 1,
+      "state": 3,
+      "last_review": "2026-10-01T09:10:00.000Z"
+     },
+     "2": {
+      "due": "2026-11-10T09:10:00.000Z",
+      "stability": 40.40156222,
+      "difficulty": 4.73915103,
+      "elapsed_days": 10,
+      "scheduled_days": 40,
+      "learning_steps": 0,
+      "reps": 5,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-10-01T09:10:00.000Z"
+     },
+     "3": {
+      "due": "2026-11-24T09:10:00.000Z",
+      "stability": 54.02486618,
+      "difficulty": 2.09058635,
+      "elapsed_days": 10,
+      "scheduled_days": 54,
+      "learning_steps": 0,
+      "reps": 5,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-10-01T09:10:00.000Z"
+     },
+     "4": {
+      "due": "2026-12-24T09:10:00.000Z",
+      "stability": 83.85873979,
+      "difficulty": 1,
+      "elapsed_days": 10,
+      "scheduled_days": 84,
+      "learning_steps": 0,
+      "reps": 5,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-10-01T09:10:00.000Z"
+     }
+    },
+    "result": {
+     "due": "2026-11-24T09:10:00.000Z",
+     "stability": 54.02486618,
+     "difficulty": 2.09058635,
+     "elapsed_days": 10,
+     "scheduled_days": 54,
+     "learning_steps": 0,
+     "reps": 5,
+     "lapses": 0,
+     "state": 2,
+     "last_review": "2026-10-01T09:10:00.000Z"
+    },
+    "log": {
+     "elapsed_days": 10,
+     "scheduled_days": 20,
+     "state": 2
+    }
+   },
+   {
+    "now": "2026-10-31T09:10:00.000Z",
+    "rating": 3,
+    "options": {
+     "1": {
+      "due": "2026-10-31T09:20:00.000Z",
+      "stability": 2.94730125,
+      "difficulty": 7.38545788,
+      "elapsed_days": 30,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 6,
+      "lapses": 1,
+      "state": 3,
+      "last_review": "2026-10-31T09:10:00.000Z"
+     },
+     "2": {
+      "due": "2027-02-13T09:10:00.000Z",
+      "stability": 105.3035614,
+      "difficulty": 4.73459101,
+      "elapsed_days": 30,
+      "scheduled_days": 105,
+      "learning_steps": 0,
+      "reps": 6,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-10-31T09:10:00.000Z"
+     },
+     "3": {
+      "due": "2027-03-19T09:10:00.000Z",
+      "stability": 139.29040529,
+      "difficulty": 2.08372413,
+      "elapsed_days": 30,
+      "scheduled_days": 139,
+      "learning_steps": 0,
+      "reps": 6,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-10-31T09:10:00.000Z"
+     },
+     "4": {
+      "due": "2027-06-02T09:10:00.000Z",
+      "stability": 213.71869437,
+      "difficulty": 1,
+      "elapsed_days": 30,
+      "scheduled_days": 214,
+      "learning_steps": 0,
+      "reps": 6,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-10-31T09:10:00.000Z"
+     }
+    },
+    "result": {
+     "due": "2027-03-19T09:10:00.000Z",
+     "stability": 139.29040529,
+     "difficulty": 2.08372413,
+     "elapsed_days": 30,
+     "scheduled_days": 139,
+     "learning_steps": 0,
+     "reps": 6,
+     "lapses": 0,
+     "state": 2,
+     "last_review": "2026-10-31T09:10:00.000Z"
+    },
+    "log": {
+     "elapsed_days": 30,
+     "scheduled_days": 54,
+     "state": 2
+    }
+   }
+  ],
+  "new_again_recover": [
+   {
+    "now": "2026-09-17T09:00:00.000Z",
+    "rating": 1,
+    "options": {
+     "1": {
+      "due": "2026-09-17T09:01:00.000Z",
+      "stability": 0.212,
+      "difficulty": 6.4133,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 1,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:00:00.000Z"
+     },
+     "2": {
+      "due": "2026-09-17T09:06:00.000Z",
+      "stability": 1.2931,
+      "difficulty": 5.11217071,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 1,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:00:00.000Z"
+     },
+     "3": {
+      "due": "2026-09-17T09:10:00.000Z",
+      "stability": 2.3065,
+      "difficulty": 2.11810397,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 1,
+      "reps": 1,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:00:00.000Z"
+     },
+     "4": {
+      "due": "2026-09-25T09:00:00.000Z",
+      "stability": 8.2956,
+      "difficulty": 1,
+      "elapsed_days": 0,
+      "scheduled_days": 8,
+      "learning_steps": 0,
+      "reps": 1,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-17T09:00:00.000Z"
+     }
+    },
+    "result": {
+     "due": "2026-09-17T09:01:00.000Z",
+     "stability": 0.212,
+     "difficulty": 6.4133,
+     "elapsed_days": 0,
+     "scheduled_days": 0,
+     "learning_steps": 0,
+     "reps": 1,
+     "lapses": 0,
+     "state": 1,
+     "last_review": "2026-09-17T09:00:00.000Z"
+    },
+    "log": {
+     "elapsed_days": 0,
+     "scheduled_days": 0,
+     "state": 0
+    }
+   },
+   {
+    "now": "2026-09-17T09:01:00.000Z",
+    "rating": 3,
+    "options": {
+     "1": {
+      "due": "2026-09-17T09:02:00.000Z",
+      "stability": 0.08335672,
+      "difficulty": 8.80630447,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 2,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:01:00.000Z"
+     },
+     "2": {
+      "due": "2026-09-17T09:07:00.000Z",
+      "stability": 0.212,
+      "difficulty": 7.60420977,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 2,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:01:00.000Z"
+     },
+     "3": {
+      "due": "2026-09-17T09:11:00.000Z",
+      "stability": 0.24668919,
+      "difficulty": 6.40211507,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 1,
+      "reps": 2,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:01:00.000Z"
+     },
+     "4": {
+      "due": "2026-09-18T09:01:00.000Z",
+      "stability": 0.42437996,
+      "difficulty": 5.20002037,
+      "elapsed_days": 0,
+      "scheduled_days": 1,
+      "learning_steps": 0,
+      "reps": 2,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-17T09:01:00.000Z"
+     }
+    },
+    "result": {
+     "due": "2026-09-17T09:11:00.000Z",
+     "stability": 0.24668919,
+     "difficulty": 6.40211507,
+     "elapsed_days": 0,
+     "scheduled_days": 0,
+     "learning_steps": 1,
+     "reps": 2,
+     "lapses": 0,
+     "state": 1,
+     "last_review": "2026-09-17T09:01:00.000Z"
+    },
+    "log": {
+     "elapsed_days": 0,
+     "scheduled_days": 0,
+     "state": 1
+    }
+   },
+   {
+    "now": "2026-09-17T09:11:00.000Z",
+    "rating": 3,
+    "options": {
+     "1": {
+      "due": "2026-09-17T09:12:00.000Z",
+      "stability": 0.09603384,
+      "difficulty": 8.80262806,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 3,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:11:00.000Z"
+     },
+     "2": {
+      "due": "2026-09-17T09:17:00.000Z",
+      "stability": 0.24668919,
+      "difficulty": 7.59678469,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 1,
+      "reps": 3,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:11:00.000Z"
+     },
+     "3": {
+      "due": "2026-09-18T09:11:00.000Z",
+      "stability": 0.28420636,
+      "difficulty": 6.39094132,
+      "elapsed_days": 0,
+      "scheduled_days": 1,
+      "learning_steps": 0,
+      "reps": 3,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-17T09:11:00.000Z"
+     },
+     "4": {
+      "due": "2026-09-18T09:11:00.000Z",
+      "stability": 0.48892084,
+      "difficulty": 5.18509795,
+      "elapsed_days": 0,
+      "scheduled_days": 1,
+      "learning_steps": 0,
+      "reps": 3,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-17T09:11:00.000Z"
+     }
+    },
+    "result": {
+     "due": "2026-09-18T09:11:00.000Z",
+     "stability": 0.28420636,
+     "difficulty": 6.39094132,
+     "elapsed_days": 0,
+     "scheduled_days": 1,
+     "learning_steps": 0,
+     "reps": 3,
+     "lapses": 0,
+     "state": 2,
+     "last_review": "2026-09-17T09:11:00.000Z"
+    },
+    "log": {
+     "elapsed_days": 0,
+     "scheduled_days": 0,
+     "state": 1
+    }
+   },
+   {
+    "now": "2026-09-18T09:11:00.000Z",
+    "rating": 3,
+    "options": {
+     "1": {
+      "due": "2026-09-18T09:21:00.000Z",
+      "stability": 0.12628381,
+      "difficulty": 8.79895532,
+      "elapsed_days": 1,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 4,
+      "lapses": 1,
+      "state": 3,
+      "last_review": "2026-09-18T09:11:00.000Z"
+     },
+     "2": {
+      "due": "2026-09-19T09:11:00.000Z",
+      "stability": 1.40754452,
+      "difficulty": 7.58936704,
+      "elapsed_days": 1,
+      "scheduled_days": 1,
+      "learning_steps": 0,
+      "reps": 4,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-18T09:11:00.000Z"
+     },
+     "3": {
+      "due": "2026-09-20T09:11:00.000Z",
+      "stability": 2.15207825,
+      "difficulty": 6.37977875,
+      "elapsed_days": 1,
+      "scheduled_days": 2,
+      "learning_steps": 0,
+      "reps": 4,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-18T09:11:00.000Z"
+     },
+     "4": {
+      "due": "2026-09-22T09:11:00.000Z",
+      "stability": 3.78254363,
+      "difficulty": 5.17019046,
+      "elapsed_days": 1,
+      "scheduled_days": 4,
+      "learning_steps": 0,
+      "reps": 4,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-18T09:11:00.000Z"
+     }
+    },
+    "result": {
+     "due": "2026-09-20T09:11:00.000Z",
+     "stability": 2.15207825,
+     "difficulty": 6.37977875,
+     "elapsed_days": 1,
+     "scheduled_days": 2,
+     "learning_steps": 0,
+     "reps": 4,
+     "lapses": 0,
+     "state": 2,
+     "last_review": "2026-09-18T09:11:00.000Z"
+    },
+    "log": {
+     "elapsed_days": 1,
+     "scheduled_days": 1,
+     "state": 2
+    }
+   }
+  ],
+  "new_easy_then_hard": [
+   {
+    "now": "2026-09-17T09:00:00.000Z",
+    "rating": 4,
+    "options": {
+     "1": {
+      "due": "2026-09-17T09:01:00.000Z",
+      "stability": 0.212,
+      "difficulty": 6.4133,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 1,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:00:00.000Z"
+     },
+     "2": {
+      "due": "2026-09-17T09:06:00.000Z",
+      "stability": 1.2931,
+      "difficulty": 5.11217071,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 1,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:00:00.000Z"
+     },
+     "3": {
+      "due": "2026-09-17T09:10:00.000Z",
+      "stability": 2.3065,
+      "difficulty": 2.11810397,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 1,
+      "reps": 1,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:00:00.000Z"
+     },
+     "4": {
+      "due": "2026-09-25T09:00:00.000Z",
+      "stability": 8.2956,
+      "difficulty": 1,
+      "elapsed_days": 0,
+      "scheduled_days": 8,
+      "learning_steps": 0,
+      "reps": 1,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-17T09:00:00.000Z"
+     }
+    },
+    "result": {
+     "due": "2026-09-25T09:00:00.000Z",
+     "stability": 8.2956,
+     "difficulty": 1,
+     "elapsed_days": 0,
+     "scheduled_days": 8,
+     "learning_steps": 0,
+     "reps": 1,
+     "lapses": 0,
+     "state": 2,
+     "last_review": "2026-09-17T09:00:00.000Z"
+    },
+    "log": {
+     "elapsed_days": 0,
+     "scheduled_days": 0,
+     "state": 0
+    }
+   },
+   {
+    "now": "2026-09-25T09:00:00.000Z",
+    "rating": 2,
+    "options": {
+     "1": {
+      "due": "2026-09-25T09:10:00.000Z",
+      "stability": 1.38863246,
+      "difficulty": 7.02698957,
+      "elapsed_days": 8,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 2,
+      "lapses": 1,
+      "state": 3,
+      "last_review": "2026-09-25T09:00:00.000Z"
+     },
+     "2": {
+      "due": "2026-10-22T09:00:00.000Z",
+      "stability": 26.70418346,
+      "difficulty": 4.01060897,
+      "elapsed_days": 8,
+      "scheduled_days": 27,
+      "learning_steps": 0,
+      "reps": 2,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-25T09:00:00.000Z"
+     },
+     "3": {
+      "due": "2026-11-03T09:00:00.000Z",
+      "stability": 38.90515015,
+      "difficulty": 1,
+      "elapsed_days": 8,
+      "scheduled_days": 39,
+      "learning_steps": 0,
+      "reps": 2,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-25T09:00:00.000Z"
+     },
+     "4": {
+      "due": "2026-11-30T09:00:00.000Z",
+      "stability": 65.62422648,
+      "difficulty": 1,
+      "elapsed_days": 8,
+      "scheduled_days": 66,
+      "learning_steps": 0,
+      "reps": 2,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-25T09:00:00.000Z"
+     }
+    },
+    "result": {
+     "due": "2026-10-22T09:00:00.000Z",
+     "stability": 26.70418346,
+     "difficulty": 4.01060897,
+     "elapsed_days": 8,
+     "scheduled_days": 27,
+     "learning_steps": 0,
+     "reps": 2,
+     "lapses": 0,
+     "state": 2,
+     "last_review": "2026-09-25T09:00:00.000Z"
+    },
+    "log": {
+     "elapsed_days": 8,
+     "scheduled_days": 8,
+     "state": 2
+    }
+   },
+   {
+    "now": "2026-10-09T09:00:00.000Z",
+    "rating": 3,
+    "options": {
+     "1": {
+      "due": "2026-10-09T09:10:00.000Z",
+      "stability": 2.10410372,
+      "difficulty": 8.01655626,
+      "elapsed_days": 14,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 3,
+      "lapses": 1,
+      "state": 3,
+      "last_review": "2026-10-09T09:00:00.000Z"
+     },
+     "2": {
+      "due": "2026-11-26T09:00:00.000Z",
+      "stability": 48.04936893,
+      "difficulty": 6.0091915,
+      "elapsed_days": 14,
+      "scheduled_days": 48,
+      "learning_steps": 0,
+      "reps": 3,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-10-09T09:00:00.000Z"
+     },
+     "3": {
+      "due": "2026-12-10T09:00:00.000Z",
+      "stability": 62.19667676,
+      "difficulty": 4.00182673,
+      "elapsed_days": 14,
+      "scheduled_days": 62,
+      "learning_steps": 0,
+      "reps": 3,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-10-09T09:00:00.000Z"
+     },
+     "4": {
+      "due": "2027-01-10T09:00:00.000Z",
+      "stability": 93.17807416,
+      "difficulty": 1.99446196,
+      "elapsed_days": 14,
+      "scheduled_days": 93,
+      "learning_steps": 0,
+      "reps": 3,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-10-09T09:00:00.000Z"
+     }
+    },
+    "result": {
+     "due": "2026-12-10T09:00:00.000Z",
+     "stability": 62.19667676,
+     "difficulty": 4.00182673,
+     "elapsed_days": 14,
+     "scheduled_days": 62,
+     "learning_steps": 0,
+     "reps": 3,
+     "lapses": 0,
+     "state": 2,
+     "last_review": "2026-10-09T09:00:00.000Z"
+    },
+    "log": {
+     "elapsed_days": 14,
+     "scheduled_days": 27,
+     "state": 2
+    }
+   }
+  ],
+  "review_lapse_relearn": [
+   {
+    "now": "2026-09-17T09:00:00.000Z",
+    "rating": 3,
+    "options": {
+     "1": {
+      "due": "2026-09-17T09:01:00.000Z",
+      "stability": 0.212,
+      "difficulty": 6.4133,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 1,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:00:00.000Z"
+     },
+     "2": {
+      "due": "2026-09-17T09:06:00.000Z",
+      "stability": 1.2931,
+      "difficulty": 5.11217071,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 1,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:00:00.000Z"
+     },
+     "3": {
+      "due": "2026-09-17T09:10:00.000Z",
+      "stability": 2.3065,
+      "difficulty": 2.11810397,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 1,
+      "reps": 1,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:00:00.000Z"
+     },
+     "4": {
+      "due": "2026-09-25T09:00:00.000Z",
+      "stability": 8.2956,
+      "difficulty": 1,
+      "elapsed_days": 0,
+      "scheduled_days": 8,
+      "learning_steps": 0,
+      "reps": 1,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-17T09:00:00.000Z"
+     }
+    },
+    "result": {
+     "due": "2026-09-17T09:10:00.000Z",
+     "stability": 2.3065,
+     "difficulty": 2.11810397,
+     "elapsed_days": 0,
+     "scheduled_days": 0,
+     "learning_steps": 1,
+     "reps": 1,
+     "lapses": 0,
+     "state": 1,
+     "last_review": "2026-09-17T09:00:00.000Z"
+    },
+    "log": {
+     "elapsed_days": 0,
+     "scheduled_days": 0,
+     "state": 0
+    }
+   },
+   {
+    "now": "2026-09-17T09:10:00.000Z",
+    "rating": 3,
+    "options": {
+     "1": {
+      "due": "2026-09-17T09:11:00.000Z",
+      "stability": 0.77508398,
+      "difficulty": 7.39450274,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 2,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:10:00.000Z"
+     },
+     "2": {
+      "due": "2026-09-17T09:16:00.000Z",
+      "stability": 2.3065,
+      "difficulty": 4.75285849,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 1,
+      "reps": 2,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:10:00.000Z"
+     },
+     "3": {
+      "due": "2026-09-19T09:10:00.000Z",
+      "stability": 2.3065,
+      "difficulty": 2.11121424,
+      "elapsed_days": 0,
+      "scheduled_days": 2,
+      "learning_steps": 0,
+      "reps": 2,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-17T09:10:00.000Z"
+     },
+     "4": {
+      "due": "2026-09-21T09:10:00.000Z",
+      "stability": 3.94605407,
+      "difficulty": 1,
+      "elapsed_days": 0,
+      "scheduled_days": 4,
+      "learning_steps": 0,
+      "reps": 2,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-17T09:10:00.000Z"
+     }
+    },
+    "result": {
+     "due": "2026-09-19T09:10:00.000Z",
+     "stability": 2.3065,
+     "difficulty": 2.11121424,
+     "elapsed_days": 0,
+     "scheduled_days": 2,
+     "learning_steps": 0,
+     "reps": 2,
+     "lapses": 0,
+     "state": 2,
+     "last_review": "2026-09-17T09:10:00.000Z"
+    },
+    "log": {
+     "elapsed_days": 0,
+     "scheduled_days": 0,
+     "state": 1
+    }
+   },
+   {
+    "now": "2026-09-18T09:10:00.000Z",
+    "rating": 3,
+    "options": {
+     "1": {
+      "due": "2026-09-18T09:20:00.000Z",
+      "stability": 0.57141348,
+      "difficulty": 7.39223814,
+      "elapsed_days": 1,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 3,
+      "lapses": 1,
+      "state": 3,
+      "last_review": "2026-09-18T09:10:00.000Z"
+     },
+     "2": {
+      "due": "2026-09-23T09:10:00.000Z",
+      "stability": 5.32112938,
+      "difficulty": 4.74828477,
+      "elapsed_days": 1,
+      "scheduled_days": 5,
+      "learning_steps": 0,
+      "reps": 3,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-18T09:10:00.000Z"
+     },
+     "3": {
+      "due": "2026-09-25T09:10:00.000Z",
+      "stability": 7.31918604,
+      "difficulty": 2.1043314,
+      "elapsed_days": 1,
+      "scheduled_days": 7,
+      "learning_steps": 0,
+      "reps": 3,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-18T09:10:00.000Z"
+     },
+     "4": {
+      "due": "2026-09-30T09:10:00.000Z",
+      "stability": 11.69475968,
+      "difficulty": 1,
+      "elapsed_days": 1,
+      "scheduled_days": 12,
+      "learning_steps": 0,
+      "reps": 3,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-18T09:10:00.000Z"
+     }
+    },
+    "result": {
+     "due": "2026-09-25T09:10:00.000Z",
+     "stability": 7.31918604,
+     "difficulty": 2.1043314,
+     "elapsed_days": 1,
+     "scheduled_days": 7,
+     "learning_steps": 0,
+     "reps": 3,
+     "lapses": 0,
+     "state": 2,
+     "last_review": "2026-09-18T09:10:00.000Z"
+    },
+    "log": {
+     "elapsed_days": 1,
+     "scheduled_days": 2,
+     "state": 2
+    }
+   },
+   {
+    "now": "2026-09-22T09:10:00.000Z",
+    "rating": 1,
+    "options": {
+     "1": {
+      "due": "2026-09-22T09:20:00.000Z",
+      "stability": 1.17395051,
+      "difficulty": 7.38997579,
+      "elapsed_days": 4,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 4,
+      "lapses": 1,
+      "state": 3,
+      "last_review": "2026-09-22T09:10:00.000Z"
+     },
+     "2": {
+      "due": "2026-10-09T09:10:00.000Z",
+      "stability": 16.87313025,
+      "difficulty": 4.74371562,
+      "elapsed_days": 4,
+      "scheduled_days": 17,
+      "learning_steps": 0,
+      "reps": 4,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-22T09:10:00.000Z"
+     },
+     "3": {
+      "due": "2026-10-15T09:10:00.000Z",
+      "stability": 23.20535865,
+      "difficulty": 2.09745544,
+      "elapsed_days": 4,
+      "scheduled_days": 23,
+      "learning_steps": 0,
+      "reps": 4,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-22T09:10:00.000Z"
+     },
+     "4": {
+      "due": "2026-10-29T09:10:00.000Z",
+      "stability": 37.07239873,
+      "difficulty": 1,
+      "elapsed_days": 4,
+      "scheduled_days": 37,
+      "learning_steps": 0,
+      "reps": 4,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-22T09:10:00.000Z"
+     }
+    },
+    "result": {
+     "due": "2026-09-22T09:20:00.000Z",
+     "stability": 1.17395051,
+     "difficulty": 7.38997579,
+     "elapsed_days": 4,
+     "scheduled_days": 0,
+     "learning_steps": 0,
+     "reps": 4,
+     "lapses": 1,
+     "state": 3,
+     "last_review": "2026-09-22T09:10:00.000Z"
+    },
+    "log": {
+     "elapsed_days": 4,
+     "scheduled_days": 7,
+     "state": 2
+    }
+   },
+   {
+    "now": "2026-09-22T09:20:00.000Z",
+    "rating": 3,
+    "options": {
+     "1": {
+      "due": "2026-09-22T09:30:00.000Z",
+      "stability": 0.41242452,
+      "difficulty": 9.12733116,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 5,
+      "lapses": 1,
+      "state": 3,
+      "last_review": "2026-09-22T09:20:00.000Z"
+     },
+     "2": {
+      "due": "2026-09-22T09:35:00.000Z",
+      "stability": 1.17395051,
+      "difficulty": 8.25257267,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 5,
+      "lapses": 1,
+      "state": 3,
+      "last_review": "2026-09-22T09:20:00.000Z"
+     },
+     "3": {
+      "due": "2026-09-23T09:20:00.000Z",
+      "stability": 1.22054554,
+      "difficulty": 7.37781418,
+      "elapsed_days": 0,
+      "scheduled_days": 1,
+      "learning_steps": 0,
+      "reps": 5,
+      "lapses": 1,
+      "state": 2,
+      "last_review": "2026-09-22T09:20:00.000Z"
+     },
+     "4": {
+      "due": "2026-09-24T09:20:00.000Z",
+      "stability": 2.09970723,
+      "difficulty": 6.5030557,
+      "elapsed_days": 0,
+      "scheduled_days": 2,
+      "learning_steps": 0,
+      "reps": 5,
+      "lapses": 1,
+      "state": 2,
+      "last_review": "2026-09-22T09:20:00.000Z"
+     }
+    },
+    "result": {
+     "due": "2026-09-23T09:20:00.000Z",
+     "stability": 1.22054554,
+     "difficulty": 7.37781418,
+     "elapsed_days": 0,
+     "scheduled_days": 1,
+     "learning_steps": 0,
+     "reps": 5,
+     "lapses": 1,
+     "state": 2,
+     "last_review": "2026-09-22T09:20:00.000Z"
+    },
+    "log": {
+     "elapsed_days": 0,
+     "scheduled_days": 0,
+     "state": 3
+    }
+   },
+   {
+    "now": "2026-09-24T09:20:00.000Z",
+    "rating": 3,
+    "options": {
+     "1": {
+      "due": "2026-09-24T09:30:00.000Z",
+      "stability": 0.3839712,
+      "difficulty": 9.12333372,
+      "elapsed_days": 2,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 6,
+      "lapses": 2,
+      "state": 3,
+      "last_review": "2026-09-24T09:20:00.000Z"
+     },
+     "2": {
+      "due": "2026-09-27T09:20:00.000Z",
+      "stability": 3.15240668,
+      "difficulty": 8.24449923,
+      "elapsed_days": 2,
+      "scheduled_days": 3,
+      "learning_steps": 0,
+      "reps": 6,
+      "lapses": 1,
+      "state": 2,
+      "last_review": "2026-09-24T09:20:00.000Z"
+     },
+     "3": {
+      "due": "2026-09-28T09:20:00.000Z",
+      "stability": 4.43281881,
+      "difficulty": 7.36566474,
+      "elapsed_days": 2,
+      "scheduled_days": 4,
+      "learning_steps": 0,
+      "reps": 6,
+      "lapses": 1,
+      "state": 2,
+      "last_review": "2026-09-24T09:20:00.000Z"
+     },
+     "4": {
+      "due": "2026-10-01T09:20:00.000Z",
+      "stability": 7.23681215,
+      "difficulty": 6.48683024,
+      "elapsed_days": 2,
+      "scheduled_days": 7,
+      "learning_steps": 0,
+      "reps": 6,
+      "lapses": 1,
+      "state": 2,
+      "last_review": "2026-09-24T09:20:00.000Z"
+     }
+    },
+    "result": {
+     "due": "2026-09-28T09:20:00.000Z",
+     "stability": 4.43281881,
+     "difficulty": 7.36566474,
+     "elapsed_days": 2,
+     "scheduled_days": 4,
+     "learning_steps": 0,
+     "reps": 6,
+     "lapses": 1,
+     "state": 2,
+     "last_review": "2026-09-24T09:20:00.000Z"
+    },
+    "log": {
+     "elapsed_days": 2,
+     "scheduled_days": 1,
+     "state": 2
+    }
+   }
+  ],
+  "hard_chain": [
+   {
+    "now": "2026-09-17T09:00:00.000Z",
+    "rating": 2,
+    "options": {
+     "1": {
+      "due": "2026-09-17T09:01:00.000Z",
+      "stability": 0.212,
+      "difficulty": 6.4133,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 1,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:00:00.000Z"
+     },
+     "2": {
+      "due": "2026-09-17T09:06:00.000Z",
+      "stability": 1.2931,
+      "difficulty": 5.11217071,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 1,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:00:00.000Z"
+     },
+     "3": {
+      "due": "2026-09-17T09:10:00.000Z",
+      "stability": 2.3065,
+      "difficulty": 2.11810397,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 1,
+      "reps": 1,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:00:00.000Z"
+     },
+     "4": {
+      "due": "2026-09-25T09:00:00.000Z",
+      "stability": 8.2956,
+      "difficulty": 1,
+      "elapsed_days": 0,
+      "scheduled_days": 8,
+      "learning_steps": 0,
+      "reps": 1,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-17T09:00:00.000Z"
+     }
+    },
+    "result": {
+     "due": "2026-09-17T09:06:00.000Z",
+     "stability": 1.2931,
+     "difficulty": 5.11217071,
+     "elapsed_days": 0,
+     "scheduled_days": 0,
+     "learning_steps": 0,
+     "reps": 1,
+     "lapses": 0,
+     "state": 1,
+     "last_review": "2026-09-17T09:00:00.000Z"
+    },
+    "log": {
+     "elapsed_days": 0,
+     "scheduled_days": 0,
+     "state": 0
+    }
+   },
+   {
+    "now": "2026-09-17T09:06:00.000Z",
+    "rating": 2,
+    "options": {
+     "1": {
+      "due": "2026-09-17T09:07:00.000Z",
+      "stability": 0.45140292,
+      "difficulty": 8.37863212,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 2,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:06:00.000Z"
+     },
+     "2": {
+      "due": "2026-09-17T09:12:00.000Z",
+      "stability": 1.2931,
+      "difficulty": 6.74045952,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 2,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:06:00.000Z"
+     },
+     "3": {
+      "due": "2026-09-17T09:16:00.000Z",
+      "stability": 1.33589976,
+      "difficulty": 5.10228691,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 1,
+      "reps": 2,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:06:00.000Z"
+     },
+     "4": {
+      "due": "2026-09-19T09:06:00.000Z",
+      "stability": 2.29815136,
+      "difficulty": 3.4641143,
+      "elapsed_days": 0,
+      "scheduled_days": 2,
+      "learning_steps": 0,
+      "reps": 2,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-17T09:06:00.000Z"
+     }
+    },
+    "result": {
+     "due": "2026-09-17T09:12:00.000Z",
+     "stability": 1.2931,
+     "difficulty": 6.74045952,
+     "elapsed_days": 0,
+     "scheduled_days": 0,
+     "learning_steps": 0,
+     "reps": 2,
+     "lapses": 0,
+     "state": 1,
+     "last_review": "2026-09-17T09:06:00.000Z"
+    },
+    "log": {
+     "elapsed_days": 0,
+     "scheduled_days": 0,
+     "state": 1
+    }
+   },
+   {
+    "now": "2026-09-17T09:21:00.000Z",
+    "rating": 3,
+    "options": {
+     "1": {
+      "due": "2026-09-17T09:22:00.000Z",
+      "stability": 0.45140292,
+      "difficulty": 8.91383958,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 3,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:21:00.000Z"
+     },
+     "2": {
+      "due": "2026-09-17T09:27:00.000Z",
+      "stability": 1.2931,
+      "difficulty": 7.8213935,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 3,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:21:00.000Z"
+     },
+     "3": {
+      "due": "2026-09-17T09:31:00.000Z",
+      "stability": 1.33589976,
+      "difficulty": 6.72894743,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 1,
+      "reps": 3,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:21:00.000Z"
+     },
+     "4": {
+      "due": "2026-09-19T09:21:00.000Z",
+      "stability": 2.29815136,
+      "difficulty": 5.63650136,
+      "elapsed_days": 0,
+      "scheduled_days": 2,
+      "learning_steps": 0,
+      "reps": 3,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-17T09:21:00.000Z"
+     }
+    },
+    "result": {
+     "due": "2026-09-17T09:31:00.000Z",
+     "stability": 1.33589976,
+     "difficulty": 6.72894743,
+     "elapsed_days": 0,
+     "scheduled_days": 0,
+     "learning_steps": 1,
+     "reps": 3,
+     "lapses": 0,
+     "state": 1,
+     "last_review": "2026-09-17T09:21:00.000Z"
+    },
+    "log": {
+     "elapsed_days": 0,
+     "scheduled_days": 0,
+     "state": 1
+    }
+   },
+   {
+    "now": "2026-09-18T09:21:00.000Z",
+    "rating": 2,
+    "options": {
+     "1": {
+      "due": "2026-09-18T09:22:00.000Z",
+      "stability": 0.37706581,
+      "difficulty": 8.91005563,
+      "elapsed_days": 1,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 4,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-18T09:21:00.000Z"
+     },
+     "2": {
+      "due": "2026-09-18T09:27:00.000Z",
+      "stability": 2.75848066,
+      "difficulty": 7.81375124,
+      "elapsed_days": 1,
+      "scheduled_days": 0,
+      "learning_steps": 1,
+      "reps": 4,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-18T09:21:00.000Z"
+     },
+     "3": {
+      "due": "2026-09-22T09:21:00.000Z",
+      "stability": 3.70134855,
+      "difficulty": 6.71744685,
+      "elapsed_days": 1,
+      "scheduled_days": 4,
+      "learning_steps": 0,
+      "reps": 4,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-18T09:21:00.000Z"
+     },
+     "4": {
+      "due": "2026-09-24T09:21:00.000Z",
+      "stability": 5.7661488,
+      "difficulty": 5.62114246,
+      "elapsed_days": 1,
+      "scheduled_days": 6,
+      "learning_steps": 0,
+      "reps": 4,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-18T09:21:00.000Z"
+     }
+    },
+    "result": {
+     "due": "2026-09-18T09:27:00.000Z",
+     "stability": 2.75848066,
+     "difficulty": 7.81375124,
+     "elapsed_days": 1,
+     "scheduled_days": 0,
+     "learning_steps": 1,
+     "reps": 4,
+     "lapses": 0,
+     "state": 1,
+     "last_review": "2026-09-18T09:21:00.000Z"
+    },
+    "log": {
+     "elapsed_days": 1,
+     "scheduled_days": 0,
+     "state": 1
+    }
+   },
+   {
+    "now": "2026-09-21T09:21:00.000Z",
+    "rating": 2,
+    "options": {
+     "1": {
+      "due": "2026-09-21T09:22:00.000Z",
+      "stability": 0.64820338,
+      "difficulty": 9.26662326,
+      "elapsed_days": 3,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 5,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-21T09:21:00.000Z"
+     },
+     "2": {
+      "due": "2026-09-21T09:27:00.000Z",
+      "stability": 5.31056076,
+      "difficulty": 8.53389457,
+      "elapsed_days": 3,
+      "scheduled_days": 0,
+      "learning_steps": 1,
+      "reps": 5,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-21T09:21:00.000Z"
+     },
+     "3": {
+      "due": "2026-09-28T09:21:00.000Z",
+      "stability": 7.00204583,
+      "difficulty": 7.80116586,
+      "elapsed_days": 3,
+      "scheduled_days": 7,
+      "learning_steps": 0,
+      "reps": 5,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-21T09:21:00.000Z"
+     },
+     "4": {
+      "due": "2026-10-02T09:21:00.000Z",
+      "stability": 10.70625387,
+      "difficulty": 7.06843715,
+      "elapsed_days": 3,
+      "scheduled_days": 11,
+      "learning_steps": 0,
+      "reps": 5,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-21T09:21:00.000Z"
+     }
+    },
+    "result": {
+     "due": "2026-09-21T09:27:00.000Z",
+     "stability": 5.31056076,
+     "difficulty": 8.53389457,
+     "elapsed_days": 3,
+     "scheduled_days": 0,
+     "learning_steps": 1,
+     "reps": 5,
+     "lapses": 0,
+     "state": 1,
+     "last_review": "2026-09-21T09:21:00.000Z"
+    },
+    "log": {
+     "elapsed_days": 3,
+     "scheduled_days": 0,
+     "state": 1
+    }
+   }
+  ],
+  "late_review": [
+   {
+    "now": "2026-09-17T09:00:00.000Z",
+    "rating": 3,
+    "options": {
+     "1": {
+      "due": "2026-09-17T09:01:00.000Z",
+      "stability": 0.212,
+      "difficulty": 6.4133,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 1,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:00:00.000Z"
+     },
+     "2": {
+      "due": "2026-09-17T09:06:00.000Z",
+      "stability": 1.2931,
+      "difficulty": 5.11217071,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 1,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:00:00.000Z"
+     },
+     "3": {
+      "due": "2026-09-17T09:10:00.000Z",
+      "stability": 2.3065,
+      "difficulty": 2.11810397,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 1,
+      "reps": 1,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:00:00.000Z"
+     },
+     "4": {
+      "due": "2026-09-25T09:00:00.000Z",
+      "stability": 8.2956,
+      "difficulty": 1,
+      "elapsed_days": 0,
+      "scheduled_days": 8,
+      "learning_steps": 0,
+      "reps": 1,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-17T09:00:00.000Z"
+     }
+    },
+    "result": {
+     "due": "2026-09-17T09:10:00.000Z",
+     "stability": 2.3065,
+     "difficulty": 2.11810397,
+     "elapsed_days": 0,
+     "scheduled_days": 0,
+     "learning_steps": 1,
+     "reps": 1,
+     "lapses": 0,
+     "state": 1,
+     "last_review": "2026-09-17T09:00:00.000Z"
+    },
+    "log": {
+     "elapsed_days": 0,
+     "scheduled_days": 0,
+     "state": 0
+    }
+   },
+   {
+    "now": "2026-09-17T09:10:00.000Z",
+    "rating": 3,
+    "options": {
+     "1": {
+      "due": "2026-09-17T09:11:00.000Z",
+      "stability": 0.77508398,
+      "difficulty": 7.39450274,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 2,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:10:00.000Z"
+     },
+     "2": {
+      "due": "2026-09-17T09:16:00.000Z",
+      "stability": 2.3065,
+      "difficulty": 4.75285849,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 1,
+      "reps": 2,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:10:00.000Z"
+     },
+     "3": {
+      "due": "2026-09-19T09:10:00.000Z",
+      "stability": 2.3065,
+      "difficulty": 2.11121424,
+      "elapsed_days": 0,
+      "scheduled_days": 2,
+      "learning_steps": 0,
+      "reps": 2,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-17T09:10:00.000Z"
+     },
+     "4": {
+      "due": "2026-09-21T09:10:00.000Z",
+      "stability": 3.94605407,
+      "difficulty": 1,
+      "elapsed_days": 0,
+      "scheduled_days": 4,
+      "learning_steps": 0,
+      "reps": 2,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-17T09:10:00.000Z"
+     }
+    },
+    "result": {
+     "due": "2026-09-19T09:10:00.000Z",
+     "stability": 2.3065,
+     "difficulty": 2.11121424,
+     "elapsed_days": 0,
+     "scheduled_days": 2,
+     "learning_steps": 0,
+     "reps": 2,
+     "lapses": 0,
+     "state": 2,
+     "last_review": "2026-09-17T09:10:00.000Z"
+    },
+    "log": {
+     "elapsed_days": 0,
+     "scheduled_days": 0,
+     "state": 1
+    }
+   },
+   {
+    "now": "2026-09-18T09:10:00.000Z",
+    "rating": 3,
+    "options": {
+     "1": {
+      "due": "2026-09-18T09:20:00.000Z",
+      "stability": 0.57141348,
+      "difficulty": 7.39223814,
+      "elapsed_days": 1,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 3,
+      "lapses": 1,
+      "state": 3,
+      "last_review": "2026-09-18T09:10:00.000Z"
+     },
+     "2": {
+      "due": "2026-09-23T09:10:00.000Z",
+      "stability": 5.32112938,
+      "difficulty": 4.74828477,
+      "elapsed_days": 1,
+      "scheduled_days": 5,
+      "learning_steps": 0,
+      "reps": 3,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-18T09:10:00.000Z"
+     },
+     "3": {
+      "due": "2026-09-25T09:10:00.000Z",
+      "stability": 7.31918604,
+      "difficulty": 2.1043314,
+      "elapsed_days": 1,
+      "scheduled_days": 7,
+      "learning_steps": 0,
+      "reps": 3,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-18T09:10:00.000Z"
+     },
+     "4": {
+      "due": "2026-09-30T09:10:00.000Z",
+      "stability": 11.69475968,
+      "difficulty": 1,
+      "elapsed_days": 1,
+      "scheduled_days": 12,
+      "learning_steps": 0,
+      "reps": 3,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-18T09:10:00.000Z"
+     }
+    },
+    "result": {
+     "due": "2026-09-25T09:10:00.000Z",
+     "stability": 7.31918604,
+     "difficulty": 2.1043314,
+     "elapsed_days": 1,
+     "scheduled_days": 7,
+     "learning_steps": 0,
+     "reps": 3,
+     "lapses": 0,
+     "state": 2,
+     "last_review": "2026-09-18T09:10:00.000Z"
+    },
+    "log": {
+     "elapsed_days": 1,
+     "scheduled_days": 2,
+     "state": 2
+    }
+   },
+   {
+    "now": "2026-10-28T09:10:00.000Z",
+    "rating": 3,
+    "options": {
+     "1": {
+      "due": "2026-10-28T09:20:00.000Z",
+      "stability": 1.59023661,
+      "difficulty": 7.38997579,
+      "elapsed_days": 40,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 4,
+      "lapses": 1,
+      "state": 3,
+      "last_review": "2026-10-28T09:10:00.000Z"
+     },
+     "2": {
+      "due": "2026-12-14T09:10:00.000Z",
+      "stability": 47.23055796,
+      "difficulty": 4.74371562,
+      "elapsed_days": 40,
+      "scheduled_days": 47,
+      "learning_steps": 0,
+      "reps": 4,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-10-28T09:10:00.000Z"
+     },
+     "3": {
+      "due": "2027-01-10T09:10:00.000Z",
+      "stability": 73.68328966,
+      "difficulty": 2.09745544,
+      "elapsed_days": 40,
+      "scheduled_days": 74,
+      "learning_steps": 0,
+      "reps": 4,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-10-28T09:10:00.000Z"
+     },
+     "4": {
+      "due": "2027-03-09T09:10:00.000Z",
+      "stability": 131.61251571,
+      "difficulty": 1,
+      "elapsed_days": 40,
+      "scheduled_days": 132,
+      "learning_steps": 0,
+      "reps": 4,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-10-28T09:10:00.000Z"
+     }
+    },
+    "result": {
+     "due": "2027-01-10T09:10:00.000Z",
+     "stability": 73.68328966,
+     "difficulty": 2.09745544,
+     "elapsed_days": 40,
+     "scheduled_days": 74,
+     "learning_steps": 0,
+     "reps": 4,
+     "lapses": 0,
+     "state": 2,
+     "last_review": "2026-10-28T09:10:00.000Z"
+    },
+    "log": {
+     "elapsed_days": 40,
+     "scheduled_days": 7,
+     "state": 2
+    }
+   }
+  ],
+  "easy_chain": [
+   {
+    "now": "2026-09-17T09:00:00.000Z",
+    "rating": 4,
+    "options": {
+     "1": {
+      "due": "2026-09-17T09:01:00.000Z",
+      "stability": 0.212,
+      "difficulty": 6.4133,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 1,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:00:00.000Z"
+     },
+     "2": {
+      "due": "2026-09-17T09:06:00.000Z",
+      "stability": 1.2931,
+      "difficulty": 5.11217071,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 1,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:00:00.000Z"
+     },
+     "3": {
+      "due": "2026-09-17T09:10:00.000Z",
+      "stability": 2.3065,
+      "difficulty": 2.11810397,
+      "elapsed_days": 0,
+      "scheduled_days": 0,
+      "learning_steps": 1,
+      "reps": 1,
+      "lapses": 0,
+      "state": 1,
+      "last_review": "2026-09-17T09:00:00.000Z"
+     },
+     "4": {
+      "due": "2026-09-25T09:00:00.000Z",
+      "stability": 8.2956,
+      "difficulty": 1,
+      "elapsed_days": 0,
+      "scheduled_days": 8,
+      "learning_steps": 0,
+      "reps": 1,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-17T09:00:00.000Z"
+     }
+    },
+    "result": {
+     "due": "2026-09-25T09:00:00.000Z",
+     "stability": 8.2956,
+     "difficulty": 1,
+     "elapsed_days": 0,
+     "scheduled_days": 8,
+     "learning_steps": 0,
+     "reps": 1,
+     "lapses": 0,
+     "state": 2,
+     "last_review": "2026-09-17T09:00:00.000Z"
+    },
+    "log": {
+     "elapsed_days": 0,
+     "scheduled_days": 0,
+     "state": 0
+    }
+   },
+   {
+    "now": "2026-09-25T09:00:00.000Z",
+    "rating": 4,
+    "options": {
+     "1": {
+      "due": "2026-09-25T09:10:00.000Z",
+      "stability": 1.38863246,
+      "difficulty": 7.02698957,
+      "elapsed_days": 8,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 2,
+      "lapses": 1,
+      "state": 3,
+      "last_review": "2026-09-25T09:00:00.000Z"
+     },
+     "2": {
+      "due": "2026-10-22T09:00:00.000Z",
+      "stability": 26.70418346,
+      "difficulty": 4.01060897,
+      "elapsed_days": 8,
+      "scheduled_days": 27,
+      "learning_steps": 0,
+      "reps": 2,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-25T09:00:00.000Z"
+     },
+     "3": {
+      "due": "2026-11-03T09:00:00.000Z",
+      "stability": 38.90515015,
+      "difficulty": 1,
+      "elapsed_days": 8,
+      "scheduled_days": 39,
+      "learning_steps": 0,
+      "reps": 2,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-25T09:00:00.000Z"
+     },
+     "4": {
+      "due": "2026-11-30T09:00:00.000Z",
+      "stability": 65.62422648,
+      "difficulty": 1,
+      "elapsed_days": 8,
+      "scheduled_days": 66,
+      "learning_steps": 0,
+      "reps": 2,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-09-25T09:00:00.000Z"
+     }
+    },
+    "result": {
+     "due": "2026-11-30T09:00:00.000Z",
+     "stability": 65.62422648,
+     "difficulty": 1,
+     "elapsed_days": 8,
+     "scheduled_days": 66,
+     "learning_steps": 0,
+     "reps": 2,
+     "lapses": 0,
+     "state": 2,
+     "last_review": "2026-09-25T09:00:00.000Z"
+    },
+    "log": {
+     "elapsed_days": 8,
+     "scheduled_days": 8,
+     "state": 2
+    }
+   },
+   {
+    "now": "2026-10-25T09:00:00.000Z",
+    "rating": 4,
+    "options": {
+     "1": {
+      "due": "2026-10-25T09:10:00.000Z",
+      "stability": 3.27725345,
+      "difficulty": 7.02698957,
+      "elapsed_days": 30,
+      "scheduled_days": 0,
+      "learning_steps": 0,
+      "reps": 3,
+      "lapses": 1,
+      "state": 3,
+      "last_review": "2026-10-25T09:00:00.000Z"
+     },
+     "2": {
+      "due": "2027-02-25T09:00:00.000Z",
+      "stability": 123.35749601,
+      "difficulty": 4.01060897,
+      "elapsed_days": 30,
+      "scheduled_days": 123,
+      "learning_steps": 0,
+      "reps": 3,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-10-25T09:00:00.000Z"
+     },
+     "3": {
+      "due": "2027-04-05T09:00:00.000Z",
+      "stability": 161.62234675,
+      "difficulty": 1,
+      "elapsed_days": 30,
+      "scheduled_days": 162,
+      "learning_steps": 0,
+      "reps": 3,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-10-25T09:00:00.000Z"
+     },
+     "4": {
+      "due": "2027-06-27T09:00:00.000Z",
+      "stability": 245.41910593,
+      "difficulty": 1,
+      "elapsed_days": 30,
+      "scheduled_days": 245,
+      "learning_steps": 0,
+      "reps": 3,
+      "lapses": 0,
+      "state": 2,
+      "last_review": "2026-10-25T09:00:00.000Z"
+     }
+    },
+    "result": {
+     "due": "2027-06-27T09:00:00.000Z",
+     "stability": 245.41910593,
+     "difficulty": 1,
+     "elapsed_days": 30,
+     "scheduled_days": 245,
+     "learning_steps": 0,
+     "reps": 3,
+     "lapses": 0,
+     "state": 2,
+     "last_review": "2026-10-25T09:00:00.000Z"
+    },
+    "log": {
+     "elapsed_days": 30,
+     "scheduled_days": 66,
+     "state": 2
+    }
+   }
+  ]
+ }
+}

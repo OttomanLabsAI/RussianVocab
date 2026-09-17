@@ -287,6 +287,30 @@ input[type="checkbox"]{accent-color:var(--ink);width:15px;height:15px;flex:none}
 .setrow .smeta{font:italic 400 .9rem/1.4 "Newsreader",Georgia,serif;color:var(--ink-60);flex:1;min-width:0}
 .setnote{font:italic 400 .95rem/1.6 "Newsreader",Georgia,serif;color:var(--ink-60);margin:0}
 
+/* progress */
+.pgbox{border:1px solid var(--ink);background:var(--paper);margin-top:16px}
+.pgbox h3{border-bottom:1px solid var(--ink)}
+.pgbig{font:400 clamp(1.3rem,3vw,1.8rem)/1.3 "Prata",Georgia,serif}
+.pgbar{display:flex;height:10px;border:1px solid var(--ink);margin:4px 0 12px}
+.pgbar div{min-width:2px}
+.pgtab{max-width:460px}
+.pgtab td{padding:6px 8px;font-size:.95rem}
+.pgtab td:nth-child(2),.pgtab td:nth-child(3){text-align:right;
+  font:500 .85rem/1.4 "Afacad Flux",system-ui,sans-serif;letter-spacing:.06em}
+.pgtab .tot td{font-weight:600;border-bottom:none}
+.pgtab .sw{display:inline-block;width:10px;height:10px;background:var(--ink);margin-right:8px;vertical-align:middle}
+.heatwrap{overflow-x:auto}
+.heat{display:block}
+.heat .hm,.fdue .hm{font:500 9px "Afacad Flux",system-ui,sans-serif;fill:var(--ink-60);
+  letter-spacing:.06em;text-transform:uppercase}
+.heat rect[data-today]{stroke:var(--accent);stroke-width:1.5}
+.heatleg{display:flex;align-items:center;gap:4px;margin-top:8px;
+  font:500 .56rem/1 "Afacad Flux",system-ui,sans-serif;text-transform:uppercase;
+  letter-spacing:.12em;color:var(--ink-60)}
+.heatleg i{display:inline-block;width:11px;height:11px}
+.heatleg span{margin:0 4px}
+.fdue{display:block}
+
 footer{padding:0 4px 8px;font:italic 400 .85rem/1.6 "Newsreader",Georgia,serif;color:var(--ink-60)}
 
 @media(max-width:900px){
@@ -338,6 +362,7 @@ footer{padding:0 4px 8px;font:italic 400 .85rem/1.6 "Newsreader",Georgia,serif;c
         <span id="acctEmail"></span>
         <button class="fbtn" id="btnAcct">Sign in</button>
         <button class="fbtn" id="btnSets">Sets</button>
+        <button class="fbtn" id="btnProgress">Progress</button>
         <button class="fbtn" id="btnImport">Add from JSON</button>
         <input type="file" id="fileIn" accept="application/json,.json" class="sr">
         <span id="savestat"></span>
@@ -387,6 +412,8 @@ footer{padding:0 4px 8px;font:italic 400 .85rem/1.6 "Newsreader",Georgia,serif;c
       <div class="phead"><div class="ghost" aria-hidden="true">Повторение</div>
         <h2>Review</h2><div class="rmeta" id="rvmeta"></div></div>
       <div class="rvset">
+        <span class="lab">Deck</span>
+        <select class="groupsel" id="setDeck"></select>
         <span class="lab">New cards per day</span>
         <input type="number" id="setNewCap" min="0" max="500" step="1">
         <span class="lab">Auto-play audio on reveal</span>
@@ -400,6 +427,12 @@ footer{padding:0 4px 8px;font:italic 400 .85rem/1.6 "Newsreader",Georgia,serif;c
         <h2>Word Sets</h2><div class="rmeta">Share a batch of words with a code — the other person
           adds them to their own file in one tap.</div></div>
       <div id="setswrap"></div>
+    </section>
+
+    <section class="panel" id="p-progress" hidden>
+      <div class="phead"><div class="ghost" aria-hidden="true">Прогресс</div>
+        <h2>Progress</h2><div class="rmeta" id="pgmeta"></div></div>
+      <div id="pgwrap"></div>
     </section>
   </main>
 </div>
@@ -430,7 +463,7 @@ footer{padding:0 4px 8px;font:italic 400 .85rem/1.6 "Newsreader",Georgia,serif;c
 </div></div>
 
 <script src="/config.js"></script>
-<script src="/vendor/firebase-bundle-2.js"></script>
+<script src="/vendor/firebase-bundle-3.js"></script>
 <script src="/vendor/fsrs-bundle.js"></script>
 <script>
 "use strict";
@@ -533,7 +566,7 @@ const store = (() => {
 })();
 
 /* ---------------- state */
-let state = { words: [], settings: { group: "My additions" } };   // words: {ru,ac,pr,en,pos,g,x}
+let state = { words: [], settings: { group: "My additions" }, stats: { days: {} } };   // words: {ru,ac,pr,en,pos,g,x,t,c}
 let user = null, cloudChunks = 0, cloudBusy = false, cloudDirty = false, syncHash = "";
 function hashWords(words){
   const s = JSON.stringify(words); let h = 5381;
@@ -549,15 +582,15 @@ function localStatText(){
     : "auto-saves in this " + (store.tier === "app" ? "app" : "browser");
 }
 function persistLocal(){
-  store.save({ v: 1, words: state.words, settings: state.settings, syncHash: syncHash,
-    pendingLog: pendingLog });
+  store.save({ v: 1, words: state.words, settings: state.settings, stats: state.stats,
+    syncHash: syncHash, pendingLog: pendingLog });
 }
 async function pushCloud(){
   if (!user) return;
   if (cloudBusy){ cloudDirty = true; return; }
   cloudBusy = true; setSaveStat("saving to account…");
   try {
-    cloudChunks = await FB.saveCloud(user.uid, state.words, state.settings, cloudChunks);
+    cloudChunks = await FB.saveCloud(user.uid, state.words, state.settings, cloudChunks, state.stats);
     syncHash = hashWords(state.words); persistLocal();
     setSaveStat("saved to account ✓");
   } catch (e){ setSaveStat("cloud save failed — kept on this device"); }
@@ -671,6 +704,7 @@ function showView(v){
   $("#p-search").hidden = v !== "search";
   $("#p-review").hidden = v !== "review";
   $("#p-sets").hidden = v !== "sets";
+  $("#p-progress").hidden = v !== "progress";
   $("#panelHost").style.display = v === "file" ? "" : "none";
   $("#rail").classList.toggle("dim", v !== "file");
   rvOpen = v === "review";
@@ -1040,6 +1074,8 @@ async function handleAuth(u){
   setSaveStat("loading your account…");
   try {
     const cloud = await FB.loadCloud(u.uid);
+    // Review history is additive, so it merges regardless of which word file wins.
+    if (cloud && cloud.stats) state.stats = mergeStats(state.stats, cloud.stats);
     if (!cloud || !cloud.words.length){
       cloudChunks = cloud ? cloud.chunks : 0;
       await pushCloud();                       // first sign-in: this device seeds the account
@@ -1074,18 +1110,23 @@ function spkBtn(text){
     '" title="Play pronunciation" aria-label="Play pronunciation">' + SPK_SVG + '</button>';
 }
 const audioMemo = {};
+// Commons serves the original Ogg plus MP3 transcodes; Safari and iOS can only
+// play the latter, so pick whichever this browser can decode.
+const canOgg = (() => { try { return !!document.createElement("audio").canPlayType("audio/ogg; codecs=vorbis"); } catch (e){ return false; } })();
 async function commonsUrl(word){
   if (word in audioMemo) return audioMemo[word];
   let url = null;
   try {
     const r = await fetch("https://commons.wikimedia.org/w/api.php?action=query&titles=" +
       encodeURIComponent("File:Ru-" + word + ".ogg") +
-      "&prop=imageinfo&iiprop=url&format=json&origin=*");
+      "&prop=videoinfo&viprop=url|derivatives&format=json&origin=*");
     const j = await r.json();
     const pages = j.query && j.query.pages;
     for (const k in pages){
-      const ii = pages[k].imageinfo;
-      if (ii && ii[0] && ii[0].url) url = ii[0].url;
+      const vi = pages[k].videoinfo;
+      if (!vi || !vi[0]) continue;
+      const mp3 = (vi[0].derivatives || []).find(d => /audio\/mpeg/.test(d.type || ""));
+      url = (canOgg && vi[0].url) ? vi[0].url : (mp3 ? mp3.src : vi[0].url || null);
     }
   } catch (e){}
   audioMemo[word] = url;
@@ -1202,7 +1243,7 @@ function nextDueText(){
 function startReview(){
   const now = Date.now();
   const due = [], fresh = [];
-  state.words.forEach(w => {
+  deckWords().forEach(w => {
     if (w.c && w.c.s !== 0){ if (w.c.d <= now) due.push(w); }
     else fresh.push(w);
   });
@@ -1260,7 +1301,8 @@ function renderReviewCard(){
   }
   html += '<div class="rvprog">' + (rvQueue.length + 1) + ' in session · ' + rvStats.done + ' done</div>';
   box.innerHTML = html;
-  meta.textContent = "Recall it, reveal, then grade yourself — 1 Again · 2 Hard · 3 Good · 4 Easy.";
+  meta.textContent = (state.settings.deck ? "Deck: " + state.settings.deck + " · " : "") +
+    "Recall it, reveal, then grade yourself — 1 Again · 2 Hard · 3 Good · 4 Easy.";
   if (rvRevealed && state.settings.autoSay) speak(bareOf(w.ru));
 }
 function gradeCur(r){
@@ -1274,6 +1316,7 @@ function gradeCur(r){
   if (wasNew) bumpIntro();
   rvStats.done++;
   if (r === 1) rvStats.again++;
+  bumpDayStat(r === 1);
   queueLog({ w: keyOf(w), r: r, at: +now,
     el: res.log.elapsed_days, sc: res.log.scheduled_days, st: res.log.state });
   if (+res.card.due <= Date.now() + 20 * 60e3) rvQueue.push(w);  // short steps return this session
@@ -1310,6 +1353,11 @@ async function flushLog(){
   }
 }
 function syncReviewSettings(){
+  const sel = $("#setDeck");
+  const groups = [...new Set(state.words.map(w => w.g || "Ungrouped"))];
+  sel.innerHTML = '<option value="">All lists</option>' +
+    groups.map(g => '<option value="' + esc(g) + '">' + esc(g) + '</option>').join("");
+  sel.value = groups.includes(state.settings.deck) ? state.settings.deck : "";
   $("#setNewCap").value = (typeof state.settings.newPerDay === "number") ? state.settings.newPerDay : 20;
   const on = !!state.settings.autoSay;
   $("#setAutoSay").setAttribute("aria-pressed", String(on));
@@ -1334,6 +1382,18 @@ $("#setNewCap").addEventListener("change", () => {
 $("#setAutoSay").addEventListener("click", () => {
   state.settings.autoSay = !state.settings.autoSay;
   syncReviewSettings(); scheduleSave();
+});
+// Decks are the word lists — pick one to review it alone, like a deck in Anki.
+function deckWords(){
+  const d = state.settings.deck;
+  if (!d) return state.words;
+  const sub = state.words.filter(w => (w.g || "Ungrouped") === d);
+  return sub.length ? sub : state.words;
+}
+$("#setDeck").addEventListener("change", () => {
+  state.settings.deck = $("#setDeck").value;
+  scheduleSave();
+  startReview();
 });
 document.addEventListener("keydown", e => {
   if (!rvOpen || e.target.matches("input,textarea,select")) return;
@@ -1510,6 +1570,160 @@ $("#btnSets").addEventListener("click", () => {
   renderSets();
 });
 
+/* ---------------- progress (Anki-style stats) */
+// Daily aggregates live in state.stats.days (synced on the user doc); the
+// per-day review log keeps the detail. Merges take the max per day, so
+// history survives whichever word file wins a sync.
+function statsDayKey(d){
+  return d.getFullYear() + String(d.getMonth() + 1).padStart(2, "0") +
+    String(d.getDate()).padStart(2, "0");
+}
+function bumpDayStat(again){
+  const days = state.stats.days || (state.stats.days = {});
+  const k = statsDayKey(new Date());
+  const e = days[k] || (days[k] = { n: 0, a: 0 });
+  e.n++; if (again) e.a++;
+}
+function mergeStats(a, b){
+  const out = { days: {} };
+  [a, b].forEach(s => {
+    const days = (s && s.days) || {};
+    for (const k in days){
+      const e = days[k] || {}, cur = out.days[k] || { n: 0, a: 0 };
+      out.days[k] = { n: Math.max(cur.n, e.n || 0), a: Math.max(cur.a, e.a || 0) };
+    }
+  });
+  return out;
+}
+function cardCounts(){
+  const c = { fresh: 0, learning: 0, young: 0, mature: 0 };
+  state.words.forEach(w => {
+    if (!w.c || w.c.s === 0) c.fresh++;
+    else if (w.c.s === 2){ if ((w.c.sd || 0) >= 21) c.mature++; else c.young++; }
+    else c.learning++;
+  });
+  return c;
+}
+function dayFromKey(k){ return new Date(+k.slice(0, 4), +k.slice(4, 6) - 1, +k.slice(6, 8)); }
+function heatmapSVG(days, today){
+  const cell = 11, gap = 2, step = cell + gap, weeks = 53, left = 24, top = 16;
+  const start = new Date(today);
+  start.setDate(today.getDate() - today.getDay() - 52 * 7);
+  let max = 0;
+  for (const k in days) max = Math.max(max, days[k].n || 0);
+  const tk = statsDayKey(today);
+  let rects = "", months = "", lastMonth = -1;
+  for (let w = 0; w < weeks; w++){
+    for (let d = 0; d < 7; d++){
+      const date = new Date(start);
+      date.setDate(start.getDate() + w * 7 + d);
+      if (date > today) continue;
+      const k = statsDayKey(date), n = (days[k] || {}).n || 0;
+      const x = left + w * step, y = top + d * step;
+      const op = n ? Math.max(.25, Math.ceil(4 * n / max) / 4) : 0;
+      rects += '<rect x="' + x + '" y="' + y + '" width="' + cell + '" height="' + cell + '" ' +
+        (n ? 'fill="var(--ink)" fill-opacity="' + op + '"' : 'fill="none" stroke="var(--hair)"') +
+        (k === tk ? ' data-today="1"' : '') + '><title>' + esc(date.toLocaleDateString()) +
+        ' · ' + n + (n === 1 ? ' review' : ' reviews') + '</title></rect>';
+      if (d === 0 && date.getMonth() !== lastMonth){
+        lastMonth = date.getMonth();
+        months += '<text x="' + x + '" y="10" class="hm">' +
+          date.toLocaleDateString([], { month: "short" }) + '</text>';
+      }
+    }
+  }
+  const wd = ["", "M", "", "W", "", "F", ""].map((l, i) => l ?
+    '<text x="0" y="' + (top + i * step + 9) + '" class="hm">' + l + '</text>' : "").join("");
+  const W = left + weeks * step, H = top + 7 * step;
+  return '<svg class="heat" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '">' +
+    months + wd + rects + '</svg>' +
+    '<div class="heatleg"><span>Less</span>' + [0, .25, .5, .75, 1].map(o =>
+      '<i style="' + (o ? 'background:var(--ink);opacity:' + o : 'border:1px solid var(--hair)') + '"></i>').join("") +
+    '<span>More</span></div>';
+}
+function futureDueSVG(today){
+  const now = Date.now(), dayMs = 86400e3, startMs = today.getTime();
+  const counts = new Array(31).fill(0);
+  let backlog = 0;
+  state.words.forEach(w => {
+    if (!w.c || w.c.s === 0) return;
+    if (w.c.d < now){ backlog++; return; }
+    const d = Math.floor((w.c.d - startMs) / dayMs);
+    if (d >= 0 && d <= 30) counts[d]++;
+  });
+  const max = Math.max(1, ...counts);
+  const W = 620, H = 150, left = 30, bottom = 22, bw = (W - left - 10) / 31;
+  let bars = "";
+  counts.forEach((n, i) => {
+    const h = Math.round((H - bottom - 12) * n / max);
+    bars += '<rect x="' + (left + i * bw + 1).toFixed(1) + '" y="' + (H - bottom - h) + '" width="' +
+      (bw - 2).toFixed(1) + '" height="' + h + '" fill="var(--ink)"><title>Day +' + i + ': ' + n + '</title></rect>';
+  });
+  const axis = [0, 5, 10, 15, 20, 25, 30].map(i => '<text x="' + (left + i * bw + bw / 2).toFixed(1) +
+    '" y="' + (H - 6) + '" class="hm" text-anchor="middle">' + i + '</text>').join("");
+  const yl = '<text x="' + (left - 6) + '" y="' + (H - bottom) + '" class="hm" text-anchor="end">0</text>' +
+    '<text x="' + (left - 6) + '" y="14" class="hm" text-anchor="end">' + max + '</text>';
+  const total = counts.reduce((a, b) => a + b, 0);
+  return '<svg class="fdue" viewBox="0 0 ' + W + ' ' + H + '" width="100%">' +
+    '<line x1="' + left + '" y1="' + (H - bottom) + '" x2="' + W + '" y2="' + (H - bottom) + '" stroke="var(--ink)"/>' +
+    bars + axis + yl + '</svg>' +
+    '<p class="setnote">Total: ' + total + ' reviews · Average: ' + (Math.round(10 * total / 31) / 10) +
+    ' reviews/day · Due tomorrow: ' + counts[1] + (backlog ? ' · Backlog: ' + backlog + ' overdue' : "") + '</p>';
+}
+function renderProgress(){
+  const days = state.stats.days || {};
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const t = days[statsDayKey(today)] || { n: 0, a: 0 };
+  let html = '<div class="pgbox"><h3>Today</h3><div class="setbody">' +
+    (t.n ? '<div class="pgbig">' + t.n + (t.n === 1 ? ' card' : ' cards') + ' studied</div>' +
+      '<p class="setnote">' + t.a + ' marked Again (' + Math.round(100 * t.a / t.n) + '%).</p>'
+    : '<p class="setnote">No cards studied today.</p>') + '</div></div>';
+  const cc = cardCounts(), total = state.words.length || 1;
+  const seg = (n, op) => n ? '<div style="flex:' + n + ';background:var(--ink);opacity:' + op + '"></div>' : "";
+  html += '<div class="pgbox"><h3>Card counts</h3><div class="setbody">' +
+    '<div class="pgbar">' + seg(cc.fresh, .15) + seg(cc.learning, .4) + seg(cc.young, .7) + seg(cc.mature, 1) + '</div>' +
+    '<table class="pgtab">' + [["New", cc.fresh, .15], ["Learning", cc.learning, .4],
+      ["Young", cc.young, .7], ["Mature", cc.mature, 1]].map(r =>
+      '<tr><td><span class="sw" style="opacity:' + r[2] + '"></span>' + r[0] + '</td><td>' + r[1] +
+      '</td><td>' + Math.round(100 * r[1] / total) + '%</td></tr>').join("") +
+    '<tr class="tot"><td>Total</td><td>' + state.words.length + '</td><td></td></tr></table></div></div>';
+  html += '<div class="pgbox"><h3>Calendar · last 12 months</h3><div class="setbody heatwrap">' +
+    heatmapSVG(days, today) + '</div></div>';
+  html += '<div class="pgbox"><h3>Future due · next 30 days</h3><div class="setbody">' +
+    futureDueSVG(today) + '</div></div>';
+  let totalRev = 0, active = 0, longest = 0, run = 0, prev = null;
+  Object.keys(days).sort().forEach(k => {
+    const n = days[k].n || 0;
+    totalRev += n;
+    if (!n) return;
+    active++;
+    const dt = dayFromKey(k);
+    run = (prev && Math.round((dt - prev) / 86400e3) === 1) ? run + 1 : 1;
+    longest = Math.max(longest, run);
+    prev = dt;
+  });
+  let streak = 0;
+  const cur = new Date(today);
+  if (!(days[statsDayKey(cur)] || {}).n) cur.setDate(cur.getDate() - 1);
+  while ((days[statsDayKey(cur)] || {}).n){ streak++; cur.setDate(cur.getDate() - 1); }
+  html += '<div class="pgbox"><h3>All time</h3><div class="setbody"><table class="pgtab">' +
+    '<tr><td>Reviews</td><td>' + totalRev + '</td><td></td></tr>' +
+    '<tr><td>Active days</td><td>' + active + '</td><td></td></tr>' +
+    '<tr><td>Average per active day</td><td>' + (active ? Math.round(totalRev / active) : 0) + '</td><td></td></tr>' +
+    '<tr><td>Current streak</td><td>' + streak + (streak === 1 ? ' day' : ' days') + '</td><td></td></tr>' +
+    '<tr class="tot"><td>Longest streak</td><td>' + longest + (longest === 1 ? ' day' : ' days') + '</td><td></td></tr>' +
+    '</table></div></div>';
+  $("#pgwrap").innerHTML = html;
+  $("#pgmeta").textContent = user ? "Every review on this account, across all your devices."
+    : "Reviews on this device — sign in to keep them with your account.";
+}
+$("#btnProgress").addEventListener("click", () => {
+  if (!$("#p-progress").hidden){ showView("file"); return; }
+  $("#search").value = ""; hideSugg();
+  showView("progress");
+  renderProgress();
+});
+
 /* ---------------- boot */
 $("#nDict").textContent = "loading…";
 (async () => {
@@ -1528,8 +1742,13 @@ $("#nDict").textContent = "loading…";
       state.settings.group = "My additions";
     if (typeof saved.syncHash === "string") syncHash = saved.syncHash;
     if (Array.isArray(saved.pendingLog)) pendingLog = saved.pendingLog;
+    if (saved.stats && typeof saved.stats === "object") state.stats = mergeStats(state.stats, saved.stats);
   } else {
     state.words = STARTER.map(stripL);
+    // A freshly seeded device counts as "unchanged since sync", so signing in
+    // adopts the account silently instead of asking which file to keep.
+    syncHash = hashWords(state.words);
+    persistLocal();
   }
   $("#groupin").value = state.settings.group;
   activePos = ORDER.find(p => state.words.some(w => w.pos === p)) || null;

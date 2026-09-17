@@ -1,6 +1,6 @@
 // Service worker — offline app shell + dictionary cache.
 // Bump VERSION whenever a precached file changes so clients refresh it.
-const VERSION = "v1.9";
+const VERSION = "v1.10";
 const SHELL = "shell-" + VERSION;
 const RUNTIME = "runtime-" + VERSION;
 const PRECACHE = [
@@ -8,7 +8,7 @@ const PRECACHE = [
   "index.html",
   "config.js",
   "dict.json",
-  "vendor/firebase-bundle-2.js",
+  "vendor/firebase-bundle-3.js",
   "vendor/fsrs-bundle.js",
   "manifest.json",
   "icons/favicon.svg",

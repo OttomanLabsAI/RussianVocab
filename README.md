@@ -11,9 +11,10 @@ Firebase directly from the browser.
 |---|---|
 | `index.html` | The whole app (UI + logic) |
 | `dict.json` | The dictionary (2.7 MB, fetched once and cached) |
-| `vendor/firebase-bundle-2.js` | Firebase Auth + Firestore SDK plus the app's sync/sets/log API, bundled and pinned |
+| `vendor/firebase-bundle-3.js` | Firebase Auth + Firestore SDK plus the app's sync/sets/log API, bundled and pinned |
 | `vendor/fsrs-bundle.js` | The ts-fsrs spaced-repetition scheduler, bundled and pinned |
 | `tools/` | Source + build script for the vendor bundles (`npm install && npm run build`, commit the output; not needed to deploy) |
+| `ios/` | The native iOS/iPadOS app (SwiftUI, XcodeGen spec, tests) — see `ios/README.md` |
 | `config.js` | **Your Firebase keys go here** |
 | `firestore.rules` | Security rules — paste into the Firebase console |
 | `wrangler.jsonc`, `_headers`, `.assetsignore` | Cloudflare deployment: project config, cache headers, files kept off the site |
@@ -116,17 +117,38 @@ installed clients pick up the new copy.
 
 The word file doubles as a spaced-repetition queue, scheduled by
 [ts-fsrs](https://github.com/open-spaced-repetition/ts-fsrs) with default
-parameters. A word's card state lives on the word object itself as `c`
+parameters (FSRS-6, the algorithm Anki uses). A word's card state lives on
+the word object itself as `c`
 (state, due, stability, difficulty, reps, lapses, learning step, last
 review — compact keys), so it syncs through the existing chunk mechanism
 with no schema migration: **a word without `c` is a new card**, which is
 also what makes the change reversible — delete `c` and you're back to a
 plain word list. New cards enter at a user-adjustable daily cap (default
 20, `settings.newPerDay`); the day's intake is tracked in
-`settings.introDay`/`introCount`. Every grade appends to a per-day log for
-future parameter optimisation, buffered locally when offline
-(`pendingLog` in localStorage) and flushed when back online — a rating is
-never lost to a dropped connection.
+`settings.introDay`/`introCount`. Word lists double as **decks** — pick one
+in the review screen (`settings.deck`) to review it alone. Every grade
+appends to a per-day log for future parameter optimisation, buffered
+locally when offline (`pendingLog` in localStorage) and flushed when back
+online — a rating is never lost to a dropped connection.
+
+## Progress
+
+The Progress panel is the Anki-style stats page: today's count and
+again-rate, card counts (new / learning / young / mature — mature meaning
+an interval of 21+ days), a GitHub-style calendar of reviews over the last
+12 months, reviews due over the next 30 days, and all-time totals with
+streaks. It runs off `stats.days` on the user doc — a `{YYYYMMDD: {n, a}}`
+aggregate bumped on every grade and merged by taking the larger count per
+day, so history survives whichever word file wins a sync.
+
+## iOS and iPadOS app
+
+`ios/` holds a native SwiftUI app that shares the same Firebase project and
+data — sign in with the website's email and password and your file, lists,
+review history and progress are already there. Same dictionary (it bundles
+`dict.json`), the official Swift FSRS with the same FSRS-6 parameters, same
+design tokens and fonts. See `ios/README.md` for the Mac build steps
+(XcodeGen → Xcode) and the parity tests that prove the two schedulers agree.
 
 ## Pronunciation audio
 
@@ -150,7 +172,8 @@ snapshots — later edits by the creator never touch a student's file.
 
 ```
 users/{uid}                    → { v, chunks, count, settings: {group, newPerDay,
-                                   introDay, introCount, autoSay}, updated }
+                                   introDay, introCount, autoSay, deck},
+                                   stats: { days: { YYYYMMDD: {n, a} } }, updated }
 users/{uid}/w/{0..n}           → { words: [ up to 1,000 word objects ] }
 users/{uid}/log/{YYYYMMDD}     → { e: [ {w, r, at, el, sc, st} ], updated }   ← review log
 sets/{CODE}                    → { owner, name, desc, words[], count, created }
