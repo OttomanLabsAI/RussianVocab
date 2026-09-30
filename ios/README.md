@@ -28,17 +28,30 @@ with the same parameters, same monochrome ink/paper design (fonts bundled).
 
 The iOS app is registered in the Firebase console (bundle ID
 `com.ottomanlabs.vocabfolio`) and its `GoogleService-Info.plist` is committed
-in `ios/VocabFolio/` — like `config.js` for the website, it holds public
-client identifiers; the Firestore rules protect the data. The Firebase
-console's own "Add Firebase SDK" and "Add initialization code" steps are
-already done: `project.yml` declares the Auth and Firestore packages and
+in `ios/VocabFolio/` — the one place the app's client identifiers live. Like
+`config.js` for the website, it holds public identifiers, not secrets: every
+Firebase app ships them inside the binary, and the Firestore rules are what
+protect the data. GitHub's secret scanning flags the `AIza…` API key anyway;
+dismiss that alert as a false positive. To limit misuse of the key's quota,
+restrict it in Google Cloud → APIs & Services → Credentials to the iOS
+bundle ID (and the web key to the site's domain). The Firebase console's own
+"Add Firebase SDK" and "Add initialization code" steps are already done:
+`project.yml` declares the Auth and Firestore packages and
 `CloudService.configure()` initialises them. Analytics is deliberately left
 out.
 
 The Email/Password sign-in and the Firestore rules the website uses already
 cover everything the app reads and writes. If the app is ever re-registered,
-replace the plist and update the matching fallback values in
-`CloudService.configure()`.
+replace the plist.
+
+Firebase raises an Objective-C exception — uncatchable from Swift, so the
+app dies at launch — when it is handed an app id it doesn't like, such as a
+website's `1:…:web:…` id. `CloudService` therefore checks the plist the way
+FirebaseCore does before configuring, and a build whose plist is missing or
+fails the check runs device-only, with the account box saying "accounts
+unavailable in this build". `ModelTests` asserts the bundled plist is there
+and passes. If you see that message on a build from this repo, the clone is
+stale: `git pull`, `xcodegen generate`, rebuild.
 
 The bundle ID is fixed the first time a build is uploaded to App Store
 Connect. To use a different one, change `PRODUCT_BUNDLE_IDENTIFIER` in

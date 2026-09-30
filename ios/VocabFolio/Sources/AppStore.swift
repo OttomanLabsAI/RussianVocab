@@ -4,7 +4,13 @@ import FSRS
 
 enum CloudError: LocalizedError {
     case signedOut
-    var errorDescription: String? { "Sign in to do that." }
+    case unconfigured
+    var errorDescription: String? {
+        switch self {
+        case .signedOut: return "Sign in to do that."
+        case .unconfigured: return "Accounts aren't available in this build — words stay on this device."
+        }
+    }
 }
 
 /// The app's single source of truth: the word file, settings, review stats,
@@ -47,6 +53,12 @@ final class AppStore: ObservableObject {
 
     func start() {
         CloudService.shared.configure()
+        // Without a usable Firebase configuration the app is device-only; the
+        // account box says so instead of the app dying at launch.
+        guard CloudService.shared.isConfigured else {
+            status = "accounts unavailable in this build — saving on this device"
+            return
+        }
         authHandle = CloudService.shared.listen { [weak self] acct in
             Task { @MainActor in await self?.handleAuth(acct) }
         }

@@ -28,6 +28,23 @@ final class ModelTests: XCTestCase {
         }
     }
 
+    /// FirebaseCore raises an uncatchable exception at launch on an app id it
+    /// doesn't like, so the check that gates configure() must agree with it,
+    /// and the bundled GoogleService-Info.plist must be there and pass.
+    @MainActor func testFirebaseConfigurationPassesFirebaseCoreCheck() throws {
+        XCTAssertTrue(CloudService.isValidAppID("1:768664756180:ios:f4a9a034038f22bb8fc041"))
+        XCTAssertFalse(CloudService.isValidAppID("1:768664756180:web:10741fa6d33908d58fc041"), "the website's id")
+        XCTAssertFalse(CloudService.isValidAppID("2:768664756180:ios:f4a9a034038f22bb8fc041"), "unknown version")
+        XCTAssertFalse(CloudService.isValidAppID("1:abc:ios:f4a9a034038f22bb8fc041"), "project number")
+        XCTAssertFalse(CloudService.isValidAppID("1:768664756180:ios:"), "empty hash")
+        XCTAssertFalse(CloudService.isValidAppID("1:768664756180:ios:xyz"), "non-hex hash")
+        XCTAssertFalse(CloudService.isValidAppID(""))
+        let options = try XCTUnwrap(CloudService.loadOptions(), "GoogleService-Info.plist missing from the app bundle")
+        XCTAssertTrue(CloudService.isValidAppID(options.googleAppID))
+        XCTAssertEqual(options.projectID, "russianvocab-90261")
+        XCTAssertEqual(options.bundleID, "com.ottomanlabs.vocabfolio")
+    }
+
     func testWordDecodesWebFormatAndKeepsUnknownSettings() throws {
         let json = """
         {"words":[{"ru":"вода","ac":"вода'","pr":"vo-DA","en":"water","pos":"n","g":"Food","x":"f","t":1758112345678,
