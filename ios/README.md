@@ -9,10 +9,8 @@ with the same parameters, same monochrome ink/paper design (fonts bundled).
 
 1. Install Xcode 16 or newer from the App Store, and XcodeGen:
    `brew install xcodegen`
-2. Register the app with Firebase (required — see below) and put
-   `GoogleService-Info.plist` in `ios/VocabFolio/`.
-3. Generate the project (the `.xcodeproj` is not committed — `project.yml` is
-   the source of truth; re-run this after changing it or adding the plist):
+2. Generate the project (the `.xcodeproj` is not committed — `project.yml` is
+   the source of truth; re-run this after changing it):
    ```
    cd ios
    xcodegen generate
@@ -21,23 +19,26 @@ with the same parameters, same monochrome ink/paper design (fonts bundled).
    Xcode resolves the two Swift packages on first open (Firebase iOS SDK and
    the official Swift FSRS, pinned to the commit the parity tests were
    generated against). Firebase is large; give it a few minutes.
-4. Select the **VocabFolio** target → *Signing & Capabilities* → tick
+3. Select the **VocabFolio** target → *Signing & Capabilities* → tick
    *Automatically manage signing* and pick your team. Do the same for
    **VocabFolioTests**.
-5. Pick an iPhone or iPad simulator (or your device) and press ⌘R.
+4. Pick an iPhone or iPad simulator (or your device) and press ⌘R.
 
 ## Connect to Firebase
 
-Firebase console → the project → gear → *Project settings* → *Your apps* →
-**Add app → iOS**, bundle ID `com.ottomanlabs.vocabfolio`. Download
-`GoogleService-Info.plist` into `ios/VocabFolio/` (it is git-ignored) and
-re-run `xcodegen generate`.
+The iOS app is registered in the Firebase console (bundle ID
+`com.ottomanlabs.vocabfolio`) and its `GoogleService-Info.plist` is committed
+in `ios/VocabFolio/` — like `config.js` for the website, it holds public
+client identifiers; the Firestore rules protect the data. The Firebase
+console's own "Add Firebase SDK" and "Add initialization code" steps are
+already done: `project.yml` declares the Auth and Firestore packages and
+`CloudService.configure()` initialises them. Analytics is deliberately left
+out.
 
-Nothing else changes on the Firebase side: the Email/Password sign-in and the
-Firestore rules the website uses already cover everything the app reads and
-writes. Without the plist the app tries the website's public client keys as a
-fallback, but the iOS SDK may reject a web app ID — treat the plist as
-required.
+The Email/Password sign-in and the Firestore rules the website uses already
+cover everything the app reads and writes. If the app is ever re-registered,
+replace the plist and update the matching fallback values in
+`CloudService.configure()`.
 
 The bundle ID is fixed the first time a build is uploaded to App Store
 Connect. To use a different one, change `PRODUCT_BUNDLE_IDENTIFIER` in

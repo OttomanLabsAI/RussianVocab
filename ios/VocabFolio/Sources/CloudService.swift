@@ -45,20 +45,20 @@ final class CloudService {
 
     // MARK: Setup
 
-    /// Uses GoogleService-Info.plist when present (register an iOS app in the
-    /// Firebase console and drop the file into ios/VocabFolio/). Without it, the
-    /// app falls back to the web client's public keys — Auth only needs the API
-    /// key and Firestore only the project id, so sign-in and sync still work.
+    /// Reads the bundled GoogleService-Info.plist (the iOS app registered in
+    /// the Firebase console). The fallback carries the same iOS values, so a
+    /// build that somehow lost the file still reaches the same project.
     func configure() {
         guard FirebaseApp.app() == nil else { return }
         if let path = Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist"),
            let options = FirebaseOptions(contentsOfFile: path) {
             FirebaseApp.configure(options: options)
         } else {
-            let options = FirebaseOptions(googleAppID: "1:768664756180:web:10741fa6d33908d58fc041",
+            let options = FirebaseOptions(googleAppID: "1:768664756180:ios:f4a9a034038f22bb8fc041",
                                           gcmSenderID: "768664756180")
-            options.apiKey = "AIzaSyDv9o4_bb1BzBHdVoyHZJCysMdJRwPylP8"
+            options.apiKey = "AIzaSyD_Veq8sypcKf8Dubf-lGSGCtQdzS6uJi4"
             options.projectID = "russianvocab-90261"
+            options.bundleID = "com.ottomanlabs.vocabfolio"
             FirebaseApp.configure(options: options)
         }
         // Explicit load/save model like the web app — no local Firestore cache.
