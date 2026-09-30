@@ -42,3 +42,4 @@ regenerate them.
 | v1.10 | The card file comes to iPhone and iPad | — |
 | v1.11 | A new name, and a question about languages | 1 |
 | v1.12 | The iPhone app learns its own address | — |
+| v1.13 | The app no longer falls over its own address | 2 |

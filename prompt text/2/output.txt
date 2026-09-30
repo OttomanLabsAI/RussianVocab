@@ -1,0 +1,48 @@
+Good news first: the app compiles, links Firebase, and launches — that screenshot is the config being rejected, not your code.
+
+## Why it crashed
+
+The build on your Mac is running **v1.11 code**. The clone was made before v1.12 landed, and the `git pull` you ran was from your home folder rather than inside `Vocab-Folio`, so it never updated. v1.11 had no `GoogleService-Info.plist` yet and its built-in fallback carried the *website's* Firebase app id (`1:…:web:…`). FirebaseCore on iOS only accepts `1:…:ios:…` ids, and when it sees anything else it raises an Objective-C exception that Swift can't catch — the `addAppToAppDictionary` line in your screenshot.
+
+Fix on the Mac:
+
+```
+cd ~/Vocab-Folio
+git pull
+cd ios
+xcodegen generate
+open VocabFolio.xcodeproj
+```
+
+Then ⌘R. You should now see `GoogleService-Info.plist` listed under VocabFolio in the project navigator.
+
+## v1.13 — it can't crash that way again
+
+- `CloudService` now checks the plist the way FirebaseCore does *before* configuring. A missing or bad file no longer takes the app down: it runs device-only, the Account box says "accounts unavailable in this build — saving on this device", and Sign in explains why instead of crashing.
+- The copy of the keys that lived in the Swift file is gone — the plist is the one place they live.
+- A test asserts the bundled plist is present and passes the check, and that the old web id fails it.
+- App version bumped to 1.13.
+
+## The GitHub "secrets detected" email
+
+That's the Firebase iOS API key. It's a client identifier, not a secret: Google's own docs say Firebase API keys identify the project and don't grant access to data — the Firestore rules do that. Every Firebase iPhone app ships this key inside its bundle, and the website's equivalent is already public in `config.js` on the live site. v1.13 removes the copy from the Swift file, but the alert is pinned to commit `b20cc50` and stays open until you dismiss it: open the alert → **Dismiss** → *False positive*.
+
+Optional but worthwhile: in Google Cloud Console → APIs & Services → Credentials, open **iOS key (auto created by Firebase)** → Application restrictions → *iOS apps* → add `com.ottomanlabs.vocabfolio`. Do the same for **Browser key** → *Websites* → `russianvocab.cloudflare-passport599.workers.dev` and `localhost`. That limits the keys to your app and your site.
+
+## Getting onto TestFlight
+
+Your App Store Connect record is in place — "Prepare for Submission" is simply the state of an app that has no build yet. TestFlight (the Mac app and the tab in App Store Connect) shows nothing until Xcode uploads one:
+
+1. After the pull and regenerate, set the run destination to **Any iOS Device (arm64)**.
+2. **Product → Archive**. The Organizer opens when it finishes.
+3. **Distribute App → TestFlight & App Store → Upload**, accepting the defaults.
+4. Wait for the "has completed processing" email (5–20 minutes).
+5. App Store Connect → *Vocab Folio: Word Cards* → **TestFlight** tab. Under *Internal Testing* press **+**, name a group, add yourself, tick the build. It appears in the TestFlight app on your phone within minutes.
+
+The build carries version 1.13 (1) while the record says 1.0 — TestFlight doesn't mind. When you submit to the App Store later, edit the version in the record to match the build.
+
+## Verified
+
+I pulled FirebaseCore's `validateAppIDFormat` from the SDK source and the Swift check mirrors it: four colon-separated parts, version `1`, platform `ios`, a hex hash. The committed plist's id passes; v1.11's web id fails. Swift can't be compiled in this environment, so the change was written for the compiler blind like the rest of the app — the new test runs on your Mac with ⌘U. Nothing under the website changed (only `ios/`, `CLAUDE.md` and the prompt archive, all excluded from the deploy), so no Cloudflare check was needed.
+
+Archive: `prompt text/2/` holds your words plus the TestFlight and Xcode screenshots. The App Store Connect list and the GitHub email arrived as pixels only and couldn't be saved.
