@@ -9,4 +9,4 @@ ios/*.xcodeproj/
 ios/*.xcworkspace/
 ios/DerivedData/
 ios/**/xcuserdata/
-ios/GoogleService-Info.plist
+ios/**/GoogleService-Info.plist

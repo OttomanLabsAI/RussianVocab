@@ -196,6 +196,16 @@ struct Settings: Codable, Equatable {
         get { let d = raw["deck"]?.stringValue ?? ""; return d.isEmpty ? nil : d }
         set { raw["deck"] = .string(newValue ?? "") }
     }
+    /// The language the learner speaks, e.g. "en".
+    var native: String? {
+        get { let v = raw["native"]?.stringValue ?? ""; return v.isEmpty ? nil : v }
+        set { raw["native"] = .string(newValue ?? "") }
+    }
+    /// The language being learned, e.g. "ru".
+    var learning: String? {
+        get { let v = raw["learning"]?.stringValue ?? ""; return v.isEmpty ? nil : v }
+        set { raw["learning"] = .string(newValue ?? "") }
+    }
 
     mutating func merge(_ other: Settings) {
         for (k, v) in other.raw { raw[k] = v }

@@ -1,9 +1,11 @@
-# RussianVocab — Russian Vocabulary Builder
+# Vocab Folio
 
-A static site: search a 45,698-entry Russian–English dictionary, add words to a
-personal file organised by part of speech, and (optionally) sign in so the file
-syncs across devices. No server of your own — accounts and storage run on
-Firebase directly from the browser.
+A vocabulary card file, on the web and as a native iPhone/iPad app: search a
+built-in dictionary, add words to a personal file organised by part of speech,
+review them with spaced repetition, and (optionally) sign in so the file syncs
+across devices. The first language pair is English → Russian (a 45,698-entry
+dictionary); more are planned. No server of your own — accounts and storage
+run on Firebase directly from the browser and the app.
 
 ## Files
 
@@ -75,8 +77,9 @@ when they change, short cache for `index.html` and `config.js`).
 *Workers & Pages → Create → Workers → Import a repository*, pick this repo,
 and accept the detected settings (no build command, deploy command
 `npx wrangler deploy`). Every push to the default branch then deploys to
-`russianvocab.<your-subdomain>.workers.dev`; custom domains attach in the
-worker's Settings → Domains & Routes.
+`russianvocab.<your-subdomain>.workers.dev` (the worker keeps its original
+name so the address doesn't change; a custom domain can carry the Vocab Folio
+name — attach it in the worker's Settings → Domains & Routes).
 
 **One-off deploy from your machine:**
 
@@ -112,6 +115,16 @@ installed clients pick up the new copy.
   tab closes. Status is shown next to the account button.
 - Conflict model is last-write-wins per save — fine for one person across
   devices, not built for simultaneous editing.
+
+## Languages
+
+On first visit the app asks for the learner's language, then the language
+they are learning, listing only pairs that have a dictionary behind them
+(`LANGS`/`PAIRS` in `index.html`, `Languages.swift` on iOS — keep the two in
+step). Today that is English → Russian. The choice is stored as
+`settings.native` / `settings.learning`, so it syncs to the account; a device
+that picks before signing in carries the choice up, and signing in on a new
+device brings it down. The header's language label reopens the picker.
 
 ## Review mode (FSRS)
 
@@ -172,7 +185,8 @@ snapshots — later edits by the creator never touch a student's file.
 
 ```
 users/{uid}                    → { v, chunks, count, settings: {group, newPerDay,
-                                   introDay, introCount, autoSay, deck},
+                                   introDay, introCount, autoSay, deck,
+                                   native, learning},
                                    stats: { days: { YYYYMMDD: {n, a} } }, updated }
 users/{uid}/w/{0..n}           → { words: [ up to 1,000 word objects ] }
 users/{uid}/log/{YYYYMMDD}     → { e: [ {w, r, at, el, sc, st} ], updated }   ← review log

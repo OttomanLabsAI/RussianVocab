@@ -1,6 +1,6 @@
-# XcodeGen spec — run `xcodegen generate` in this folder to produce RusVocab.xcodeproj.
+# XcodeGen spec — run `xcodegen generate` in this folder to produce VocabFolio.xcodeproj.
 # The generated project is not committed; this file is the source of truth.
-name: RusVocab
+name: VocabFolio
 options:
   bundleIdPrefix: com.ottomanlabs
   deploymentTarget:
@@ -19,17 +19,17 @@ packages:
     revision: 4fbaf20184d62f82a9f44f343337c61a2c5483e9
 
 targets:
-  RusVocab:
+  VocabFolio:
     type: application
     platform: iOS
     sources:
-      - path: RusVocab
+      - path: VocabFolio
       - path: ../dict.json          # the same dictionary the web app serves
         buildPhase: resources
     info:
-      path: RusVocab/Info.plist
+      path: VocabFolio/Info.plist
       properties:
-        CFBundleDisplayName: RusVocab
+        CFBundleDisplayName: Vocab Folio
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         UILaunchScreen: {}
@@ -52,8 +52,8 @@ targets:
           NSAllowsArbitraryLoads: false
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.ottomanlabs.rusvocab
-        MARKETING_VERSION: "1.10"
+        PRODUCT_BUNDLE_IDENTIFIER: com.ottomanlabs.vocabfolio
+        MARKETING_VERSION: "1.11"
         CURRENT_PROJECT_VERSION: "1"
         TARGETED_DEVICE_FAMILY: "1,2"
         SWIFT_VERSION: "5.10"
@@ -71,18 +71,18 @@ targets:
         product: FSRS
     scheme:
       testTargets:
-        - RusVocabTests
+        - VocabFolioTests
 
-  RusVocabTests:
+  VocabFolioTests:
     type: bundle.unit-test
     platform: iOS
     sources:
-      - path: RusVocabTests
+      - path: VocabFolioTests
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.ottomanlabs.rusvocab.tests
+        PRODUCT_BUNDLE_IDENTIFIER: com.ottomanlabs.vocabfolio.tests
         SWIFT_VERSION: "5.10"
     dependencies:
-      - target: RusVocab
+      - target: VocabFolio
       - package: FSRS
         product: FSRS

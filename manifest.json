@@ -1,15 +1,28 @@
 {
-  "name": "Russian Vocabulary Builder",
-  "short_name": "RusVocab",
-  "description": "Search a 45,698-entry Russian–English dictionary, build a personal word file organised by part of speech, and study with hide-and-peek — synced across devices.",
+  "name": "Vocab Folio",
+  "short_name": "Vocab Folio",
+  "description": "Build a personal vocabulary file from a built-in dictionary, review it with spaced repetition, and keep it synced across devices. Currently English → Russian.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#FFFFFF",
   "theme_color": "#FFFFFF",
   "icons": [
-    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
-    { "src": "icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }

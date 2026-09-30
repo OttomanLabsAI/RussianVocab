@@ -27,8 +27,8 @@ import SwiftUI
         NavigationStack {
             ScrollView {
                 VStack(spacing: 14) {
-                    PageHeader(kicker: "Русский словарь · Card file + dictionary",
-                               title: "Russian Vocabulary Builder",
+                    PageHeader(kicker: "\(Languages.pairLabel(native: store.settings.native, learning: store.settings.learning)) · Card file + dictionary",
+                               title: "Vocab Folio",
                                meta: "\(store.words.count) words in your file")
                     studyBar
                     if store.words.isEmpty {

@@ -1,5 +1,5 @@
 {
-  "name": "russianvocab-vendor-build",
+  "name": "vocab-folio-vendor-build",
   "private": true,
   "description": "Builds the pinned vendor bundles. Run npm install && npm run build in tools/, then commit the vendor/ output. Not needed to deploy the site.",
   "scripts": {

@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-@MainActor struct RusVocabApp: App {
+@MainActor struct VocabFolioApp: App {
     @StateObject private var store = AppStore()
     @StateObject private var dictionary = RuDictionary()
     @Environment(\.scenePhase) private var phase

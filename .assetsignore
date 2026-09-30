@@ -10,3 +10,5 @@ LICENSE
 firestore.rules
 node_modules
 ios
+CLAUDE.md
+prompt text
