@@ -46,7 +46,7 @@ final class CloudService {
     // MARK: Setup
 
     /// Uses GoogleService-Info.plist when present (register an iOS app in the
-    /// Firebase console and drop the file into ios/RusVocab/). Without it, the
+    /// Firebase console and drop the file into ios/VocabFolio/). Without it, the
     /// app falls back to the web client's public keys — Auth only needs the API
     /// key and Firestore only the project id, so sign-in and sync still work.
     func configure() {

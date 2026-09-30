@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Russian Vocabulary Builder — Русский словарь</title>
-<meta name="description" content="Search a 45,698-entry Russian–English dictionary, build a personal word file organised by part of speech, and study with hide-and-peek — synced across devices.">
+<title>Vocab Folio — your vocabulary, filed and reviewed</title>
+<meta name="description" content="Build a personal vocabulary file from a built-in dictionary, review it with spaced repetition, and keep it synced across devices. Currently English → Russian.">
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/icons/icon-180.png">
@@ -13,7 +13,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="RusVocab">
+<meta name="apple-mobile-web-app-title" content="Vocab Folio">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@500..600&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&family=Prata&display=swap" rel="stylesheet">
@@ -220,6 +220,27 @@ td.add{width:96px;text-align:center}
 #aErr.ok{color:var(--ink-60)}
 .anote{font-size:.95rem;color:var(--ink-60);line-height:1.6;margin-bottom:6px}
 
+/* language onboarding */
+#langmodal{z-index:55}
+.langbox{max-width:460px}
+.langbox .lab{display:block;margin-bottom:10px}
+.langlist{display:flex;flex-direction:column;gap:8px;margin:14px 0 8px}
+.langopt{display:flex;align-items:baseline;gap:12px;width:100%;text-align:left;padding:13px 14px;
+  border:1px solid var(--ink);background:var(--paper);color:var(--ink);
+  transition:background-color .15s,color .15s}
+.langopt:hover,.langopt[aria-checked="true"]{background:var(--ink);color:var(--paper)}
+.langopt .ln{font:400 1.15rem/1.2 "Newsreader",Georgia,serif}
+.langopt .ls{font:italic 400 .95rem/1.2 "Newsreader",Georgia,serif;opacity:.7}
+.langopt .lc{margin-left:auto;font:600 .58rem/1 "Afacad Flux",system-ui,sans-serif;
+  letter-spacing:.18em;text-transform:uppercase;opacity:.65}
+.langmore{font:italic 400 .9rem/1.5 "Newsreader",Georgia,serif;color:var(--ink-60);margin:0}
+.ibtn[disabled]{opacity:.35;cursor:default}
+.kbtn{font:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;padding:0 0 1px;
+  border-bottom:1px dashed var(--hair);transition:color .15s,border-color .15s}
+.kbtn:hover{color:var(--ink);border-bottom-color:var(--ink)}
+.kicker{flex-wrap:wrap;row-gap:6px}
+.kicker .kbtn,.kicker > span{white-space:nowrap}
+
 /* speaker buttons */
 .spk{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;
   color:var(--ink-60);vertical-align:middle;margin-left:6px;padding:0;
@@ -352,8 +373,8 @@ footer{padding:0 4px 8px;font:italic 400 .85rem/1.6 "Newsreader",Georgia,serif;c
 <header class="top">
   <div class="toprow">
     <div class="brand">
-      <div class="kicker"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1C12.6 7.2 16.8 11.4 23 12 16.8 12.6 12.6 16.8 12 23 11.4 16.8 7.2 12.6 1 12 7.2 11.4 11.4 7.2 12 1Z"/></svg>Русский словарь · Card File + Dictionary</div>
-      <h1>Russian Vocabulary Builder</h1>
+      <div class="kicker"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1C12.6 7.2 16.8 11.4 23 12 16.8 12.6 12.6 16.8 12 23 11.4 16.8 7.2 12.6 1 12 7.2 11.4 11.4 7.2 12 1Z"/></svg><button class="kbtn" id="btnLang" type="button" title="Change languages">Choose your languages</button><span>· Card file + dictionary</span></div>
+      <h1>Vocab Folio</h1>
       <div class="meta"><b id="nWords">0</b> words in your file ·
         dictionary: <span id="nDict">0</span> entries</div>
     </div>
@@ -437,6 +458,24 @@ footer{padding:0 4px 8px;font:italic 400 .85rem/1.6 "Newsreader",Georgia,serif;c
   </main>
 </div>
 <footer>Search → Add builds your file · sign in to sync across devices · Compiled July 2026 · Dictionary: OpenRussian (CC-BY-SA), frequency: OpenSubtitles · Recorded audio: Wiktionary contributors via Wikimedia Commons (CC BY-SA)</footer>
+
+<div id="langmodal" class="authwrap"><div class="mbox langbox" role="dialog" aria-modal="true" aria-labelledby="lTitle">
+  <span class="lab" id="lStep">Step 1 of 2</span>
+  <h4 id="lTitle">What’s your language?</h4>
+  <p class="anote" id="lHint"></p>
+  <div class="langlist" id="lList" role="radiogroup" aria-labelledby="lTitle"></div>
+  <p class="langmore">More languages are on the way.</p>
+  <div class="mrow" style="justify-content:space-between">
+    <span style="display:flex;gap:9px">
+      <button class="fbtn" id="lSignin" type="button">I have an account</button>
+      <button class="fbtn" id="lCancel" type="button" hidden>Cancel</button>
+    </span>
+    <span style="display:flex;gap:9px">
+      <button class="fbtn" id="lBack" type="button" hidden>Back</button>
+      <button class="ibtn primary" id="lNext" type="button" disabled>Continue</button>
+    </span>
+  </div>
+</div></div>
 
 <div id="authmodal" class="authwrap"><div class="mbox">
   <h4 id="aTitle">Sign in</h4>
@@ -696,7 +735,7 @@ function renderMeta(){
     '<option value="__new__">+ New list…</option>';
   sel.value = state.settings.group;
 }
-function renderAll(){ renderRail(); renderPanel(); renderMeta(); renderDue(); }
+function renderAll(){ renderRail(); renderPanel(); renderMeta(); renderDue(); renderLangLabel(); }
 
 /* Four views share the main column: the word file, search results,
    the review session, and word sets. */
@@ -1008,7 +1047,7 @@ function openAuth(){
   if (configured) $("#aEmail").focus();
 }
 function closeAuth(){ $("#authmodal").classList.remove("open"); }
-$("#aClose").addEventListener("click", closeAuth);
+$("#aClose").addEventListener("click", () => { closeAuth(); ensureLanguages(); });
 $("#btnAcct").addEventListener("click", () => {
   if (user){ FB.doSignOut(); return; }
   openAuth();
@@ -1067,6 +1106,7 @@ async function handleAuth(u){
   if (!u){
     setSaveStat(localStatText());
     if (!$("#p-sets").hidden) renderSets();
+    ensureLanguages();
     if (pendingRedeem) openAuth();
     return;
   }
@@ -1085,10 +1125,12 @@ async function handleAuth(u){
       const cloudHash = hashWords(cloud.words.filter(validWord));
       if (!state.words.length || localHash === cloudHash || localHash === syncHash){
         state.words = cloud.words.filter(validWord);
+        const cloudHasLang = !!(cloud.settings && cloud.settings.learning);
         if (cloud.settings) state.settings = Object.assign({}, state.settings, cloud.settings);
         $("#groupin").value = state.settings.group || "My additions";
         syncHash = cloudHash; persistLocal();
         renderAll(); setSaveStat("saved to account ✓");
+        if (!cloudHasLang && hasLanguages()) scheduleSave();   // carry this device's language choice up
       } else {
         setSaveStat("choose which words to keep");
         offerCloudChoice(cloud);
@@ -1096,6 +1138,7 @@ async function handleAuth(u){
     }
   } catch (e){ setSaveStat("couldn't reach your account — working on this device"); }
   flushLog();
+  ensureLanguages();
   if (!$("#p-sets").hidden) renderSets();
   if (pendingRedeem){ const c = pendingRedeem; pendingRedeem = null; beginRedeem(c); }
 }
@@ -1724,6 +1767,79 @@ $("#btnProgress").addEventListener("click", () => {
   renderProgress();
 });
 
+/* ---------------- languages */
+// Language pairs that have a dictionary behind them. Onboarding offers only
+// what is listed here, so adding a language is one entry plus its data.
+const LANGS = {
+  en: { name: "English", self: "English" },
+  ru: { name: "Russian", self: "Русский" },
+};
+const PAIRS = [["en", "ru"]];          // [the learner's language, the language learned]
+function hasLanguages(){
+  const s = state.settings;
+  return PAIRS.some(p => p[0] === s.native && p[1] === s.learning);
+}
+function renderLangLabel(){
+  const s = state.settings;
+  $("#btnLang").textContent = hasLanguages()
+    ? LANGS[s.native].name + " → " + LANGS[s.learning].self
+    : "Choose your languages";
+}
+let langStep = 1, langPick = {};
+function openLang(){
+  langPick = hasLanguages() ? { native: state.settings.native, learning: state.settings.learning } : {};
+  langStep = 1;
+  renderLang();
+  $("#langmodal").classList.add("open");
+}
+function closeLang(){ $("#langmodal").classList.remove("open"); }
+function ensureLanguages(){
+  if (hasLanguages()) closeLang();
+  else if (!$("#langmodal").classList.contains("open")) openLang();
+}
+function renderLang(){
+  const first = langStep === 1;
+  const codes = first ? [...new Set(PAIRS.map(p => p[0]))]
+    : PAIRS.filter(p => p[0] === langPick.native).map(p => p[1]);
+  const cur = first ? langPick.native : langPick.learning;
+  $("#lStep").textContent = "Step " + langStep + " of 2";
+  $("#lTitle").textContent = first ? "What’s your language?" : "What are you learning?";
+  $("#lHint").textContent = first
+    ? "The language you already speak — translations and hints are shown in it."
+    : "Your word file, dictionary and reviews all follow this language.";
+  $("#lList").innerHTML = codes.map(c =>
+    '<button class="langopt" type="button" role="radio" data-code="' + c + '" aria-checked="' + (c === cur) + '">' +
+    '<span class="ln">' + esc(LANGS[c].name) + '</span>' +
+    (LANGS[c].self !== LANGS[c].name ? '<span class="ls">' + esc(LANGS[c].self) + '</span>' : "") +
+    '<span class="lc">' + c + '</span></button>').join("");
+  $("#lNext").textContent = first ? "Continue" : "Start";
+  $("#lNext").disabled = !cur;
+  $("#lBack").hidden = first;
+  const editing = hasLanguages();
+  $("#lCancel").hidden = !editing;
+  $("#lSignin").hidden = editing || !configured || !!user;
+}
+$("#lList").addEventListener("click", e => {
+  const b = e.target.closest(".langopt");
+  if (!b) return;
+  if (langStep === 1){ if (langPick.native !== b.dataset.code) langPick = { native: b.dataset.code }; }
+  else langPick.learning = b.dataset.code;
+  renderLang();
+});
+$("#lNext").addEventListener("click", () => {
+  if (langStep === 1){ if (langPick.native){ langStep = 2; renderLang(); } return; }
+  if (!langPick.learning) return;
+  state.settings.native = langPick.native;
+  state.settings.learning = langPick.learning;
+  scheduleSave();                      // reaches the account when signed in
+  renderLangLabel();
+  closeLang();
+});
+$("#lBack").addEventListener("click", () => { langStep = 1; renderLang(); });
+$("#lCancel").addEventListener("click", closeLang);
+$("#lSignin").addEventListener("click", () => { closeLang(); openAuth(); });
+$("#btnLang").addEventListener("click", openLang);
+
 /* ---------------- boot */
 $("#nDict").textContent = "loading…";
 (async () => {
@@ -1787,8 +1903,11 @@ $("#nDict").textContent = "loading…";
 
   if (configured){
     try { FB.init(window.FIREBASE_CONFIG, !!window.USE_EMULATORS); FB.onUser(handleAuth); }
-    catch (e){ setSaveStat("account system failed to start — working locally"); }
-  } else if (pendingRedeem){
+    catch (e){ setSaveStat("account system failed to start — working locally"); ensureLanguages(); }
+  } else {
+    ensureLanguages();
+  }
+  if (!configured && pendingRedeem){
     showImportBar("<b>Word sets need accounts</b>, which aren't set up on this copy of the site.",
       '<button class="ibtn" id="impCancel">OK</button>');
     $("#impCancel").onclick = hideImportBar;

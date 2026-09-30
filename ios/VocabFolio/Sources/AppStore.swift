@@ -100,6 +100,22 @@ final class AppStore: ObservableObject {
         changed()
     }
 
+    // MARK: Languages
+
+    /// True once the learner has picked a supported pair; until then the
+    /// onboarding covers the app.
+    var hasLanguages: Bool { Languages.isSupported(native: settings.native, learning: settings.learning) }
+
+    /// Set when the learner reopens the language picker from Account.
+    @Published var editingLanguages = false
+
+    func setLanguages(native: String, learning: String) {
+        settings.native = native
+        settings.learning = learning
+        editingLanguages = false
+        changed()            // saved locally and, when signed in, to the account
+    }
+
     private func changed() {
         recount()
         scheduleSave()
@@ -188,12 +204,15 @@ final class AppStore: ObservableObject {
     }
 
     private func adopt(_ cloud: CloudSnapshot) {
+        let cloudHasLanguages = cloud.settings.learning != nil
         words = cloud.words
         settings.merge(cloud.settings)
         syncHash = WordHash.of(words)
         persistLocal()
         recount()
         status = "saved to account ✓"
+        // A language picked on this device before signing in travels up to the account.
+        if !cloudHasLanguages && hasLanguages { scheduleSave() }
     }
 
     enum ConflictChoice { case useAccount, mergeBoth, keepDevice }

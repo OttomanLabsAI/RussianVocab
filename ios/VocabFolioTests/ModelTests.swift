@@ -1,5 +1,5 @@
 import XCTest
-@testable import RusVocab
+@testable import VocabFolio
 
 /// Wire-format and transliteration parity with the web app. The expected
 /// pronunciations were produced by the website's own JavaScript.
@@ -61,6 +61,27 @@ final class ModelTests: XCTestCase {
         let encoded = try JSONSerialization.jsonObject(with: JSONEncoder().encode(valid[1])) as? [String: Any]
         XCTAssertNil(encoded?["t"])
         XCTAssertNil(encoded?["c"])
+    }
+
+    func testLanguageChoiceIsReadFromSettingsAndValidated() throws {
+        let json = #"{"group":"Food","native":"en","learning":"ru"}"#
+        var settings = try JSONDecoder().decode(Settings.self, from: Data(json.utf8))
+        XCTAssertEqual(settings.native, "en")
+        XCTAssertEqual(settings.learning, "ru")
+        XCTAssertTrue(Languages.isSupported(native: settings.native, learning: settings.learning))
+        XCTAssertEqual(Languages.pairLabel(native: settings.native, learning: settings.learning), "English → Русский")
+
+        XCTAssertEqual(Languages.nativeOptions.map(\.code), ["en"])
+        XCTAssertEqual(Languages.learningOptions(for: "en").map(\.code), ["ru"])
+        XCTAssertTrue(Languages.learningOptions(for: "ru").isEmpty)
+        XCTAssertFalse(Languages.isSupported(native: "ru", learning: "en"))
+        XCTAssertFalse(Languages.isSupported(native: nil, learning: nil))
+        XCTAssertEqual(Languages.pairLabel(native: nil, learning: nil), "Choose your languages")
+
+        settings.learning = nil
+        XCTAssertNil(settings.learning)
+        let saved = try JSONSerialization.jsonObject(with: JSONEncoder().encode(settings)) as? [String: Any]
+        XCTAssertEqual(saved?["native"] as? String, "en")
     }
 
     func testStatsMergeKeepsTheLargerCount() {

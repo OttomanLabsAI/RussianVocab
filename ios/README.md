@@ -1,41 +1,48 @@
-# RusVocab for iOS and iPadOS
+# Vocab Folio for iOS and iPadOS
 
 A native SwiftUI app that shares the website's account and data: sign in
-with the same email and password and your words, lists, review history and
-progress are already there. Same dictionary, same FSRS scheduler with the
-same parameters, same monochrome ink/paper design (fonts bundled).
+with the same email and password and your words, lists, languages, review
+history and progress are already there. Same dictionary, same FSRS scheduler
+with the same parameters, same monochrome ink/paper design (fonts bundled).
 
 ## Build (on a Mac)
 
 1. Install Xcode 16 or newer from the App Store, and XcodeGen:
    `brew install xcodegen`
-2. Generate the project (the `.xcodeproj` is not committed — `project.yml` is
-   the source of truth):
+2. Register the app with Firebase (required — see below) and put
+   `GoogleService-Info.plist` in `ios/VocabFolio/`.
+3. Generate the project (the `.xcodeproj` is not committed — `project.yml` is
+   the source of truth; re-run this after changing it or adding the plist):
    ```
    cd ios
    xcodegen generate
-   open RusVocab.xcodeproj
+   open VocabFolio.xcodeproj
    ```
    Xcode resolves the two Swift packages on first open (Firebase iOS SDK and
    the official Swift FSRS, pinned to the commit the parity tests were
-   generated against).
-3. In the RusVocab target → *Signing & Capabilities*, pick your team.
-4. Pick an iPhone or iPad simulator (or your device) and press ⌘R.
+   generated against). Firebase is large; give it a few minutes.
+4. Select the **VocabFolio** target → *Signing & Capabilities* → tick
+   *Automatically manage signing* and pick your team. Do the same for
+   **VocabFolioTests**.
+5. Pick an iPhone or iPad simulator (or your device) and press ⌘R.
 
-## Connect to your Firebase project
+## Connect to Firebase
 
-The app talks to the same Firebase project as the website. Two options:
+Firebase console → the project → gear → *Project settings* → *Your apps* →
+**Add app → iOS**, bundle ID `com.ottomanlabs.vocabfolio`. Download
+`GoogleService-Info.plist` into `ios/VocabFolio/` (it is git-ignored) and
+re-run `xcodegen generate`.
 
-- **Recommended:** Firebase console → Project settings → *Your apps* →
-  **Add app → iOS**, bundle ID `com.ottomanlabs.rusvocab`, download
-  `GoogleService-Info.plist` and drop it into `ios/RusVocab/` (it is
-  git-ignored). Re-run `xcodegen generate` so the project picks it up.
-- **Zero-setup fallback:** without the plist the app configures Firebase
-  from the website's public client keys (`config.js`) — Auth only needs the
-  API key and Firestore only the project ID, so sign-in and sync work.
+Nothing else changes on the Firebase side: the Email/Password sign-in and the
+Firestore rules the website uses already cover everything the app reads and
+writes. Without the plist the app tries the website's public client keys as a
+fallback, but the iOS SDK may reject a web app ID — treat the plist as
+required.
 
-The Firestore security rules in the repo root already cover everything the
-app writes; make sure the current `firestore.rules` is published.
+The bundle ID is fixed the first time a build is uploaded to App Store
+Connect. To use a different one, change `PRODUCT_BUNDLE_IDENTIFIER` in
+`project.yml` (and the tests' ID below it) before that first upload, and use
+the same ID in Firebase.
 
 ## Tests (⌘U)
 
@@ -43,20 +50,30 @@ app writes; make sure the current `firestore.rules` is published.
   ts-fsrs 5.4.2 through the Swift scheduler and asserts identical due dates,
   stability, difficulty, and states for every grade at every step. If this
   passes, a card graded on the phone lands on the same date as on the web.
-- `ModelTests` checks the wire-format decoding and the transliteration port
-  against samples produced by the website's code.
+- `ModelTests` checks the wire-format decoding, the language choice, and the
+  transliteration port against samples produced by the website's code.
 
-## TestFlight / App Store
+## On your iPhone
 
-Product → Archive → Distribute App → App Store Connect. Needs an Apple
-Developer Program membership. Bump `MARKETING_VERSION` in `project.yml` to
-match the site's release tag when you ship.
+- **By cable:** turn on *Developer Mode* on the phone (Settings → Privacy &
+  Security → Developer Mode, then restart), plug it in, pick it as the run
+  destination, ⌘R.
+- **TestFlight** (for other people's phones): create the app in App Store
+  Connect with the same bundle ID, then choose *Any iOS Device (arm64)* →
+  Product → Archive → Distribute App → App Store Connect → Upload. Once the
+  build has processed, add testers under TestFlight.
+
+Bump `MARKETING_VERSION` in `project.yml` to the site's release tag and
+`CURRENT_PROJECT_VERSION` for every upload, then regenerate.
 
 ## Notes
 
+- First launch asks for the learner's language and the language they're
+  learning (currently English → Russian). The choice syncs to the account;
+  signing in on a new device brings it along. Account → Languages changes it.
 - Share links (`/s/CODE`) point at the website; redeeming inside the app is
-  by code (Account → Word sets). Universal Links can be added later.
+  by code (Account → Word sets).
 - Recorded pronunciations come from Wikimedia Commons as MP3 transcodes;
   everything else uses the system's Russian voice.
 - Fonts (Afacad Flux, Newsreader, Prata) are bundled under the SIL Open
-  Font License; see `RusVocab/Resources/Fonts/OFL.txt`.
+  Font License; see `VocabFolio/Resources/Fonts/OFL.txt`.

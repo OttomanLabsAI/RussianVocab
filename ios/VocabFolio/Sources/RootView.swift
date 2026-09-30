@@ -17,6 +17,9 @@ import SwiftUI
             MoreView()
                 .tabItem { Label("Account", systemImage: "person") }
         }
+        .fullScreenCover(isPresented: Binding(get: { !store.hasLanguages || store.editingLanguages }, set: { _ in })) {
+            OnboardingView().environmentObject(store)
+        }
         .alert("Your account and this device both have words",
                isPresented: Binding(get: { store.conflict != nil }, set: { _ in })) {
             Button("Use account") { store.resolveConflict(.useAccount) }
@@ -54,8 +57,9 @@ struct PageHeader: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 14) {
-                    PageHeader(kicker: "Русский словарь", title: "Account")
+                    PageHeader(kicker: "Vocab Folio", title: "Account")
                     AccountView()
+                    LanguagesBox()
                     NavigationLink { SetsView() } label: {
                         Box {
                             HStack {
