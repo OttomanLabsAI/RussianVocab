@@ -1,0 +1,25 @@
+Almost certainly signing — and it's my fault. The simulator builds without any code signing; Archive is the first step that needs a team. `project.yml` had `DEVELOPMENT_TEAM: ""` ("set your team in Xcode"), so the `xcodegen generate` you ran to pick up v1.13 regenerated the project with the team blank and wiped the one you'd chosen in the Signing tab. The error in the Issues navigator reads something like *Signing for "VocabFolio" requires a development team* or *No profiles for 'com.ottomanlabs.vocabfolio' were found*.
+
+## v1.14 — the team lives in the spec
+
+`project.yml` now carries `DEVELOPMENT_TEAM: HRCMGNSV7B` (your team id from the App ID registration) at project level, so every target gets it and it survives regeneration. On the Mac:
+
+```
+cd ~/Vocab-Folio
+git pull
+cd ios
+xcodegen generate
+open VocabFolio.xcodeproj
+```
+
+Then set the destination to **Any iOS Device (arm64)** and **Product → Archive**. Firebase compiles for a real device this time, so the first archive takes a few minutes longer than a simulator build.
+
+## If it's a different error
+
+- *No profiles for 'com.ottomanlabs.vocabfolio' were found* / *Failed to register bundle identifier* — Xcode → Settings → Accounts: the Apple ID that owns the developer team must be signed in. Then the VocabFolio target's Signing & Capabilities tab shows the team with no red text; Xcode creates the profile itself.
+- **Archive** greyed out in the Product menu — the destination is a simulator. Pick *Any iOS Device (arm64)*.
+- Anything else — press ⌘5 for the Issues navigator and send me the red line; I'll fix it.
+
+## Verified
+
+I can't run Xcode here. XcodeGen's project-level `settings` are inherited by every target, so the app and the test bundle both sign with the team, and nothing else in the spec changed apart from the version (1.14). Only `ios/` and `CLAUDE.md` changed, so the website is untouched. Archive: `prompt text/3/` holds your words.

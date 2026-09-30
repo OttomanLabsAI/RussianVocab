@@ -19,9 +19,11 @@ with the same parameters, same monochrome ink/paper design (fonts bundled).
    Xcode resolves the two Swift packages on first open (Firebase iOS SDK and
    the official Swift FSRS, pinned to the commit the parity tests were
    generated against). Firebase is large; give it a few minutes.
-3. Select the **VocabFolio** target → *Signing & Capabilities* → tick
-   *Automatically manage signing* and pick your team. Do the same for
-   **VocabFolioTests**.
+3. Xcode → Settings → Accounts: make sure the Apple ID that belongs to the
+   developer team is signed in. Signing is automatic and the team is set in
+   `project.yml` (`DEVELOPMENT_TEAM`), so it survives regeneration — a team
+   chosen in the Signing & Capabilities tab instead is wiped by the next
+   `xcodegen generate`. On another team, change the id in `project.yml`.
 4. Pick an iPhone or iPad simulator (or your device) and press ⌘R.
 
 ## Connect to Firebase
@@ -75,7 +77,9 @@ the same ID in Firebase.
 - **TestFlight** (for other people's phones): create the app in App Store
   Connect with the same bundle ID, then choose *Any iOS Device (arm64)* →
   Product → Archive → Distribute App → App Store Connect → Upload. Once the
-  build has processed, add testers under TestFlight.
+  build has processed, add testers under TestFlight. The simulator builds
+  without signing; Archive is the first step that needs the team, so a
+  signing error appears here and nowhere earlier.
 
 Bump `MARKETING_VERSION` in `project.yml` to the site's release tag and
 `CURRENT_PROJECT_VERSION` for every upload, then regenerate.
