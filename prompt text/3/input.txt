@@ -1,0 +1,1 @@
+simulator works, buils fails when i archive
