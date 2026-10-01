@@ -3,7 +3,7 @@
   "private": true,
   "description": "Builds the pinned vendor bundles. Run npm install && npm run build in tools/, then commit the vendor/ output. Not needed to deploy the site.",
   "scripts": {
-    "build": "esbuild fb-entry.js --bundle --minify --format=iife --global-name=FB --outfile=../vendor/firebase-bundle-3.js && esbuild fsrs-entry.js --bundle --minify --format=iife --global-name=FSRS --outfile=../vendor/fsrs-bundle.js"
+    "build": "esbuild fb-entry.js --bundle --minify --format=iife --global-name=FB --outfile=../vendor/firebase-bundle-4.js && esbuild fsrs-entry.js --bundle --minify --format=iife --global-name=FSRS --outfile=../vendor/fsrs-bundle.js"
   },
   "dependencies": {
     "firebase": "11.10.0",

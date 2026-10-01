@@ -13,7 +13,7 @@ run on Firebase directly from the browser and the app.
 |---|---|
 | `index.html` | The whole app (UI + logic) |
 | `dict.json` | The dictionary (2.7 MB, fetched once and cached) |
-| `vendor/firebase-bundle-3.js` | Firebase Auth + Firestore SDK plus the app's sync/sets/log API, bundled and pinned |
+| `vendor/firebase-bundle-4.js` | Firebase Auth + Firestore SDK plus the app's sync/sets/log/teaching API, bundled and pinned |
 | `vendor/fsrs-bundle.js` | The ts-fsrs spaced-repetition scheduler, bundled and pinned |
 | `tools/` | Source + build script for the vendor bundles (`npm install && npm run build`, commit the output; not needed to deploy) |
 | `ios/` | The native iOS/iPadOS app (SwiftUI, XcodeGen spec, tests) — see `ios/README.md` |
@@ -126,6 +126,22 @@ step). Today that is English → Russian. The choice is stored as
 that picks before signing in carries the choice up, and signing in on a new
 device brings it down. The header's language label reopens the picker.
 
+## Lists and the Saved tab
+
+Every word sits in a list (its `g`). The **Lists** page renames a list
+(every word follows, as do the current list and deck), creates an empty one,
+or deletes one — keeping its words as ungrouped, or dropping them too. Lists
+the learner created live in `settings.lists` so an empty list survives until
+it is deleted; the dropdown and the review decks are the union of that and
+the words' groups.
+
+The **Saved** tab at the top of the rail is everything the learner actually
+added — from the dictionary, a JSON file, a set or a teacher — newest first,
+each row naming its list and, for teacher-sent words, who sent it. The
+starter file every new copy gets is left out: a word is "saved" when it
+carries an added-at stamp (`t`) or isn't one of the starter keys. The site
+opens on this tab once anything is saved.
+
 ## Review mode (FSRS)
 
 The word file doubles as a spaced-repetition queue, scheduled by
@@ -143,6 +159,14 @@ in the review screen (`settings.deck`) to review it alone. Every grade
 appends to a per-day log for future parameter optimisation, buffered
 locally when offline (`pendingLog` in localStorage) and flushed when back
 online — a rating is never lost to a dropped connection.
+
+Two switches sit with the deck: **Direction** flips the card to show the
+English first and ask for the Russian (`settings.reverse`; the card's FSRS
+state is shared, so a word's schedule is one schedule whichever way it is
+asked), and **Added** limits the session to words added today or in the
+last 7/30/90 days (`settings.since`, counted from local midnight) — the
+added-at stamps are what make "review this week's words" possible. The due
+badge follows both filters.
 
 ## Progress
 
@@ -181,31 +205,59 @@ duplicates skipped, imported words tagged with the set name, newcomers
 entering the review queue as new cards under the daily cap. Sets are
 snapshots — later edits by the creator never touch a student's file.
 
+## Teacher accounts
+
+Any account can be a teacher: **Teaching → Create my teacher code** mints a
+7-character code (`teachers/{CODE}` → `{uid, email}`). A student enters it
+under **Teaching → My teachers**, which writes two records in one batch —
+`users/{teacher}/students/{student}` (the consent record, which only the
+student can create and which the rules check) and
+`users/{student}/teachers/{teacher}` (the student's own list). Either side can
+end the link. A teacher may have any number of students, a student any number
+of teachers.
+
+A linked teacher can read the student's file (`users/{student}` and its `w`
+chunks) and sees each student's word count, last save and last review, and
+their whole file by list. Adding or removing words never writes the student's
+file directly: the teacher sends an item to `users/{student}/inbox` —
+`{from, email, list, add[], remove[], at}` — and the student's app (web or
+iOS) applies it the moment it is open, stamps each word with the time it was
+sent and the teacher's email (`t`, `by`), files it under the list the teacher
+named, tells the student, and deletes the item. The student's own device stays
+the only writer of its word file, so a teacher working while the student is
+mid-session can't overwrite anything. The teacher sees what is still waiting
+and can withdraw it. Removals are sent the same way (words marked "removal
+sent" until applied).
+
 ## Data model
 
 ```
-users/{uid}                    → { v, chunks, count, settings: {group, newPerDay,
-                                   introDay, introCount, autoSay, deck,
+users/{uid}                    → { v, chunks, count, settings: {group, lists[], newPerDay,
+                                   introDay, introCount, autoSay, deck, reverse, since,
                                    native, learning},
                                    stats: { days: { YYYYMMDD: {n, a} } }, updated }
 users/{uid}/w/{0..n}           → { words: [ up to 1,000 word objects ] }
 users/{uid}/log/{YYYYMMDD}     → { e: [ {w, r, at, el, sc, st} ], updated }   ← review log
+users/{uid}/students/{suid}    → { email, code, at }      ← uid is the teacher; written by the student
+users/{uid}/teachers/{tuid}    → { email, code, at }      ← uid is the student
+users/{uid}/inbox/{id}         → { from, email, list, add[], remove[], at }   ← applied and deleted by the student's app
+teachers/{CODE}                → { uid, email, created }
 sets/{CODE}                    → { owner, name, desc, words[], count, created }
 sets/{CODE}/redemptions/{uid}  → { user, at }
 ```
 
 Words are chunked at 1,000 per document to stay far under Firestore's 1 MB
 document limit — no practical ceiling on list size. Each word object:
-`{ ru, ac, pr, en, pos, g, x, t, c }` (word, stress-marked form,
+`{ ru, ac, pr, en, pos, g, x, t, c, by }` (word, stress-marked form,
 pronunciation, translation, part of speech, group, gender/aspect extra,
-added-at epoch ms, FSRS card state — `t` and `c` are absent on words that
-predate those features). The redemptions subcollection is one doc per
+added-at epoch ms, FSRS card state, sender's email for teacher-sent words —
+`t`, `c` and `by` are absent where they don't apply). The redemptions subcollection is one doc per
 redeeming user, so a per-student progress dashboard can be added later
 without migration.
 
 **After deploying a version that adds collections (like this one): re-paste
-`firestore.rules` into the Firebase console and Publish** — sets and review
-logs are denied by the old rules until you do.
+`firestore.rules` into the Firebase console and Publish** — teacher links,
+inboxes, sets and review logs are denied by the old rules until you do.
 
 ## Releases
 

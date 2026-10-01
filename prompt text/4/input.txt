@@ -1,0 +1,15 @@
+great. there needs to be a way to manage custom lists
+
+also, adding a word should add tag it with a date on the backend
+
+there should be a saved words list that combines them all, not including the original ones
+
+also
+
+we need teacher accounts
+
+a teacher can add words to a students account and they may have multiple students
+
+the dates can be used for flashcards etc
+
+flashcards should also be inverted to ask the russian word for the english term at the click of a switch

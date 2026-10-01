@@ -11,8 +11,7 @@ import FSRS
         NavigationStack {
             ScrollView {
                 VStack(spacing: 14) {
-                    PageHeader(kicker: "Повторение", title: "Review",
-                               meta: "\(store.dueTotal) due · Recall it, reveal, then grade yourself")
+                    PageHeader(kicker: "Повторение", title: "Review", meta: headerMeta)
                     settingsBox
                     if store.words.isEmpty {
                         Box {
@@ -34,6 +33,14 @@ import FSRS
             .onAppear { if !session.started { session.start(store) } }
             .background(keyboardShortcuts)
         }
+    }
+
+    private var headerMeta: String {
+        var parts = ["\(store.dueTotal) due"]
+        if let d = store.settings.deck { parts.append(d) }
+        if store.settings.reverse { parts.append("English → Russian") }
+        if !store.sinceLabel.isEmpty { parts.append(store.sinceLabel) }
+        return parts.joined(separator: " · ")
     }
 
     private var settingsBox: some View {
@@ -68,16 +75,54 @@ import FSRS
                     Button(store.settings.autoSay ? "On" : "Off") { store.setAutoSay(!store.settings.autoSay) }
                         .buttonStyle(InkButtonStyle(filled: store.settings.autoSay, compact: true))
                 }
+                HStack(spacing: 10) {
+                    MicroLabel(text: "Direction")
+                    // One switch: English first, recall the Russian. Card state is shared.
+                    Button(store.settings.reverse ? "EN → RU" : "RU → EN") { store.setReverse(!store.settings.reverse) }
+                        .buttonStyle(InkButtonStyle(filled: store.settings.reverse, compact: true))
+                }
+                HStack(spacing: 10) {
+                    MicroLabel(text: "Added")
+                    Menu {
+                        ForEach(Self.sinceOptions) { o in
+                            Button(o.label) { store.setSince(o.days); session.start(store) }
+                        }
+                    } label: {
+                        HStack(spacing: 6) {
+                            Text(Self.sinceOptions.first { $0.days == store.settings.since }?.label ?? "Any time")
+                                .font(Fonts.serif(16)).foregroundStyle(Color.ink)
+                            Image(systemName: "chevron.down").font(.system(size: 11)).foregroundStyle(Color.ink)
+                        }
+                        .padding(.horizontal, 10).padding(.vertical, 7)
+                        .overlay(Rectangle().stroke(Color.ink, lineWidth: 1))
+                    }
+                    Spacer()
+                }
             }
         }
     }
 
+    struct SinceOption: Identifiable {
+        let days: Int
+        let label: String
+        var id: Int { days }
+    }
+    static let sinceOptions: [SinceOption] = [
+        SinceOption(days: 0, label: "Any time"), SinceOption(days: 1, label: "Today"),
+        SinceOption(days: 7, label: "Last 7 days"), SinceOption(days: 30, label: "Last 30 days"),
+        SinceOption(days: 90, label: "Last 90 days"),
+    ]
+
     private func card(_ w: Word) -> some View {
-        Box(padding: 0) {
+        let rev = store.settings.reverse
+        return Box(padding: 0) {
             VStack(spacing: 0) {
                 VStack(spacing: 6) {
-                    Text(w.display).font(Fonts.display(40)).foregroundStyle(Color.ink)
+                    Text(rev ? w.en : w.display).font(rev ? Fonts.serif(30) : Fonts.display(40)).foregroundStyle(Color.ink)
                         .multilineTextAlignment(.center)
+                    if rev, !w.extraText.isEmpty {
+                        Text(w.extraText).font(Fonts.serifItalic(15)).foregroundStyle(Color.ink60)
+                    }
                     if !session.revealed {
                         Text("tap to reveal").font(Fonts.serifItalic(15)).foregroundStyle(Color.ink35).padding(.top, 16)
                     }
@@ -92,8 +137,9 @@ import FSRS
                     DashedRule().padding(.horizontal, 20)
                     VStack(spacing: 8) {
                         HStack(alignment: .firstTextBaseline, spacing: 6) {
-                            Text(w.en).font(Fonts.serif(22)).foregroundStyle(Color.ink).multilineTextAlignment(.center)
-                            if !w.extraText.isEmpty {
+                            Text(rev ? w.display : w.en).font(rev ? Fonts.display(28) : Fonts.serif(22))
+                                .foregroundStyle(Color.ink).multilineTextAlignment(.center)
+                            if !rev, !w.extraText.isEmpty {
                                 Text(w.extraText).font(Fonts.serifItalic(14)).foregroundStyle(Color.ink60)
                             }
                         }
@@ -141,6 +187,10 @@ import FSRS
                     MicroLabel(text: "Session complete", color: .ink)
                     Text("\(session.done) \(session.done == 1 ? "card" : "cards") reviewed").font(Fonts.display(24))
                     Text("\(session.again) marked Again (\(session.done > 0 ? Int((100.0 * Double(session.again) / Double(session.done)).rounded()) : 0)%). \(store.nextDueText())")
+                        .font(Fonts.serifItalic(15)).foregroundStyle(Color.ink60).multilineTextAlignment(.center)
+                } else if store.settings.since > 0, store.deckWords().isEmpty {
+                    Text("No words \(store.sinceLabel.lowercased()).").font(Fonts.display(22)).multilineTextAlignment(.center)
+                    Text("Set Added back to Any time to review the whole file.")
                         .font(Fonts.serifItalic(15)).foregroundStyle(Color.ink60).multilineTextAlignment(.center)
                 } else {
                     Text("Nothing due right now.").font(Fonts.display(22))
