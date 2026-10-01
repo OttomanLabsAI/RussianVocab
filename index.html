@@ -167,6 +167,26 @@ td.ru{font-weight:600;font-size:1.05rem;width:21%;min-width:120px}
 td.pr{font-style:italic;font-size:.95rem;color:var(--ink-60);width:23%}
 td.en{font-size:1rem}
 td.en .gx{color:var(--ink-60);font-size:.85rem;font-style:italic;white-space:nowrap}
+td.en .lst{display:block;font:500 .56rem/1.8 "Afacad Flux",system-ui,sans-serif;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--ink-35);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.tab.saved{margin-bottom:6px;border-bottom:1px dashed var(--hair);padding-bottom:12px}
+.tab.saved[aria-selected="true"]{border-bottom-color:var(--ink)}
+.bigcode{display:inline-block;font:600 1.7rem/1 "Afacad Flux",system-ui,sans-serif;
+  letter-spacing:.3em;padding:14px 16px 14px 20px;border:1px solid var(--ink);margin:4px 0 12px}
+.setrow .fbtn{flex:none}
+.setrow.gone{opacity:.4}
+.sgrp{border:1px dashed var(--hair);margin-top:10px}
+.sgrp header{display:flex;align-items:center;gap:8px;padding:8px 10px;
+  font:600 .6rem/1 "Afacad Flux",system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;
+  border-bottom:1px dashed var(--hair)}
+.sgrp .pickrow{justify-content:space-between}
+.sgrp .pickrow .pen{flex:1}
+.sres{margin-top:4px}
+.sres .srow{display:flex;align-items:center;gap:10px;padding:8px 10px;border-bottom:1px dashed var(--hair)}
+.sres .srow:last-child{border-bottom:none}
+.sres .sru{font-weight:600}
+.sres .sen{flex:1;min-width:0;color:var(--ink-60);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 td.en .when{float:right;margin-left:8px;font:500 .56rem/1.8 "Afacad Flux",system-ui,sans-serif;
   letter-spacing:.12em;text-transform:uppercase;color:var(--ink-35);white-space:nowrap}
 th.rm,td.rm{width:44px;text-align:center}
@@ -234,7 +254,9 @@ td.add{width:96px;text-align:center}
 .langopt .lc{margin-left:auto;font:600 .58rem/1 "Afacad Flux",system-ui,sans-serif;
   letter-spacing:.18em;text-transform:uppercase;opacity:.65}
 .langmore{font:italic 400 .9rem/1.5 "Newsreader",Georgia,serif;color:var(--ink-60);margin:0}
-.ibtn[disabled]{opacity:.35;cursor:default}
+.ibtn[disabled],.fbtn[disabled],.addbtn[disabled]{opacity:.35;cursor:default}
+.rvru.rev{font:400 clamp(1.5rem,4vw,2.4rem)/1.25 "Newsreader",Georgia,serif}
+.rven.rev{font:400 clamp(1.6rem,4vw,2.4rem)/1.2 "Prata",Georgia,serif}
 .kbtn{font:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;padding:0 0 1px;
   border-bottom:1px dashed var(--hair);transition:color .15s,border-color .15s}
 .kbtn:hover{color:var(--ink);border-bottom-color:var(--ink)}
@@ -382,7 +404,9 @@ footer{padding:0 4px 8px;font:italic 400 .85rem/1.6 "Newsreader",Georgia,serif;c
       <div class="hbtns">
         <span id="acctEmail"></span>
         <button class="fbtn" id="btnAcct">Sign in</button>
+        <button class="fbtn" id="btnLists">Lists</button>
         <button class="fbtn" id="btnSets">Sets</button>
+        <button class="fbtn" id="btnTeach">Teaching</button>
         <button class="fbtn" id="btnProgress">Progress</button>
         <button class="fbtn" id="btnImport">Add from JSON</button>
         <input type="file" id="fileIn" accept="application/json,.json" class="sr">
@@ -439,6 +463,16 @@ footer{padding:0 4px 8px;font:italic 400 .85rem/1.6 "Newsreader",Georgia,serif;c
         <input type="number" id="setNewCap" min="0" max="500" step="1">
         <span class="lab">Auto-play audio on reveal</span>
         <button class="mode" id="setAutoSay" aria-pressed="false">Off</button>
+        <span class="lab">Direction</span>
+        <button class="mode" id="setReverse" aria-pressed="false" title="Which side the card shows first">RU → EN</button>
+        <span class="lab">Added</span>
+        <select class="groupsel" id="setSince">
+          <option value="0">Any time</option>
+          <option value="1">Today</option>
+          <option value="7">Last 7 days</option>
+          <option value="30">Last 30 days</option>
+          <option value="90">Last 90 days</option>
+        </select>
       </div>
       <div id="rvwrap"></div>
     </section>
@@ -448,6 +482,20 @@ footer{padding:0 4px 8px;font:italic 400 .85rem/1.6 "Newsreader",Georgia,serif;c
         <h2>Word Sets</h2><div class="rmeta">Share a batch of words with a code — the other person
           adds them to their own file in one tap.</div></div>
       <div id="setswrap"></div>
+    </section>
+
+    <section class="panel" id="p-lists" hidden>
+      <div class="phead"><div class="ghost" aria-hidden="true">Списки</div>
+        <h2>Lists</h2><div class="rmeta">Your words are filed in lists — rename them, start new ones,
+          or clear one out. Any list can be reviewed on its own as a deck.</div></div>
+      <div id="listswrap"></div>
+    </section>
+
+    <section class="panel" id="p-teach" hidden>
+      <div class="phead"><div class="ghost" aria-hidden="true">Учитель</div>
+        <h2>Teaching</h2><div class="rmeta">Teachers link to their students’ files with a code, see what
+          they have, and add or remove words for them.</div></div>
+      <div id="teachwrap"></div>
     </section>
 
     <section class="panel" id="p-progress" hidden>
@@ -502,7 +550,7 @@ footer{padding:0 4px 8px;font:italic 400 .85rem/1.6 "Newsreader",Georgia,serif;c
 </div></div>
 
 <script src="/config.js"></script>
-<script src="/vendor/firebase-bundle-3.js"></script>
+<script src="/vendor/firebase-bundle-4.js"></script>
 <script src="/vendor/fsrs-bundle.js"></script>
 <script>
 "use strict";
@@ -653,6 +701,21 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const keyOf = w => bareOf(w.ru).toLowerCase() + "|" + w.pos;
 function haveKeys(){ const s = new Set(); state.words.forEach(w => s.add(keyOf(w))); return s; }
+// The starter file is the one every new copy gets; "saved" is everything the
+// learner (or their teacher) actually added — timestamped, or not a starter word.
+const STARTER_KEYS = new Set(STARTER.map(keyOf));
+function isSaved(w){ return !!w.t || !STARTER_KEYS.has(keyOf(w)); }
+function savedCount(){ let n = 0; state.words.forEach(w => { if (isSaved(w)) n++; }); return n; }
+// Lists are the words' groups plus any the learner created and kept (settings.lists),
+// so an empty list survives until it is deleted.
+function allLists(){
+  const names = [];
+  const push = g => { if (g && !names.includes(g)) names.push(g); };
+  (Array.isArray(state.settings.lists) ? state.settings.lists : []).forEach(push);
+  push(state.settings.group);
+  state.words.forEach(w => push(w.g));
+  return names;
+}
 
 /* ---------------- rendering */
 function fmtWhen(t){
@@ -663,16 +726,18 @@ function fmtWhen(t){
   if (d.getFullYear() !== now.getFullYear()) opts.year = "numeric";
   return d.toLocaleDateString([], opts);
 }
-function rowHTML(w, i){
+function rowHTML(w, i, withList){
   const main = w.ac ? acuteize(w.ac) : w.ru;
   const pr = w.pr ? esc(w.pr) : "";
   const gx = extraText(w.pos, w.x);
   const when = w.t ? '<span class="when" title="Added ' +
     esc(new Date(w.t).toLocaleString()) + '">' + esc(fmtWhen(w.t)) + '</span>' : "";
+  const lst = withList ? '<span class="lst">' + esc(w.g || "Ungrouped") +
+    (w.by ? ' · from ' + esc(w.by) : "") + '</span>' : "";
   return '<tr data-i="' + i + '">' +
     '<td class="ru"><span class="w">' + esc(main) + '</span>' + spkBtn(bareOf(w.ru)) + '</td>' +
     '<td class="pr"><span class="w">' + pr + '</span></td>' +
-    '<td class="en">' + when + '<span class="w">' + esc(w.en) + (gx ? ' <span class="gx">' + esc(gx) + '</span>' : "") + '</span></td>' +
+    '<td class="en">' + when + '<span class="w">' + esc(w.en) + (gx ? ' <span class="gx">' + esc(gx) + '</span>' : "") + '</span>' + lst + '</td>' +
     '<td class="rm"><button class="rmbtn" data-i="' + i + '" title="Remove from your file">×</button></td></tr>';
 }
 const THEAD = '<thead><tr><th>Russian</th><th>Pronunciation</th><th>English</th>' +
@@ -684,16 +749,34 @@ function counts(){
 function renderRail(){
   const c = counts();
   const rail = $("#rail");
-  rail.innerHTML = ORDER.filter(p => c[p]).map(p =>
+  rail.innerHTML = '<button class="tab saved" role="tab" data-pos="saved" aria-selected="' +
+    (activePos === "saved") + '" title="Everything you added, newest first"><span>Saved</span>' +
+    '<span class="n">' + savedCount() + '</span></button>' +
+    ORDER.filter(p => c[p]).map(p =>
     '<button class="tab" role="tab" data-pos="' + p + '" aria-selected="' +
     (p === activePos ? "true" : "false") + '"><span>' + POS[p][0] + '</span><span class="n">' + c[p] + '</span></button>'
   ).join("");
-  if (!c[activePos]){ activePos = ORDER.find(p => c[p]) || null; }
+  if (activePos !== "saved" && !c[activePos]){ activePos = ORDER.find(p => c[p]) || null; }
   rail.querySelectorAll(".tab").forEach(b =>
     b.setAttribute("aria-selected", String(b.dataset.pos === activePos)));
 }
+function renderSavedPanel(host){
+  const idx = [];
+  state.words.forEach((w, i) => { if (isSaved(w)) idx.push(i); });
+  idx.sort((a, b) => (state.words[b].t || 0) - (state.words[a].t || 0));
+  const body = idx.length
+    ? '<div class="blocks"><div class="blk"><table>' + THEAD + '<tbody>' +
+      idx.map(i => rowHTML(state.words[i], i, true)).join("") + '</tbody></table></div></div>'
+    : '<div class="bigempty"><b>Nothing saved yet.</b><br>Words you add from the dictionary, ' +
+      'a JSON file, a set or a teacher collect here, newest first.</div>';
+  host.innerHTML = '<section class="panel"><div class="phead"><div class="ghost" aria-hidden="true">Сохранённые</div>' +
+    '<h2>Saved words</h2><div class="cy2">Everything you added — ' + idx.length +
+    (idx.length === 1 ? ' word' : ' words') + ', newest first · the starter file is left out</div></div>' +
+    body + '</section>';
+}
 function renderPanel(){
   const host = $("#panelHost");
+  if (activePos === "saved"){ renderSavedPanel(host); return; }
   if (!activePos){
     host.innerHTML = '<div class="bigempty"><b>Your file is empty.</b><br>' +
       'Search the dictionary above and press Add — words land in their part-of-speech tab.</div>';
@@ -729,7 +812,7 @@ function renderPanel(){
 function renderMeta(){
   $("#nWords").textContent = state.words.length;
   const sel = $("#groupin");
-  const gs = [...new Set([state.settings.group, ...state.words.map(w => w.g).filter(Boolean)])];
+  const gs = allLists();
   sel.innerHTML = gs.map(g =>
     '<option value="' + esc(g) + '">' + esc(g) + '</option>').join("") +
     '<option value="__new__">+ New list…</option>';
@@ -743,6 +826,8 @@ function showView(v){
   $("#p-search").hidden = v !== "search";
   $("#p-review").hidden = v !== "review";
   $("#p-sets").hidden = v !== "sets";
+  $("#p-lists").hidden = v !== "lists";
+  $("#p-teach").hidden = v !== "teach";
   $("#p-progress").hidden = v !== "progress";
   $("#panelHost").style.display = v === "file" ? "" : "none";
   $("#rail").classList.toggle("dim", v !== "file");
@@ -1087,7 +1172,7 @@ function offerCloudChoice(cloud){
     '<button class="ibtn" id="ccMerge">Merge both</button>' +
     '<button class="ibtn" id="ccLocal">Keep this device</button>';
   bar.classList.add("open");
-  const done = () => { bar.classList.remove("open"); renderAll(); pushCloud(); };
+  const done = () => { bar.classList.remove("open"); renderAll(); pushCloud(); watchInbox(); };
   $("#ccCloud").onclick = () => {
     state.words = cloud.words.filter(validWord);
     if (cloud.settings) state.settings = Object.assign({}, state.settings, cloud.settings);
@@ -1103,9 +1188,11 @@ function offerCloudChoice(cloud){
 }
 async function handleAuth(u){
   user = u; renderAcct();
+  teach = freshTeach(); stopInbox();
   if (!u){
     setSaveStat(localStatText());
     if (!$("#p-sets").hidden) renderSets();
+    if (!$("#p-teach").hidden) renderTeach();
     ensureLanguages();
     if (pendingRedeem) openAuth();
     return;
@@ -1140,6 +1227,10 @@ async function handleAuth(u){
   flushLog();
   ensureLanguages();
   if (!$("#p-sets").hidden) renderSets();
+  if (!$("#p-teach").hidden) renderTeach();
+  // Teacher-sent changes are applied only once the account's file is in place
+  // (after the keep-which-file choice, if one is pending).
+  if (!$("#ccCloud")) watchInbox();
   if (pendingRedeem){ const c = pendingRedeem; pendingRedeem = null; beginRedeem(c); }
 }
 
@@ -1245,7 +1336,7 @@ function bumpIntro(){
 function dueCounts(){
   const now = Date.now();
   let due = 0, fresh = 0;
-  state.words.forEach(w => {
+  deckWords().forEach(w => {
     if (w.c && w.c.s !== 0){ if (w.c.d <= now) due++; }
     else fresh++;
   });
@@ -1315,6 +1406,10 @@ function renderReviewCard(){
       box.innerHTML = '<div class="rvdone"><h3>Session complete</h3>' +
         '<div class="big">' + rvStats.done + (rvStats.done === 1 ? " card" : " cards") + ' reviewed</div>' +
         '<p>' + rvStats.again + ' marked Again (' + rate + '%). ' + esc(nextDueText()) + '</p></div>';
+    } else if (sinceCutoff() && !deckWords().length){
+      box.innerHTML = '<div class="rvdone"><div class="big">No words added ' +
+        esc(sinceLabel().toLowerCase()) + '.</div>' +
+        '<p>Set Added back to Any time to review the whole file.</p></div>';
     } else {
       box.innerHTML = '<div class="rvdone"><div class="big">Nothing due right now.</div>' +
         '<p>' + esc(nextDueText()) + '</p></div>';
@@ -1324,15 +1419,17 @@ function renderReviewCard(){
   const w = rvCur;
   const main = w.ac ? acuteize(w.ac) : w.ru;
   const gx = extraText(w.pos, w.x);
-  let html = '<div class="rvcard" id="rvcard"><div class="rvru">' + esc(main) + '</div>';
+  const rev = !!state.settings.reverse;      // English first, recall the Russian
+  const front = rev ? esc(w.en) + (gx ? ' <span class="gx">' + esc(gx) + '</span>' : "") : esc(main);
+  let html = '<div class="rvcard" id="rvcard"><div class="rvru' + (rev ? ' rev' : "") + '">' + front + '</div>';
   if (!rvRevealed){
     html += '<div class="rvtap">tap to reveal · space</div></div>';
   } else {
     const now = new Date();
     const rec = FS.repeat(cardOf(w), now);
     const ivl = r => fmtIvl(+rec[r].card.due, +now);
-    html += '<div class="rvans"><div class="rven">' + esc(w.en) +
-      (gx ? ' <span class="gx">' + esc(gx) + '</span>' : "") + '</div>' +
+    const back = rev ? esc(main) : esc(w.en) + (gx ? ' <span class="gx">' + esc(gx) + '</span>' : "");
+    html += '<div class="rvans"><div class="rven' + (rev ? ' rev' : "") + '">' + back + '</div>' +
       (w.pr ? '<div class="rvpr">' + esc(w.pr) + '</div>' : "") +
       '<div style="margin-top:8px">' + spkBtn(bareOf(w.ru)) + '</div>' +
       '<div class="rvgrades">' +
@@ -1345,6 +1442,7 @@ function renderReviewCard(){
   html += '<div class="rvprog">' + (rvQueue.length + 1) + ' in session · ' + rvStats.done + ' done</div>';
   box.innerHTML = html;
   meta.textContent = (state.settings.deck ? "Deck: " + state.settings.deck + " · " : "") +
+    (state.settings.reverse ? "English → Russian · " : "") + (sinceLabel() ? sinceLabel() + " · " : "") +
     "Recall it, reveal, then grade yourself — 1 Again · 2 Hard · 3 Good · 4 Easy.";
   if (rvRevealed && state.settings.autoSay) speak(bareOf(w.ru));
 }
@@ -1397,7 +1495,8 @@ async function flushLog(){
 }
 function syncReviewSettings(){
   const sel = $("#setDeck");
-  const groups = [...new Set(state.words.map(w => w.g || "Ungrouped"))];
+  const groups = allLists();
+  if (state.words.some(w => !w.g)) groups.push("Ungrouped");
   sel.innerHTML = '<option value="">All lists</option>' +
     groups.map(g => '<option value="' + esc(g) + '">' + esc(g) + '</option>').join("");
   sel.value = groups.includes(state.settings.deck) ? state.settings.deck : "";
@@ -1405,6 +1504,32 @@ function syncReviewSettings(){
   const on = !!state.settings.autoSay;
   $("#setAutoSay").setAttribute("aria-pressed", String(on));
   $("#setAutoSay").textContent = on ? "On" : "Off";
+  const rev = !!state.settings.reverse;
+  $("#setReverse").setAttribute("aria-pressed", String(rev));
+  $("#setReverse").textContent = rev ? "EN → RU" : "RU → EN";
+  const since = String(+state.settings.since || 0);
+  $("#setSince").value = [...$("#setSince").options].some(o => o.value === since) ? since : "0";
+}
+$("#setReverse").addEventListener("click", () => {
+  state.settings.reverse = !state.settings.reverse;
+  syncReviewSettings(); scheduleSave();
+  if (rvCur) renderReviewCard();
+});
+$("#setSince").addEventListener("change", () => {
+  state.settings.since = parseInt($("#setSince").value, 10) || 0;
+  scheduleSave(); renderDue();
+  startReview();
+});
+// The "Added" filter: 1 = since local midnight today, N = the last N days.
+function sinceCutoff(){
+  const days = parseInt(state.settings.since, 10) || 0;
+  if (days <= 0) return 0;
+  const d = new Date(); d.setHours(0, 0, 0, 0);
+  return d.getTime() - (days - 1) * 86400e3;
+}
+function sinceLabel(){
+  const days = parseInt(state.settings.since, 10) || 0;
+  return days <= 0 ? "" : days === 1 ? "Added today" : "Added in the last " + days + " days";
 }
 $("#btnReview").addEventListener("click", () => {
   if (rvOpen){ showView("file"); return; }
@@ -1429,9 +1554,11 @@ $("#setAutoSay").addEventListener("click", () => {
 // Decks are the word lists — pick one to review it alone, like a deck in Anki.
 function deckWords(){
   const d = state.settings.deck;
-  if (!d) return state.words;
-  const sub = state.words.filter(w => (w.g || "Ungrouped") === d);
-  return sub.length ? sub : state.words;
+  let list = state.words;
+  if (d){ const sub = list.filter(w => (w.g || "Ungrouped") === d); if (sub.length) list = sub; }
+  const cut = sinceCutoff();
+  if (cut) list = list.filter(w => w.t && w.t >= cut);
+  return list;
 }
 $("#setDeck").addEventListener("change", () => {
   state.settings.deck = $("#setDeck").value;
@@ -1612,6 +1739,422 @@ $("#btnSets").addEventListener("click", () => {
   showView("sets");
   renderSets();
 });
+
+
+/* ---------------- lists (rename, create, delete; kept in settings.lists) */
+function createList(name){
+  const n = String(name || "").trim();
+  if (!n) return false;
+  if (!Array.isArray(state.settings.lists)) state.settings.lists = [];
+  if (!allLists().includes(n)) state.settings.lists.push(n);
+  state.settings.group = n;          // new words go to the newest list
+  return true;
+}
+function renameList(from, to){
+  state.words.forEach(w => { if ((w.g || "") === from) w.g = to; });
+  state.settings.lists = allLists().map(g => g === from ? to : g);
+  if (state.settings.group === from) state.settings.group = to;
+  if (state.settings.deck === from) state.settings.deck = to;
+  scheduleSave(); renderAll(); renderLists();
+}
+function deleteList(name, keepWords){
+  if (keepWords) state.words.forEach(w => { if ((w.g || "") === name) w.g = ""; });
+  else state.words = state.words.filter(w => (w.g || "") !== name);
+  state.settings.lists = allLists().filter(g => g !== name);
+  if (state.settings.group === name) state.settings.group = state.settings.lists[0] || "My additions";
+  if (state.settings.deck === name) state.settings.deck = "";
+  scheduleSave(); renderAll(); renderLists();
+}
+function renderLists(){
+  const wrap = $("#listswrap");
+  const names = allLists();
+  const counts = {};
+  state.words.forEach(w => { const g = w.g || ""; counts[g] = (counts[g] || 0) + 1; });
+  const rows = names.map(g => {
+    const n = counts[g] || 0, cur = g === state.settings.group;
+    return '<div class="setrow"><span class="smeta"><b>' + esc(g) + '</b> · ' + n + (n === 1 ? ' word' : ' words') +
+      (cur ? ' · new words go here' : '') + '</span>' +
+      '<button class="fbtn luse" data-g="' + esc(g) + '"' + (cur ? ' disabled' : '') + '>Use</button>' +
+      '<button class="fbtn lrename" data-g="' + esc(g) + '">Rename</button>' +
+      '<button class="fbtn ldelete" data-g="' + esc(g) + '">Delete</button></div>';
+  }).join("") + (counts[""] ? '<div class="setrow"><span class="smeta"><b>Ungrouped</b> · ' +
+    counts[""] + ' words — in no list</span></div>' : "");
+  wrap.innerHTML =
+    '<div class="setbox"><h3>Your lists · ' + names.length + '</h3>' + rows + '</div>' +
+    '<div class="setbox"><h3>New list</h3><div class="setbody">' +
+      '<div class="setform" style="flex-direction:row;flex-wrap:wrap;align-items:center">' +
+      '<input type="text" id="listNew" placeholder="Week 4 — travel" style="max-width:280px" autocomplete="off">' +
+      '<button class="ibtn primary" id="listCreate">Create</button>' +
+      '<span class="setnote" id="listMsg"></span></div></div></div>';
+  $("#listCreate").onclick = () => {
+    const name = $("#listNew").value.trim();
+    if (!name) return;
+    if (allLists().includes(name)){ $("#listMsg").textContent = "There is already a list called that."; return; }
+    createList(name); scheduleSave(); renderMeta(); renderLists();
+  };
+  $("#listNew").addEventListener("keydown", e => { if (e.key === "Enter") $("#listCreate").click(); });
+}
+document.addEventListener("click", e => {
+  const use = e.target.closest(".luse");
+  if (use){ state.settings.group = use.dataset.g; scheduleSave(); renderMeta(); renderLists(); return; }
+  const rn = e.target.closest(".lrename");
+  if (rn){
+    const from = rn.dataset.g;
+    const to = (window.prompt("Rename “" + from + "” to:", from) || "").trim();
+    if (!to || to === from) return;
+    if (allLists().includes(to)){ window.alert("There is already a list called “" + to + "”."); return; }
+    renameList(from, to); return;
+  }
+  const del = e.target.closest(".ldelete");
+  if (del){
+    const name = del.dataset.g, n = state.words.filter(w => (w.g || "") === name).length;
+    showImportBar('<b>Delete “' + esc(name) + '”?</b>' +
+      (n ? ' It holds ' + n + (n === 1 ? ' word.' : ' words.') : ' It is empty.'),
+      (n ? '<button class="ibtn primary" id="ldKeep">Keep the words, drop the list</button>' +
+           '<button class="ibtn" id="ldAll">Delete the words too</button>'
+         : '<button class="ibtn primary" id="ldAll">Delete list</button>') +
+      '<button class="ibtn" id="impCancel">Cancel</button>');
+    $("#impCancel").onclick = hideImportBar;
+    $("#ldAll").onclick = () => { hideImportBar(); deleteList(name, false); };
+    if ($("#ldKeep")) $("#ldKeep").onclick = () => { hideImportBar(); deleteList(name, true); };
+  }
+});
+$("#btnLists").addEventListener("click", () => {
+  if (!$("#p-lists").hidden){ showView("file"); return; }
+  $("#search").value = ""; hideSugg();
+  showView("lists"); renderLists();
+});
+
+/* ---------------- teaching */
+// A teacher has a code; a student enters it and the two are linked (see
+// firestore.rules). The teacher sees the student's file and sends changes
+// to users/{student}/inbox, which the student's app applies on arrival —
+// the student's own device stays the only writer of its word file.
+const freshTeach = () => ({ loaded: false, code: null, students: [], teachers: [],
+  open: null, student: null, basket: [], listName: "" });
+let teach = freshTeach();
+let inboxUnsub = null;
+const okBar = (msg) => { showImportBar(msg, '<button class="ibtn" id="impCancel">OK</button>');
+  $("#impCancel").onclick = hideImportBar; };
+
+function renderTeach(){
+  const wrap = $("#teachwrap");
+  if (!user){
+    wrap.innerHTML = '<div class="setbox"><div class="setbody"><p class="setnote">Sign in to use teaching — ' +
+      'a teacher and each student need their own account.</p></div></div>';
+    return;
+  }
+  if (teach.open){ renderStudent(); return; }
+  if (!teach.loaded){
+    wrap.innerHTML = '<div class="setbox"><div class="setbody"><p class="setnote">Loading…</p></div></div>';
+    loadTeach(); return;
+  }
+  const code = teach.code;
+  let html = '<div class="setbox"><h3>Your teacher code</h3><div class="setbody">';
+  if (code){
+    html += '<div class="bigcode" id="teachCode">' + esc(code) + '</div>' +
+      '<p class="setnote">Students enter this under <b>My teachers</b> on their own Teaching page. ' +
+      'Once linked, their file appears below and you can add or remove words for them.</p>';
+  } else {
+    html += '<p class="setnote">Teachers get a code. Students enter it to link their file to you; from then on ' +
+      'you can see their words and add or remove words for them — on their phone or here.</p>' +
+      '<button class="ibtn primary" id="teachCreate">Create my teacher code</button> ' +
+      '<span class="setnote" id="teachMsg"></span>';
+  }
+  html += '</div></div>';
+  if (code){
+    html += '<div class="setbox"><h3>Students · ' + teach.students.length + '</h3>' +
+      (teach.students.length ? teach.students.map(st => {
+        const lr = lastReviewText(st.stats);
+        return '<div class="setrow"><span class="smeta"><b>' + esc(st.email || st.uid) + '</b> · ' + st.count +
+          (st.count === 1 ? ' word' : ' words') + (st.updated ? ' · saved ' + esc(fmtWhen(st.updated)) : '') +
+          (lr ? ' · ' + esc(lr) : '') + '</span>' +
+          '<button class="fbtn sopen" data-uid="' + esc(st.uid) + '">Open</button>' +
+          '<button class="fbtn sremove" data-uid="' + esc(st.uid) + '">Remove</button></div>';
+      }).join("")
+      : '<div class="setbody"><p class="setnote">No students yet — give someone your code.</p></div>') + '</div>';
+  }
+  html += '<div class="setbox"><h3>My teachers</h3><div class="setbody">' +
+    '<p class="setnote">A linked teacher can see your file and add or remove words in it. Remove the link any time.</p>' +
+    '<div class="setform" style="flex-direction:row;flex-wrap:wrap;align-items:center">' +
+    '<input type="text" id="tCode" placeholder="Teacher code, e.g. K7MPQ2A" style="max-width:260px;text-transform:uppercase" autocomplete="off">' +
+    '<button class="ibtn primary" id="tLink">Link</button><span class="setnote" id="tMsg"></span></div></div>' +
+    teach.teachers.map(t => '<div class="setrow"><span class="smeta"><b>' + esc(t.email || t.uid) + '</b></span>' +
+      '<button class="fbtn tremove" data-uid="' + esc(t.uid) + '">Remove</button></div>').join("") + '</div>';
+  wrap.innerHTML = html;
+  if ($("#teachCreate")) $("#teachCreate").onclick = createTeacherCodeFlow;
+  $("#tLink").onclick = linkTeacherFlow;
+  $("#tCode").addEventListener("keydown", e => { if (e.key === "Enter") linkTeacherFlow(); });
+}
+function lastReviewText(stats){
+  const days = stats && stats.days ? Object.keys(stats.days).sort() : [];
+  if (!days.length) return "";
+  return "last review " + fmtWhen(dayFromKey(days[days.length - 1]).getTime());
+}
+async function loadTeach(){
+  const u = user;
+  if (!u) return;
+  try {
+    const code = await FB.myTeacherCode(u.uid);
+    const [students, teachers] = await Promise.all([
+      code ? FB.listStudents(u.uid) : Promise.resolve([]), FB.listTeachers(u.uid)]);
+    if (user !== u) return;
+    teach.code = code; teach.students = students; teach.teachers = teachers;
+  } catch (e){
+    if (user !== u) return;
+    teach.code = null; teach.students = []; teach.teachers = [];
+    okBar("<b>Couldn’t load teaching</b> — " + esc(FB.friendlyError(e)));
+  }
+  teach.loaded = true;
+  if (!$("#p-teach").hidden && !teach.open) renderTeach();
+}
+async function createTeacherCodeFlow(){
+  const msg = $("#teachMsg"); msg.textContent = "Creating…";
+  let code = genCode();
+  try {
+    try { await FB.createTeacherCode(user.uid, user.email || "", code); }
+    catch (e){ code = genCode(); await FB.createTeacherCode(user.uid, user.email || "", code); }
+    teach.loaded = false; renderTeach();
+  } catch (e){ msg.textContent = "Couldn’t create a code — " + FB.friendlyError(e); }
+}
+async function linkTeacherFlow(){
+  const code = $("#tCode").value.trim().toUpperCase(), msg = $("#tMsg");
+  if (!code) return;
+  if (teach.teachers.some(t => t.code === code)){ msg.textContent = "Already linked."; return; }
+  msg.textContent = "Linking…";
+  try {
+    const t = await FB.linkTeacher(user.uid, user.email || "", code);
+    teach.loaded = false; renderTeach();
+    okBar('<b>Linked to ' + esc(t.email || "your teacher") + '.</b> They can now see your file and add words to it.');
+  } catch (e){ msg.textContent = FB.friendlyError(e); }
+}
+function armThenRun(btn, label, fn){
+  if (!btn.classList.contains("arm")){
+    btn.classList.add("arm"); btn.textContent = label + "?";
+    setTimeout(() => { btn.classList.remove("arm"); btn.textContent = label; }, 2600);
+    return;
+  }
+  fn();
+}
+document.addEventListener("click", e => {
+  const open = e.target.closest(".sopen");
+  if (open){ openStudent(open.dataset.uid); return; }
+  const rmS = e.target.closest(".sremove");
+  if (rmS){ armThenRun(rmS, "Remove", async () => {
+    try { await FB.removeStudent(user.uid, rmS.dataset.uid); } catch (err){ okBar("<b>Couldn’t remove</b> — " + esc(FB.friendlyError(err))); }
+    teach.loaded = false; renderTeach(); }); return; }
+  const rmT = e.target.closest(".tremove");
+  if (rmT){ armThenRun(rmT, "Remove", async () => {
+    try { await FB.unlinkTeacher(user.uid, rmT.dataset.uid); } catch (err){ okBar("<b>Couldn’t remove</b> — " + esc(FB.friendlyError(err))); }
+    teach.loaded = false; renderTeach(); }); return; }
+  const pick = e.target.closest(".spick");
+  if (pick){
+    const di = Number(pick.dataset.di);
+    if (!teach.basket.includes(di)) teach.basket.push(di);
+    pick.disabled = true; pick.textContent = "Chosen ✓"; pick.classList.remove("spick");
+    renderBasket(); return;
+  }
+  const drop = e.target.closest(".sdrop");
+  if (drop){
+    teach.basket = teach.basket.filter(d => d !== Number(drop.dataset.di));
+    renderBasket(); renderStudentResults(); return;
+  }
+  const del = e.target.closest(".sdel");
+  if (del){ armThenRun(del, "Remove", async () => {
+    const S = teach.student; if (!S) return;
+    try {
+      await FB.sendToStudent(S.info.uid, { from: user.uid, email: user.email || "", list: "", add: [], remove: [del.dataset.key] });
+      S.pending = await FB.listPending(S.info.uid, user.uid);
+    } catch (err){ okBar("<b>Couldn’t send</b> — " + esc(FB.friendlyError(err))); }
+    renderStudent(); }); return; }
+  const wd = e.target.closest(".swithdraw");
+  if (wd){
+    const S = teach.student; if (!S) return;
+    (async () => {
+      try { await FB.clearInbox(S.info.uid, wd.dataset.id); S.pending = await FB.listPending(S.info.uid, user.uid); }
+      catch (err){ okBar("<b>Couldn’t withdraw</b> — " + esc(FB.friendlyError(err))); }
+      renderStudent();
+    })();
+  }
+});
+$("#btnTeach").addEventListener("click", () => {
+  if (!$("#p-teach").hidden){ showView("file"); return; }
+  $("#search").value = ""; hideSugg();
+  showView("teach"); renderTeach();
+});
+
+// ---- one student, as the teacher sees them
+async function openStudent(uid){
+  const st = teach.students.find(s => s.uid === uid);
+  if (!st) return;
+  teach.open = uid; teach.student = { info: st, cloud: null, pending: [], error: "" };
+  teach.basket = [];
+  renderStudent();
+  try {
+    const [cloud, pending] = await Promise.all([FB.loadCloud(uid), FB.listPending(uid, user.uid)]);
+    if (teach.open !== uid) return;
+    teach.student.cloud = cloud || { words: [], settings: {}, stats: {}, chunks: 0 };
+    teach.student.pending = pending;
+  } catch (e){
+    if (teach.open !== uid) return;
+    teach.student.error = FB.friendlyError(e);
+  }
+  renderStudent();
+}
+function studentWords(){
+  const S = teach.student;
+  return S && S.cloud ? S.cloud.words.filter(validWord) : [];
+}
+function studentDue(words){
+  const now = Date.now(); let n = 0;
+  words.forEach(w => { if (w.c && w.c.s !== 0 && w.c.d <= now) n++; });
+  return n;
+}
+function renderStudent(){
+  const wrap = $("#teachwrap"), S = teach.student, st = S.info, cloud = S.cloud;
+  const words = studentWords();
+  const q = $("#sSearch") ? $("#sSearch").value : "";
+  const removing = new Set();
+  S.pending.forEach(p => (p.remove || []).forEach(k => removing.add(k)));
+  const who = st.email || "this student";
+  let html = '<div class="setbox"><div class="setrow"><button class="fbtn" id="sBack">← Students</button>' +
+    '<span class="smeta"><b>' + esc(who) + '</b>' +
+    (cloud ? ' · ' + words.length + (words.length === 1 ? ' word' : ' words') + ' · ' + studentDue(words) + ' due'
+      : (S.error ? ' · ' + esc(S.error) : ' · loading…')) +
+    '</span><button class="fbtn" id="sRefresh">Refresh</button></div></div>';
+  html += '<div class="setbox"><h3>Add words for ' + esc(who) + '</h3><div class="setbody"><div class="setform">' +
+    '<span class="lab">Search the dictionary</span>' +
+    '<input type="text" id="sSearch" placeholder="Russian (вода or voda) or English (water)…" autocomplete="off" value="' + esc(q) + '">' +
+    '<div class="sres" id="sResults"></div>' +
+    '<span class="lab">Chosen · <span id="sBasketN">0</span></span><div class="sres" id="sBasket"></div>' +
+    '<span class="lab">Into their list</span>' +
+    '<input type="text" id="sList" autocomplete="off" value="' + esc(teach.listName || ("From " + (user.email || "your teacher"))) + '">' +
+    '<div><button class="ibtn primary" id="sSend">Send to student</button> <span class="setnote" id="sMsg"></span></div>' +
+    '</div></div></div>';
+  if (S.pending.length){
+    html += '<div class="setbox"><h3>Waiting for their app to open</h3>' + S.pending.map(p => {
+      const a = (p.add || []).length, r = (p.remove || []).length;
+      return '<div class="setrow"><span class="smeta">' +
+        (a ? '<b>' + a + (a === 1 ? ' word' : ' words') + '</b> → “' + esc(p.list || "") + '”' : '') +
+        (r ? (a ? ' · ' : '') + '<b>remove ' + r + (r === 1 ? ' word' : ' words') + '</b>' : '') +
+        (p.at ? ' · sent ' + esc(fmtWhen(p.at)) : '') + '</span>' +
+        '<button class="fbtn swithdraw" data-id="' + esc(p.id) + '">Withdraw</button></div>';
+    }).join("") + '</div>';
+  }
+  if (cloud){
+    const groups = {};
+    words.forEach((w, i) => { const g = w.g || "Ungrouped"; (groups[g] = groups[g] || []).push(i); });
+    const names = Object.keys(groups);
+    html += '<div class="setbox"><h3>Their file · ' + words.length + ' words</h3><div class="setbody">' +
+      (names.length ? names.map(g => '<div class="sgrp"><header><span>' + esc(g) + '</span>' +
+        '<span style="opacity:.55">' + groups[g].length + '</span></header>' +
+        groups[g].map(i => {
+          const w = words[i], k = keyOf(w), gone = removing.has(k);
+          return '<div class="pickrow' + (gone ? ' gone' : '') + '"><b>' + esc(w.ru) + '</b><span class="pen">' + esc(w.en) +
+            (w.t ? ' <span class="rank">' + esc(fmtWhen(w.t)) + '</span>' : '') + '</span>' +
+            (gone ? '<span class="rank">removal sent</span>'
+                  : '<button class="fbtn sdel" data-key="' + esc(k) + '">Remove</button>') + '</div>';
+        }).join("") + '</div>').join("")
+      : '<p class="setnote">Their file is empty.</p>') + '</div></div>';
+  }
+  wrap.innerHTML = html;
+  $("#sBack").onclick = () => { teach.open = null; teach.student = null; teach.loaded = false; renderTeach(); };
+  $("#sRefresh").onclick = () => openStudent(st.uid);
+  $("#sSearch").addEventListener("input", renderStudentResults);
+  $("#sList").addEventListener("input", () => { teach.listName = $("#sList").value; });
+  $("#sSend").onclick = () => sendToStudentFlow(st);
+  renderBasket(); renderStudentResults();
+}
+function renderBasket(){
+  const b = $("#sBasket"); if (!b) return;
+  b.innerHTML = teach.basket.length ? teach.basket.map(di => {
+    const [ac, en] = DICT[di];
+    return '<div class="srow"><span class="sru">' + esc(acuteize(ac)) + '</span><span class="sen">' + esc(en) + '</span>' +
+      '<button class="fbtn sdrop" data-di="' + di + '">Drop</button></div>';
+  }).join("") : '<div class="srow sempty">Search above and press Add to collect words here.</div>';
+  $("#sBasketN").textContent = teach.basket.length;
+  $("#sSend").disabled = !teach.basket.length;
+}
+function renderStudentResults(){
+  const box = $("#sResults"); if (!box || !teach.student) return;
+  const q = $("#sSearch").value.trim().toLowerCase();
+  if (q.length < 2){ box.innerHTML = ""; return; }
+  if (!dictReady){ box.innerHTML = '<div class="srow sempty">The dictionary is still loading…</div>'; return; }
+  const have = new Set(studentWords().map(keyOf));
+  const sent = new Set();
+  teach.student.pending.forEach(p => (p.add || []).forEach(w => sent.add(keyOf(w))));
+  const hits = searchDict(q).slice(0, 10);
+  box.innerHTML = hits.length ? hits.map(di => {
+    const [ac, en, pos] = DICT[di];
+    const k = bareOf(ac).toLowerCase() + "|" + pos;
+    const label = have.has(k) ? "In their file ✓" : sent.has(k) ? "Sent ✓" : teach.basket.includes(di) ? "Chosen ✓" : "";
+    return '<div class="srow"><span class="sru">' + esc(acuteize(ac)) + '</span><span class="spr">' + esc(translit(ac)) + '</span>' +
+      '<span class="sen">' + esc(en) + '</span>' +
+      (label ? '<button class="addbtn" disabled>' + label + '</button>'
+             : '<button class="addbtn spick" data-di="' + di + '">+ Add</button>') + '</div>';
+  }).join("") : '<div class="srow sempty">No matches — try a shorter stem, or search in English.</div>';
+}
+async function sendToStudentFlow(st){
+  const msg = $("#sMsg");
+  const list = ($("#sList").value || "").trim() || ("From " + (user.email || "your teacher"));
+  if (!teach.basket.length) return;
+  msg.textContent = "Sending…";
+  const add = teach.basket.map(di => {
+    const [ac, en, pos, x] = DICT[di];
+    return { ru: bareOf(ac), ac: ac, pr: translit(ac), en: en, pos: pos, x: x || "" };
+  });
+  try {
+    await FB.sendToStudent(st.uid, { from: user.uid, email: user.email || "", list: list, add: add, remove: [] });
+    teach.basket = []; teach.listName = list;
+    teach.student.pending = await FB.listPending(st.uid, user.uid);
+    renderStudent();
+    $("#sMsg").textContent = "Sent " + add.length + (add.length === 1 ? " word" : " words") +
+      " — it lands in their file the moment their app is open.";
+  } catch (e){ msg.textContent = "Couldn’t send — " + FB.friendlyError(e); }
+}
+
+// ---- the student side: changes a teacher sent, applied on arrival
+function stopInbox(){
+  if (inboxUnsub){ try { inboxUnsub(); } catch (e){} inboxUnsub = null; }
+}
+function watchInbox(){
+  stopInbox();
+  if (!user || typeof FB.watchInbox !== "function") return;
+  inboxUnsub = FB.watchInbox(user.uid, applyInbox);
+}
+function applyInbox(items){
+  if (!items.length || !user) return;
+  const have = haveKeys();
+  let added = 0, removed = 0, dups = 0;
+  const lists = [], froms = [];
+  items.forEach(it => {
+    const list = (typeof it.list === "string" && it.list.trim()) || "From your teacher";
+    (Array.isArray(it.add) ? it.add : []).filter(validWord).forEach(w => {
+      const k = keyOf(w);
+      if (have.has(k)){ dups++; return; }
+      state.words.push({ ru: w.ru, ac: w.ac || "",
+        pr: w.pr || (/[а-яё]/i.test(w.ru) ? translit(w.ac || w.ru) : ""),
+        en: w.en, pos: w.pos, g: list, x: w.x || "", t: it.at || Date.now(), by: it.email || "" });
+      have.add(k); added++;
+      if (!lists.includes(list)) lists.push(list);
+    });
+    (Array.isArray(it.remove) ? it.remove : []).forEach(k => {
+      const n = state.words.length;
+      state.words = state.words.filter(w => keyOf(w) !== k);
+      removed += n - state.words.length; have.delete(k);
+    });
+    if (it.email && !froms.includes(it.email)) froms.push(it.email);
+  });
+  scheduleSave(); renderAll();
+  items.forEach(it => { FB.clearInbox(user.uid, it.id).catch(() => {}); });
+  const who = froms.length ? froms.join(", ") : "Your teacher";
+  const parts = [];
+  if (added) parts.push("added " + added + (added === 1 ? " word" : " words") + " to " +
+    lists.map(l => "“" + l + "”").join(", "));
+  if (removed) parts.push("removed " + removed + (removed === 1 ? " word" : " words"));
+  if (!parts.length && dups) parts.push("sent " + dups + " words you already had");
+  if (parts.length) okBar("<b>" + esc(who) + "</b> " + esc(parts.join(" and ")) + ".");
+}
 
 /* ---------------- progress (Anki-style stats) */
 // Daily aggregates live in state.stats.days (synced on the user doc); the
@@ -1867,7 +2410,7 @@ $("#nDict").textContent = "loading…";
     persistLocal();
   }
   $("#groupin").value = state.settings.group;
-  activePos = ORDER.find(p => state.words.some(w => w.pos === p)) || null;
+  activePos = savedCount() ? "saved" : (ORDER.find(p => state.words.some(w => w.pos === p)) || null);
   setSaveStat(localStatText());
   renderAcct();
   renderAll();
@@ -1892,7 +2435,7 @@ $("#nDict").textContent = "loading…";
     const sel = $("#groupin");
     if (sel.value === "__new__"){
       const name = (window.prompt("Name the new list:") || "").trim();
-      if (name) state.settings.group = name;
+      if (name) createList(name);
       renderMeta();               // rebuilds options and restores the selection
       scheduleSave();
       return;

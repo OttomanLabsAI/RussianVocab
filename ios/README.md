@@ -91,6 +91,12 @@ Bump `MARKETING_VERSION` in `project.yml` to the site's release tag and
   signing in on a new device brings it along. Account → Languages changes it.
 - Share links (`/s/CODE`) point at the website; redeeming inside the app is
   by code (Account → Word sets).
+- Words → **Saved** is everything the learner added, newest first; the
+  **Lists** button manages lists. Review has the Direction switch (English
+  first) and the Added filter. Account → **Teaching** holds the teacher code,
+  students (open one to see their file and send words) and My teachers. A
+  teacher's changes arrive while the app is open, through a Firestore
+  listener on the student's inbox, and are announced in an alert.
 - Recorded pronunciations come from Wikimedia Commons as MP3 transcodes;
   everything else uses the system's Russian voice.
 - Fonts (Afacad Flux, Newsreader, Prata) are bundled under the SIL Open

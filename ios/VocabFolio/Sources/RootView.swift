@@ -20,6 +20,11 @@ import SwiftUI
         .fullScreenCover(isPresented: Binding(get: { !store.hasLanguages || store.editingLanguages }, set: { _ in })) {
             OnboardingView().environmentObject(store)
         }
+        .alert("From your teacher", isPresented: Binding(get: { store.inboxNotice != nil }, set: { if !$0 { store.inboxNotice = nil } })) {
+            Button("OK") { store.inboxNotice = nil }
+        } message: {
+            Text(store.inboxNotice ?? "")
+        }
         .alert("Your account and this device both have words",
                isPresented: Binding(get: { store.conflict != nil }, set: { _ in })) {
             Button("Use account") { store.resolveConflict(.useAccount) }
@@ -66,6 +71,20 @@ struct PageHeader: View {
                                 VStack(alignment: .leading, spacing: 4) {
                                     MicroLabel(text: "Word sets", color: .ink)
                                     Text("Share a batch of words with a code, or redeem one.")
+                                        .font(Fonts.serifItalic(15)).foregroundStyle(Color.ink60)
+                                }
+                                Spacer()
+                                Image(systemName: "chevron.right").foregroundStyle(Color.ink60)
+                            }
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    NavigationLink { TeachingView() } label: {
+                        Box {
+                            HStack {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    MicroLabel(text: "Teaching", color: .ink)
+                                    Text("Link to a teacher with a code — or be one, and add words to your students’ files.")
                                         .font(Fonts.serifItalic(15)).foregroundStyle(Color.ink60)
                                 }
                                 Spacer()

@@ -32,6 +32,33 @@ struct SetSnapshot {
     let words: [Word]
 }
 
+struct TeacherInfo: Identifiable, Equatable {
+    let uid: String
+    let email: String
+    let code: String
+    var id: String { uid }
+}
+
+struct StudentInfo: Identifiable, Equatable {
+    let uid: String
+    let email: String
+    var count: Int = 0
+    var updated: Date?
+    var lastReviewDay: String?     // YYYYMMDD from their stats
+    var id: String { uid }
+}
+
+/// A change a teacher sent to a student: words to add under a list, keys to remove.
+struct InboxItem: Identifiable, Equatable {
+    let id: String
+    let from: String
+    let email: String
+    let list: String
+    let add: [Word]
+    let remove: [String]
+    let at: Date?
+}
+
 /// Firebase Auth + Firestore, wire-compatible with the web app:
 ///   users/{uid}                    → { v, chunks, count, settings, stats, updated }
 ///   users/{uid}/w/{0..n}           → { words: [...] } (1,000 per chunk)
@@ -223,6 +250,116 @@ final class CloudService {
     func countRedemptions(code: String) async throws -> Int {
         let agg = try await db.collection("sets").document(code).collection("redemptions").count.getAggregation(source: .server)
         return Int(truncating: agg.count)
+    }
+
+    // MARK: Teachers and students
+    // teachers/{CODE} → {uid, email}; users/{teacher}/students/{student} is the
+    // consent record the student writes (the rules check it); users/{student}/
+    // teachers/{teacher} is the student's own list; users/{student}/inbox/{id}
+    // carries changes a teacher sent, applied and deleted by the student's app.
+
+    func createTeacherCode(uid: String, email: String, code: String) async throws {
+        try await db.collection("teachers").document(code).setData([
+            "uid": uid, "email": email, "created": FieldValue.serverTimestamp(),
+        ])
+    }
+
+    func myTeacherCode(uid: String) async throws -> String? {
+        let snaps = try await db.collection("teachers").whereField("uid", isEqualTo: uid).getDocuments(source: .server)
+        return snaps.documents.first?.documentID
+    }
+
+    func linkTeacher(uid: String, email: String, code: String) async throws -> TeacherInfo {
+        let snap = try await db.collection("teachers").document(code).getDocument(source: .server)
+        guard snap.exists, let d = snap.data(), let tuid = d["uid"] as? String else {
+            throw CloudError.message("No teacher has the code \(code).")
+        }
+        if tuid == uid { throw CloudError.message("That is your own teacher code.") }
+        let temail = d["email"] as? String ?? ""
+        let batch = db.batch()
+        batch.setData(["email": temail, "code": code, "at": FieldValue.serverTimestamp()],
+                      forDocument: db.collection("users").document(uid).collection("teachers").document(tuid))
+        batch.setData(["email": email, "code": code, "at": FieldValue.serverTimestamp()],
+                      forDocument: db.collection("users").document(tuid).collection("students").document(uid))
+        try await batch.commit()
+        return TeacherInfo(uid: tuid, email: temail, code: code)
+    }
+
+    func unlinkTeacher(uid: String, tuid: String) async throws {
+        let batch = db.batch()
+        batch.deleteDocument(db.collection("users").document(uid).collection("teachers").document(tuid))
+        batch.deleteDocument(db.collection("users").document(tuid).collection("students").document(uid))
+        try await batch.commit()
+    }
+
+    func removeStudent(uid: String, suid: String) async throws {
+        let batch = db.batch()
+        batch.deleteDocument(db.collection("users").document(uid).collection("students").document(suid))
+        batch.deleteDocument(db.collection("users").document(suid).collection("teachers").document(uid))
+        try await batch.commit()
+    }
+
+    func listTeachers(uid: String) async throws -> [TeacherInfo] {
+        let snaps = try await db.collection("users").document(uid).collection("teachers").getDocuments(source: .server)
+        return snaps.documents.map { s in
+            TeacherInfo(uid: s.documentID, email: s.data()["email"] as? String ?? "", code: s.data()["code"] as? String ?? "")
+        }
+    }
+
+    /// Each student's head doc gives the count and last save without pulling
+    /// the file; the file itself comes through loadCloud(uid: student).
+    func listStudents(uid: String) async throws -> [StudentInfo] {
+        let snaps = try await db.collection("users").document(uid).collection("students").getDocuments(source: .server)
+        var out: [StudentInfo] = []
+        for s in snaps.documents {
+            var st = StudentInfo(uid: s.documentID, email: s.data()["email"] as? String ?? "")
+            if let head = try? await db.collection("users").document(st.uid).getDocument(source: .server),
+               head.exists, let d = head.data() {
+                st.count = d["count"] as? Int ?? 0
+                st.updated = (d["updated"] as? Timestamp)?.dateValue()
+                if let stats = d["stats"] as? [String: Any], let days = stats["days"] as? [String: Any] {
+                    st.lastReviewDay = days.keys.sorted().last
+                }
+            }
+            out.append(st)
+        }
+        return out.sorted { $0.email < $1.email }
+    }
+
+    func sendToStudent(suid: String, from: String, email: String, list: String, add: [Word], remove: [String]) async throws {
+        // The snapshot carries word data only — no groups, timestamps or review state.
+        let plain = add.map { Word(ru: $0.ru, ac: $0.ac, pr: $0.pr, en: $0.en, pos: $0.pos, g: "", x: $0.x) }
+        try await db.collection("users").document(suid).collection("inbox").addDocument(data: [
+            "from": from, "email": email, "list": list,
+            "add": Codec.encode(plain) ?? [Any](), "remove": remove,
+            "at": FieldValue.serverTimestamp(),
+        ])
+    }
+
+    nonisolated private static func inboxItem(_ s: DocumentSnapshot) -> InboxItem? {
+        guard let d = s.data() else { return nil }
+        let add = (d["add"] as? [Any] ?? []).compactMap { Codec.decode(Word.self, from: $0) }.filter(\.isValid)
+        return InboxItem(id: s.documentID, from: d["from"] as? String ?? "", email: d["email"] as? String ?? "",
+                         list: d["list"] as? String ?? "", add: add,
+                         remove: d["remove"] as? [String] ?? [], at: (d["at"] as? Timestamp)?.dateValue())
+    }
+
+    func listPending(suid: String, tuid: String) async throws -> [InboxItem] {
+        let snaps = try await db.collection("users").document(suid).collection("inbox")
+            .whereField("from", isEqualTo: tuid).getDocuments(source: .server)
+        return snaps.documents.compactMap { Self.inboxItem($0) }
+    }
+
+    /// Live: the handler gets everything waiting whenever the inbox changes.
+    func watchInbox(uid: String, handler: @escaping ([InboxItem]) -> Void) -> ListenerRegistration {
+        db.collection("users").document(uid).collection("inbox").addSnapshotListener { snap, _ in
+            guard let snap else { return }
+            handler(snap.documents.compactMap { Self.inboxItem($0) })
+        }
+    }
+
+    func clearInbox(uid: String, id: String) async throws {
+        try await db.collection("users").document(uid).collection("inbox").document(id).delete()
     }
 }
 

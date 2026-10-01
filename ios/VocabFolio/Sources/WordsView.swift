@@ -3,7 +3,8 @@ import SwiftUI
 /// The word file: part-of-speech tabs, list blocks, hide-and-peek study mode.
 @MainActor struct WordsView: View {
     @EnvironmentObject var store: AppStore
-    @State private var pos: String = "n"
+    @State private var pos: String = "saved"
+    @State private var showLists = false
     @State private var groupFilter: [String: String] = [:]     // pos → group or "" for all
     @State private var hideRu = false
     @State private var hideEn = false
@@ -17,10 +18,13 @@ import SwiftUI
         return c
     }
 
+    /// "saved" is the tab of everything the learner added; the rest are
+    /// parts of speech, falling back to the first one with words.
     private var activePos: String {
+        if pos == "saved" { return pos }
         let c = counts
         if c[pos] != nil { return pos }
-        return PartOfSpeech.order.first { c[$0] != nil } ?? pos
+        return PartOfSpeech.order.first { c[$0] != nil } ?? "saved"
     }
 
     var body: some View {
@@ -39,13 +43,14 @@ import SwiftUI
                         }
                     } else {
                         posTabs
-                        panel
+                        if activePos == "saved" { savedPanel } else { panel }
                     }
                 }
                 .padding(14)
             }
             .paperBackground()
             .toolbar(.hidden, for: .navigationBar)
+            .sheet(isPresented: $showLists) { ListsView().environmentObject(store) }
         }
     }
 
@@ -59,6 +64,7 @@ import SwiftUI
                     .buttonStyle(InkButtonStyle(filled: hideEn, compact: true))
                 Button("Pronunc.") { hidePr.toggle(); peeked = [] }.buttonStyle(InkButtonStyle(filled: hidePr, compact: true))
                 Spacer(minLength: 0)
+                Button("Lists") { showLists = true }.buttonStyle(InkButtonStyle(compact: true))
             }
         }
     }
@@ -66,6 +72,15 @@ import SwiftUI
     private var posTabs: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
+                Button {
+                    pos = "saved"
+                } label: {
+                    HStack(spacing: 8) {
+                        Text("Saved")
+                        Text("\(store.savedWords.count)").opacity(0.65)
+                    }
+                }
+                .buttonStyle(InkButtonStyle(filled: activePos == "saved", compact: true))
                 ForEach(PartOfSpeech.order.filter { counts[$0] != nil }, id: \.self) { p in
                     Button {
                         pos = p
@@ -121,7 +136,37 @@ import SwiftUI
         }
     }
 
-    private func row(_ w: Word) -> some View {
+    /// Everything the learner (or a teacher) added, newest first; the starter
+    /// file stays out. Each row names its list and who sent it.
+    private var savedPanel: some View {
+        let rows = store.savedWords
+        return VStack(alignment: .leading, spacing: 14) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Saved words").font(Fonts.display(24)).foregroundStyle(Color.ink)
+                Text("Everything you added — \(rows.count) \(rows.count == 1 ? "word" : "words"), newest first · the starter file is left out")
+                    .font(Fonts.serifItalic(15)).foregroundStyle(Color.ink60)
+            }
+            if hideRu || hideEn || hidePr {
+                Text("Recall the hidden word, then tap it to peek.").font(Fonts.serifItalic(15)).foregroundStyle(Color.ink60)
+            }
+            if rows.isEmpty {
+                Box {
+                    Text("Nothing saved yet.").font(Fonts.display(20))
+                    Text("Words you add from the dictionary, a set or a teacher collect here, newest first.")
+                        .font(Fonts.serifItalic(15)).foregroundStyle(Color.ink60).padding(.top, 6)
+                }
+            } else {
+                Box(padding: 0) {
+                    ForEach(Array(rows.enumerated()), id: \.element.key) { i, w in
+                        row(w, withList: true)
+                        if i < rows.count - 1 { DashedRule().padding(.horizontal, 12) }
+                    }
+                }
+            }
+        }
+    }
+
+    private func row(_ w: Word, withList: Bool = false) -> some View {
         HStack(alignment: .top, spacing: 10) {
             VStack(alignment: .leading, spacing: 3) {
                 HStack(spacing: 2) {
@@ -138,6 +183,10 @@ import SwiftUI
                     if !w.extraText.isEmpty {
                         Text(w.extraText).font(Fonts.serifItalic(13)).foregroundStyle(Color.ink60)
                     }
+                }
+                if withList {
+                    MicroLabel(text: w.group + (w.by.map { " · from " + $0 } ?? ""), color: .ink35, size: 9)
+                        .lineLimit(1)
                 }
             }
             Spacer(minLength: 4)

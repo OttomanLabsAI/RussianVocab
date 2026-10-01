@@ -45,6 +45,46 @@ final class ModelTests: XCTestCase {
         XCTAssertEqual(options.bundleID, "com.ottomanlabs.vocabfolio")
     }
 
+    func testListsDirectionAndAddedFilterSettingsMatchTheWebShape() throws {
+        var s = Settings()
+        s.lists = ["Week 4", "Travel"]; s.reverse = true; s.since = 7
+        let back = try JSONDecoder().decode(Settings.self, from: JSONEncoder().encode(s))
+        XCTAssertEqual(back.lists, ["Week 4", "Travel"])
+        XCTAssertTrue(back.reverse)
+        XCTAssertEqual(back.since, 7)
+        // exactly what the website writes
+        let web = try JSONDecoder().decode(Settings.self, from: Data(#"{"group":"Week 4","lists":["Week 4"],"reverse":true,"since":1}"#.utf8))
+        XCTAssertEqual(web.lists, ["Week 4"])
+        XCTAssertTrue(web.reverse)
+        XCTAssertEqual(web.since, 1)
+        XCTAssertEqual(Settings().lists, [])
+        XCTAssertFalse(Settings().reverse)
+        XCTAssertEqual(Settings().since, 0)
+    }
+
+    func testTeacherSentWordsCarryTheSender() throws {
+        let w = try JSONDecoder().decode(Word.self, from: Data(#"{"ru":"стол","en":"table","pos":"n","t":1,"by":"teacher@example.com"}"#.utf8))
+        XCTAssertEqual(w.by, "teacher@example.com")
+        let plain = try JSONDecoder().decode(Word.self, from: Data(#"{"ru":"стол","en":"table","pos":"n","by":""}"#.utf8))
+        XCTAssertNil(plain.by)
+    }
+
+    @MainActor func testSavedLeavesTheStarterFileOut() {
+        let starter: Set<String> = ["вода|n"]
+        XCTAssertFalse(AppStore.isSaved(Word(ru: "вода", en: "water", pos: "n"), starterKeys: starter), "starter word, untouched")
+        XCTAssertTrue(AppStore.isSaved(Word(ru: "вода", en: "water", pos: "n", t: 1), starterKeys: starter), "re-added later → saved")
+        XCTAssertTrue(AppStore.isSaved(Word(ru: "стол", en: "table", pos: "n"), starterKeys: starter), "not a starter word")
+        XCTAssertFalse(AppStore.starterKeys.isEmpty, "the bundled starter file loads")
+    }
+
+    func testAddedFilterCutsAtLocalMidnight() {
+        let now = Date()
+        let midnight = Calendar.current.startOfDay(for: now).timeIntervalSince1970 * 1000
+        XCTAssertEqual(AppStore.sinceCutoff(days: 1, now: now), midnight)
+        XCTAssertEqual(AppStore.sinceCutoff(days: 7, now: now), midnight - 6 * 86_400_000)
+        XCTAssertNil(AppStore.sinceCutoff(days: 0, now: now))
+    }
+
     func testWordDecodesWebFormatAndKeepsUnknownSettings() throws {
         let json = """
         {"words":[{"ru":"вода","ac":"вода'","pr":"vo-DA","en":"water","pos":"n","g":"Food","x":"f","t":1758112345678,

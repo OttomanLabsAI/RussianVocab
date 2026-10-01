@@ -1,33 +1,76 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Each user can only touch their own data.
+    function signedIn(){ return request.auth != null; }
+    function isOwner(uid){ return signedIn() && request.auth.uid == uid; }
+    // A teacher's access to a student rests on one consent record that only
+    // the student can create: users/{teacher}/students/{student}.
+    function isTeacherOf(uid){
+      return signedIn() &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)/students/$(uid));
+    }
+
+    // Each user owns their data; a linked teacher may read it.
     match /users/{uid} {
-      allow read, write: if request.auth != null && request.auth.uid == uid;
+      allow read: if isOwner(uid) || isTeacherOf(uid);
+      allow write: if isOwner(uid);
       match /w/{chunk} {
-        allow read, write: if request.auth != null && request.auth.uid == uid;
+        allow read: if isOwner(uid) || isTeacherOf(uid);
+        allow write: if isOwner(uid);
       }
       // Append-only review log, one doc per day.
       match /log/{day} {
-        allow read, write: if request.auth != null && request.auth.uid == uid;
+        allow read, write: if isOwner(uid);
+      }
+      // Consent records (uid is the teacher): a student links themself by
+      // quoting the teacher's code; either side can end the link.
+      match /students/{suid} {
+        allow read: if isOwner(uid) || (signedIn() && request.auth.uid == suid);
+        allow create: if signedIn() && request.auth.uid == suid
+          && request.resource.data.keys().hasOnly(['email', 'code', 'at'])
+          && get(/databases/$(database)/documents/teachers/$(request.resource.data.code)).data.uid == uid;
+        allow delete: if isOwner(uid) || (signedIn() && request.auth.uid == suid);
+      }
+      // The student's own list of teachers (uid is the student).
+      match /teachers/{tuid} {
+        allow read, create, update: if isOwner(uid);
+        allow delete: if isOwner(uid) || (signedIn() && request.auth.uid == tuid);
+      }
+      // Changes a teacher sends (uid is the student). The student's app
+      // applies each item to the word file and deletes it; the sender can
+      // see and withdraw what is still waiting.
+      match /inbox/{item} {
+        allow read: if isOwner(uid) || (signedIn() && resource.data.from == request.auth.uid);
+        allow create: if isTeacherOf(uid) && request.resource.data.from == request.auth.uid;
+        allow delete: if isOwner(uid) || (signedIn() && resource.data.from == request.auth.uid);
       }
     }
+
+    // Teacher codes: teachers/{CODE} → {uid, email}. Anyone signed in can
+    // look one up; only the teacher can list or remove their own.
+    match /teachers/{code} {
+      allow get: if signedIn();
+      allow list: if signedIn() && resource.data.uid == request.auth.uid;
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['uid', 'email', 'created']);
+      allow delete: if signedIn() && resource.data.uid == request.auth.uid;
+    }
+
     // Shareable word sets. Anyone signed in can fetch a set by its code;
     // only the owner can list their own sets or change them.
     match /sets/{code} {
-      allow get: if request.auth != null;
-      allow list: if request.auth != null && resource.data.owner == request.auth.uid;
-      allow create: if request.auth != null && request.resource.data.owner == request.auth.uid;
-      allow update, delete: if request.auth != null && resource.data.owner == request.auth.uid;
+      allow get: if signedIn();
+      allow list: if signedIn() && resource.data.owner == request.auth.uid;
+      allow create: if signedIn() && request.resource.data.owner == request.auth.uid;
+      allow update, delete: if signedIn() && resource.data.owner == request.auth.uid;
       // One redemption record per redeeming user; the set owner can read
-      // them all (that is what the import count — and a future per-student
-      // dashboard — is built on).
+      // them all (that is what the import count is built on).
       match /redemptions/{ruid} {
-        allow get: if request.auth != null && (request.auth.uid == ruid ||
+        allow get: if signedIn() && (request.auth.uid == ruid ||
           get(/databases/$(database)/documents/sets/$(code)).data.owner == request.auth.uid);
-        allow list: if request.auth != null &&
+        allow list: if signedIn() &&
           get(/databases/$(database)/documents/sets/$(code)).data.owner == request.auth.uid;
-        allow create, update: if request.auth != null && request.auth.uid == ruid;
+        allow create, update: if signedIn() && request.auth.uid == ruid;
       }
     }
   }

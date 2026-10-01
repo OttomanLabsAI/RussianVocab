@@ -1,14 +1,17 @@
 import Foundation
 import FirebaseAuth
+import FirebaseFirestore
 import FSRS
 
 enum CloudError: LocalizedError {
     case signedOut
     case unconfigured
+    case message(String)
     var errorDescription: String? {
         switch self {
         case .signedOut: return "Sign in to do that."
         case .unconfigured: return "Accounts aren't available in this build — words stay on this device."
+        case .message(let m): return m
         }
     }
 }
@@ -25,6 +28,14 @@ final class AppStore: ObservableObject {
     @Published var conflict: CloudSnapshot?
     @Published private(set) var dueTotal = 0
 
+    // Teaching (see the extension below) and the student's inbox notice.
+    @Published var teacherCode: String?
+    @Published var students: [StudentInfo] = []
+    @Published var teachers: [TeacherInfo] = []
+    @Published var teachingLoaded = false
+    @Published var teachingError = ""
+    @Published var inboxNotice: String?
+
     private(set) var pendingLog: [LogEntry] = []
     private var syncHash = ""
     private var cloudChunks = 0
@@ -34,6 +45,7 @@ final class AppStore: ObservableObject {
     private var cloudTask: Task<Void, Never>?
     private var logTask: Task<Void, Never>?
     private var authHandle: AuthStateDidChangeListenerHandle?
+    private var inboxListener: ListenerRegistration?
 
     init() {
         if let saved = Persistence.load() {
@@ -74,6 +86,54 @@ final class AppStore: ObservableObject {
         return seen
     }
 
+    /// Lists are the words' groups plus any the learner created and kept
+    /// (settings.lists), so an empty list survives until it is deleted.
+    var allLists: [String] {
+        var names: [String] = []
+        func push(_ g: String) { if !g.isEmpty, !names.contains(g) { names.append(g) } }
+        settings.lists.forEach(push)
+        push(settings.group)
+        for w in words { push(w.g) }
+        return names
+    }
+
+    func createList(_ name: String) {
+        let n = name.trimmingCharacters(in: .whitespaces)
+        guard !n.isEmpty else { return }
+        if !allLists.contains(n) { settings.lists = settings.lists + [n] }
+        settings.group = n                       // new words go to the newest list
+        changed()
+    }
+
+    func renameList(_ from: String, to: String) {
+        let t = to.trimmingCharacters(in: .whitespaces)
+        guard !t.isEmpty, t != from, !allLists.contains(t) else { return }
+        for i in words.indices where words[i].g == from { words[i].g = t }
+        settings.lists = allLists.map { $0 == from ? t : $0 }
+        if settings.group == from { settings.group = t }
+        if settings.deck == from { settings.deck = t }
+        changed()
+    }
+
+    func deleteList(_ name: String, keepWords: Bool) {
+        if keepWords { for i in words.indices where words[i].g == name { words[i].g = "" } }
+        else { words.removeAll { $0.g == name } }
+        settings.lists = allLists.filter { $0 != name }
+        if settings.group == name { settings.group = settings.lists.first ?? "My additions" }
+        if settings.deck == name { settings.deck = nil }
+        changed()
+    }
+
+    /// The starter file is what every new copy gets; "saved" is everything the
+    /// learner (or their teacher) actually added — timestamped, or not a starter word.
+    static let starterKeys: Set<String> = Set(Persistence.starterWords().map(\.key))
+    static func isSaved(_ w: Word, starterKeys: Set<String> = starterKeys) -> Bool {
+        w.t != nil || !starterKeys.contains(w.key)
+    }
+    var savedWords: [Word] {
+        words.filter { AppStore.isSaved($0) }.sorted { ($0.t ?? 0) > ($1.t ?? 0) }
+    }
+
     func has(_ key: String) -> Bool { words.contains { $0.key == key } }
 
     func word(for key: String) -> Word? { words.first { $0.key == key } }
@@ -109,6 +169,16 @@ final class AppStore: ObservableObject {
 
     func setAutoSay(_ on: Bool) {
         settings.autoSay = on
+        changed()
+    }
+
+    func setReverse(_ on: Bool) {
+        settings.reverse = on
+        changed()
+    }
+
+    func setSince(_ days: Int) {
+        settings.since = days
         changed()
     }
 
@@ -189,6 +259,8 @@ final class AppStore: ObservableObject {
 
     private func handleAuth(_ acct: Account?) async {
         account = acct
+        stopInbox()
+        resetTeaching()
         guard let a = acct else { status = "auto-saves on this device"; return }
         status = "loading your account…"
         do {
@@ -213,6 +285,9 @@ final class AppStore: ObservableObject {
         }
         recount()
         flushLog()
+        // Teacher-sent changes are applied only once the account's file is in
+        // place (after the keep-which-file choice, if one is pending).
+        if conflict == nil { startInbox() }
     }
 
     private func adopt(_ cloud: CloudSnapshot) {
@@ -245,6 +320,7 @@ final class AppStore: ObservableObject {
         recount()
         persistLocal()
         Task { await pushCloud() }
+        startInbox()
     }
 
     func signIn(email: String, password: String) async throws {
@@ -283,7 +359,7 @@ final class AppStore: ObservableObject {
     func dueCounts() -> (due: Int, fresh: Int) {
         let now = Date().timeIntervalSince1970 * 1000
         var due = 0, fresh = 0
-        for w in words {
+        for w in deckWords() {
             if let c = w.c, !c.isNew { if c.d <= now { due += 1 } } else { fresh += 1 }
         }
         return (due, min(fresh, newCapLeft()))
@@ -294,11 +370,30 @@ final class AppStore: ObservableObject {
         dueTotal = c.due + c.fresh
     }
 
-    /// The deck is a word list; a stale deck name falls back to everything.
+    /// The "Added" filter's cutoff in epoch ms: 1 = since local midnight today,
+    /// N = the last N days; nil when off.
+    nonisolated static func sinceCutoff(days: Int, now: Date = Date()) -> Double? {
+        guard days > 0 else { return nil }
+        let midnight = Calendar.current.startOfDay(for: now)
+        return (midnight.timeIntervalSince1970 - Double(days - 1) * 86400) * 1000
+    }
+    var sinceLabel: String {
+        let d = settings.since
+        return d <= 0 ? "" : d == 1 ? "Added today" : "Added in the last \(d) days"
+    }
+
+    /// The deck is a word list (a stale name falls back to everything), then
+    /// the Added filter narrows it to recent words.
     func deckWords() -> [Word] {
-        guard let d = settings.deck else { return words }
-        let sub = words.filter { $0.group == d }
-        return sub.isEmpty ? words : sub
+        var list = words
+        if let d = settings.deck {
+            let sub = list.filter { $0.group == d }
+            if !sub.isEmpty { list = sub }
+        }
+        if let cut = AppStore.sinceCutoff(days: settings.since) {
+            list = list.filter { ($0.t ?? 0) >= cut }
+        }
+        return list
     }
 
     func buildQueue() -> [String] {
@@ -440,6 +535,129 @@ final class AppStore: ObservableObject {
         if let a = account {
             try? await CloudService.shared.redeemSet(code: preview.set.code, uid: a.uid)
         }
+    }
+}
+
+// MARK: - Teaching
+
+extension AppStore {
+    func resetTeaching() {
+        teacherCode = nil; students = []; teachers = []; teachingLoaded = false
+    }
+
+    func loadTeaching() async {
+        guard let a = account else { return }
+        do {
+            let code = try await CloudService.shared.myTeacherCode(uid: a.uid)
+            var s: [StudentInfo] = []
+            if code != nil { s = try await CloudService.shared.listStudents(uid: a.uid) }
+            let t = try await CloudService.shared.listTeachers(uid: a.uid)
+            guard account?.uid == a.uid else { return }
+            teacherCode = code; students = s; teachers = t; teachingError = ""
+        } catch {
+            teachingError = CloudService.friendly(error)
+        }
+        teachingLoaded = true
+    }
+
+    func createTeacherCode() async throws {
+        guard let a = account else { throw CloudError.signedOut }
+        var code = AppStore.generateCode()
+        do { try await CloudService.shared.createTeacherCode(uid: a.uid, email: a.email ?? "", code: code) }
+        catch {
+            code = AppStore.generateCode()
+            try await CloudService.shared.createTeacherCode(uid: a.uid, email: a.email ?? "", code: code)
+        }
+        teacherCode = code
+        await loadTeaching()
+    }
+
+    func linkTeacher(code: String) async throws -> TeacherInfo {
+        guard let a = account else { throw CloudError.signedOut }
+        let t = try await CloudService.shared.linkTeacher(uid: a.uid, email: a.email ?? "", code: code.uppercased())
+        await loadTeaching()
+        return t
+    }
+
+    func unlinkTeacher(_ t: TeacherInfo) async {
+        guard let a = account else { return }
+        try? await CloudService.shared.unlinkTeacher(uid: a.uid, tuid: t.uid)
+        await loadTeaching()
+    }
+
+    func removeStudent(_ st: StudentInfo) async {
+        guard let a = account else { return }
+        try? await CloudService.shared.removeStudent(uid: a.uid, suid: st.uid)
+        await loadTeaching()
+    }
+
+    func loadStudentFile(_ st: StudentInfo) async throws -> CloudSnapshot {
+        try await CloudService.shared.loadCloud(uid: st.uid)
+            ?? CloudSnapshot(words: [], settings: Settings(), stats: Stats(), chunks: 0)
+    }
+
+    func pending(for st: StudentInfo) async throws -> [InboxItem] {
+        guard let a = account else { return [] }
+        return try await CloudService.shared.listPending(suid: st.uid, tuid: a.uid)
+    }
+
+    func send(to st: StudentInfo, add: [Word], remove: [String], list: String) async throws {
+        guard let a = account else { throw CloudError.signedOut }
+        try await CloudService.shared.sendToStudent(suid: st.uid, from: a.uid, email: a.email ?? "",
+                                                    list: list, add: add, remove: remove)
+    }
+
+    func withdraw(_ item: InboxItem, for st: StudentInfo) async {
+        try? await CloudService.shared.clearInbox(uid: st.uid, id: item.id)
+    }
+
+    // The student side: changes a teacher sent, applied on arrival. This
+    // device stays the only writer of its own word file.
+    func startInbox() {
+        stopInbox()
+        guard let a = account, CloudService.shared.isConfigured else { return }
+        inboxListener = CloudService.shared.watchInbox(uid: a.uid) { [weak self] items in
+            Task { @MainActor in self?.applyInbox(items) }
+        }
+    }
+
+    func stopInbox() {
+        inboxListener?.remove()
+        inboxListener = nil
+    }
+
+    private func applyInbox(_ items: [InboxItem]) {
+        guard !items.isEmpty, let a = account else { return }
+        var have = keys
+        var added = 0, removed = 0, dups = 0
+        var lists: [String] = [], froms: [String] = []
+        for it in items {
+            let list = it.list.trimmingCharacters(in: .whitespaces).isEmpty ? "From your teacher" : it.list
+            for w in it.add {
+                if have.contains(w.key) { dups += 1; continue }
+                let pr = w.pr.isEmpty && Translit.containsCyrillic(w.ru)
+                    ? Translit.pronunciation(w.ac.isEmpty ? w.ru : w.ac) : w.pr
+                words.append(Word(ru: w.ru, ac: w.ac, pr: pr, en: w.en, pos: w.pos, g: list, x: w.x,
+                                  t: (it.at ?? Date()).timeIntervalSince1970 * 1000,
+                                  by: it.email.isEmpty ? nil : it.email))
+                have.insert(w.key); added += 1
+                if !lists.contains(list) { lists.append(list) }
+            }
+            for k in it.remove {
+                let n = words.count
+                words.removeAll { $0.key == k }
+                removed += n - words.count; have.remove(k)
+            }
+            if !it.email.isEmpty, !froms.contains(it.email) { froms.append(it.email) }
+        }
+        changed()
+        for it in items { Task { try? await CloudService.shared.clearInbox(uid: a.uid, id: it.id) } }
+        let who = froms.isEmpty ? "Your teacher" : froms.joined(separator: ", ")
+        var parts: [String] = []
+        if added > 0 { parts.append("added \(added) \(added == 1 ? "word" : "words") to " + lists.map { "“\($0)”" }.joined(separator: ", ")) }
+        if removed > 0 { parts.append("removed \(removed) \(removed == 1 ? "word" : "words")") }
+        if parts.isEmpty, dups > 0 { parts.append("sent \(dups) words you already had") }
+        if !parts.isEmpty { inboxNotice = "\(who) \(parts.joined(separator: " and "))." }
     }
 }
 

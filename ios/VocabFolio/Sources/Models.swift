@@ -52,6 +52,7 @@ enum JSONValue: Codable, Equatable {
         default: return nil
         }
     }
+    var arrayValue: [JSONValue]? { if case .array(let a) = self { return a }; return nil }
 }
 
 /// Compact FSRS card state as stored on each word (`c`). A word with no `c`
@@ -114,6 +115,7 @@ struct Word: Codable, Equatable, Identifiable {
     var x: String = ""
     var t: Double? = nil       // added-at, epoch ms
     var c: CardData? = nil     // FSRS card state
+    var by: String? = nil      // who sent it (a teacher's email), if anyone
 
     /// Same identity rule as the web app: bare word + part of speech.
     var key: String { Translit.bare(ru).lowercased() + "|" + pos }
@@ -136,12 +138,13 @@ struct Word: Codable, Equatable, Identifiable {
     }
 
     init(ru: String, ac: String = "", pr: String = "", en: String, pos: String,
-         g: String = "My additions", x: String = "", t: Double? = nil, c: CardData? = nil) {
+         g: String = "My additions", x: String = "", t: Double? = nil, c: CardData? = nil,
+         by: String? = nil) {
         self.ru = ru; self.ac = ac; self.pr = pr; self.en = en; self.pos = pos
-        self.g = g; self.x = x; self.t = t; self.c = c
+        self.g = g; self.x = x; self.t = t; self.c = c; self.by = by
     }
 
-    enum CodingKeys: String, CodingKey { case ru, ac, pr, en, pos, g, x, t, c }
+    enum CodingKeys: String, CodingKey { case ru, ac, pr, en, pos, g, x, t, c, by }
 
     init(from decoder: Decoder) throws {
         let k = try decoder.container(keyedBy: CodingKeys.self)
@@ -154,6 +157,8 @@ struct Word: Codable, Equatable, Identifiable {
         x   = try k.decodeIfPresent(String.self, forKey: .x) ?? ""
         t   = (try? k.decodeIfPresent(Double.self, forKey: .t)) ?? nil
         c   = (try? k.decodeIfPresent(CardData.self, forKey: .c)) ?? nil
+        by  = (try? k.decodeIfPresent(String.self, forKey: .by)) ?? nil
+        if by?.isEmpty == true { by = nil }
     }
 
     var isValid: Bool { !ru.isEmpty && PartOfSpeech.isValid(pos) }
@@ -206,6 +211,21 @@ struct Settings: Codable, Equatable {
         get { let v = raw["learning"]?.stringValue ?? ""; return v.isEmpty ? nil : v }
         set { raw["learning"] = .string(newValue ?? "") }
     }
+    /// Lists the learner created and kept, so an empty one survives until deleted.
+    var lists: [String] {
+        get { (raw["lists"]?.arrayValue ?? []).compactMap(\.stringValue).filter { !$0.isEmpty } }
+        set { raw["lists"] = .array(newValue.map { .string($0) }) }
+    }
+    /// Flashcards show the English first and ask for the Russian.
+    var reverse: Bool {
+        get { raw["reverse"]?.boolValue ?? false }
+        set { raw["reverse"] = .bool(newValue) }
+    }
+    /// Review only words added in the last N days (1 = today); 0 = any time.
+    var since: Int {
+        get { max(0, Int(raw["since"]?.doubleValue ?? 0)) }
+        set { raw["since"] = .number(Double(max(0, newValue))) }
+    }
 
     mutating func merge(_ other: Settings) {
         for (k, v) in other.raw { raw[k] = v }
@@ -244,6 +264,13 @@ struct Stats: Codable, Equatable {
         }
         return out
     }
+    /// The day a YYYYMMDD key names, at local midnight.
+    static func date(from key: String) -> Date? {
+        guard key.count == 8, let y = Int(key.prefix(4)), let m = Int(key.dropFirst(4).prefix(2)),
+              let d = Int(key.suffix(2)) else { return nil }
+        return Calendar.current.date(from: DateComponents(year: y, month: m, day: d))
+    }
+
     static func key(for date: Date) -> String {
         let c = Calendar.current.dateComponents([.year, .month, .day], from: date)
         return String(format: "%04d%02d%02d", c.year ?? 0, c.month ?? 0, c.day ?? 0)
