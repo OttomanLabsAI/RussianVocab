@@ -101,6 +101,9 @@ Bump `MARKETING_VERSION` in `project.yml` to the site's release tag and
   everything else uses the system's Russian voice.
 - Fonts (Afacad Flux, Newsreader, Prata) are bundled under the SIL Open
   Font License; see `VocabFolio/Resources/Fonts/OFL.txt`.
+- Review grades are Correct/Incorrect (Good/Again underneath). The
+  *Multiple choice* checkbox deals five choices per card; the choices are
+  built by `AppStore.quizOptions` from the learner's file and the dictionary.
 - Every screen with a text field uses `keyboardDismissal()` (Theme.swift):
   a Done button above the keyboard plus drag-to-dismiss. The keyboard covers
   the tab bar on iPhone, so a screen without it traps the learner.
