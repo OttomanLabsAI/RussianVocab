@@ -77,6 +77,29 @@ final class ModelTests: XCTestCase {
         XCTAssertFalse(AppStore.starterKeys.isEmpty, "the bundled starter file loads")
     }
 
+    func testQuizDealsFiveDistinctChoicesWithOneAnswer() {
+        let words = [
+            Word(ru: "стол", en: "table", pos: "n"), Word(ru: "стул", en: "chair", pos: "n"),
+            Word(ru: "окно", en: "window", pos: "n"), Word(ru: "дверь", en: "door", pos: "n"),
+            Word(ru: "идти", en: "to go", pos: "v"), Word(ru: "кофе", en: "coffee", pos: "n"),
+            Word(ru: "чай", en: "tea", pos: "n"), Word(ru: "Стол", en: "table", pos: "n"),   // same text, must not duplicate
+        ]
+        for _ in 0..<20 {
+            let opts = AppStore.quizOptions(for: words[0], words: words, dictionary: [], reverse: false)
+            XCTAssertEqual(opts.count, 5)
+            XCTAssertEqual(opts.filter(\.correct).count, 1)
+            XCTAssertEqual(opts.first { $0.correct }?.text, "table")
+            XCTAssertEqual(Set(opts.map { $0.text.lowercased() }).count, 5, "no two choices read the same")
+            XCTAssertFalse(opts.contains { $0.text == "to go" }, "nouns fill the choices before the verb is needed")
+        }
+        let ru = AppStore.quizOptions(for: words[0], words: words, dictionary: [], reverse: true)
+        XCTAssertEqual(ru.first { $0.correct }?.text, "стол")
+        XCTAssertTrue(ru.allSatisfy { Translit.containsCyrillic($0.text) }, "reversed quiz offers Russian")
+        // Too few words: the dictionary fills in.
+        let few = AppStore.quizOptions(for: words[0], words: [words[0]], dictionary: [], reverse: false)
+        XCTAssertEqual(few.count, 1, "nothing to fill with gives just the answer")
+    }
+
     func testAddedFilterCutsAtLocalMidnight() {
         let now = Date()
         let midnight = Calendar.current.startOfDay(for: now).timeIntervalSince1970 * 1000

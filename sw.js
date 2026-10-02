@@ -1,6 +1,6 @@
 // Service worker — offline app shell + dictionary cache.
 // Bump VERSION whenever a precached file changes so clients refresh it.
-const VERSION = "v1.17";
+const VERSION = "v1.18";
 const SHELL = "shell-" + VERSION;
 const RUNTIME = "runtime-" + VERSION;
 const PRECACHE = [

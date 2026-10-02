@@ -1,5 +1,0 @@
-Done — v1.17. A review session is now dealt, not stacked: everything due plus today's share of new cards is shuffled together, and the new cards themselves are a random pick from the pool rather than the next twenty in file order. New words come up mixed among reviews, the way Anki does it. Same on the website and in the iPhone app; the scheduling itself is untouched, so nothing about when a card comes back has changed.
-
-Phone: `git pull`, `xcodegen generate`, Archive and upload as before (app version 1.17).
-
-Verified: in a headless browser three fresh session starts gave three different orders of 20 cards, none of them the file order. Swift can't be built here; the iOS change is one line in the queue builder.

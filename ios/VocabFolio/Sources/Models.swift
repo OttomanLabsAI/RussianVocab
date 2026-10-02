@@ -221,6 +221,11 @@ struct Settings: Codable, Equatable {
         get { raw["reverse"]?.boolValue ?? false }
         set { raw["reverse"] = .bool(newValue) }
     }
+    /// Multiple-choice review: pick the answer from five.
+    var quiz: Bool {
+        get { raw["quiz"]?.boolValue ?? false }
+        set { raw["quiz"] = .bool(newValue) }
+    }
     /// Review only words added in the last N days (1 = today); 0 = any time.
     var since: Int {
         get { max(0, Int(raw["since"]?.doubleValue ?? 0)) }

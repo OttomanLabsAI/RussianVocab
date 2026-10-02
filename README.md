@@ -162,6 +162,16 @@ appends to a per-day log for future parameter optimisation, buffered
 locally when offline (`pendingLog` in localStorage) and flushed when back
 online — a rating is never lost to a dropped connection.
 
+Grading is a yes/no. After revealing the card the question is *Did you get
+it right?* — **Correct** or **Incorrect**, which are Good and Again
+underneath, so FSRS still does the scheduling. Tick **Multiple choice** at
+the top of the settings and each card instead offers five choices — the
+answer plus four others, drawn from the learner's own file (same part of
+speech first) and then common dictionary words, never two alike; the pick
+decides correct or not, the right answer is shown, and Next moves on.
+Keys: space reveals or moves on, 1/2 are Incorrect/Correct, 1–5 pick a
+choice.
+
 Two switches sit with the deck: **Direction** flips the card to show the
 English first and ask for the Russian (`settings.reverse`; the card's FSRS
 state is shared, so a word's schedule is one schedule whichever way it is

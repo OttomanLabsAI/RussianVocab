@@ -287,6 +287,21 @@ td.add{width:96px;text-align:center}
 .rven{font:400 1.25rem/1.4 "Newsreader",Georgia,serif}
 .rven .gx{color:var(--ink-60);font-size:.9rem;font-style:italic}
 .rvpr{font:italic 400 1rem/1.5 "Newsreader",Georgia,serif;color:var(--ink-60);margin-top:4px}
+.rvq{font:italic 400 1.05rem/1.5 "Newsreader",Georgia,serif;color:var(--ink-60);margin-top:20px}
+.rvq b{color:var(--ink);font-style:normal;font-weight:600}
+.chk{display:inline-flex;align-items:center;gap:8px;font:600 .58rem/1 "Afacad Flux",system-ui,sans-serif;
+  text-transform:uppercase;letter-spacing:.2em;color:var(--ink);cursor:pointer;margin-right:4px}
+.chk input{width:16px;height:16px;margin:0;accent-color:var(--ink);cursor:pointer}
+.qopts{display:flex;flex-direction:column;gap:8px;margin:22px auto 0;max-width:520px}
+.qopt{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;text-align:left;
+  border:1px solid var(--ink);background:var(--paper);color:var(--ink);
+  font:400 1.05rem/1.3 "Newsreader",Georgia,serif;transition:background-color .15s,color .15s}
+.qopt .qn{font:600 .58rem/1 "Afacad Flux",system-ui,sans-serif;letter-spacing:.14em;opacity:.55;min-width:14px}
+.qopt:hover{background:var(--ink);color:var(--paper)}
+.qopt[disabled]{cursor:default;opacity:.4}
+.qopt[disabled]:hover{background:var(--paper);color:var(--ink)}
+.qopt.right,.qopt.right[disabled]:hover{background:var(--ink);color:var(--paper);opacity:1}
+.qopt.wrong,.qopt.wrong[disabled]:hover{background:var(--paper);border-color:var(--accent);color:var(--accent);opacity:1}
 .rvgrades{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px}
 .gbtn{display:flex;flex-direction:column;gap:5px;align-items:center;min-width:82px;
   padding:11px 14px;border:1px solid var(--ink);background:var(--paper);color:var(--ink);
@@ -457,6 +472,7 @@ footer{padding:0 4px 8px;font:italic 400 .85rem/1.6 "Newsreader",Georgia,serif;c
       <div class="phead"><div class="ghost" aria-hidden="true">Повторение</div>
         <h2>Review</h2><div class="rmeta" id="rvmeta"></div></div>
       <div class="rvset">
+        <label class="chk" for="setQuiz"><input type="checkbox" id="setQuiz"><span>Multiple choice · pick from 5</span></label>
         <span class="lab">Deck</span>
         <select class="groupsel" id="setDeck"></select>
         <span class="lab">New cards per day</span>
@@ -960,10 +976,13 @@ function addWord(di){
 document.addEventListener("click", e => {
   const sp = e.target.closest(".spk");
   if (sp){ speak(sp.dataset.say); return; }
+  const qo = e.target.closest(".qopt");
+  if (qo){ if (!qo.disabled) quizPick(Number(qo.dataset.i)); return; }
+  if (e.target.closest("#qNext")){ nextCard(); return; }
   const gb = e.target.closest(".gbtn");
   if (gb){ gradeCur(Number(gb.dataset.g)); return; }
   const rvc = e.target.closest("#rvcard");
-  if (rvc && !rvRevealed){ rvRevealed = true; renderReviewCard(); return; }
+  if (rvc && !rvRevealed && !state.settings.quiz){ rvRevealed = true; renderReviewCard(); return; }
   const sc = e.target.closest(".scopy");
   if (sc){
     navigator.clipboard.writeText(shareUrl(sc.dataset.code))
@@ -1301,6 +1320,7 @@ async function speak(text){
 // that makes the migration of existing files implicit and fully reversible.
 const FS = FSRS.fsrs(FSRS.generatorParameters());
 let rvOpen = false, rvQueue = [], rvCur = null, rvRevealed = false;
+let rvOptions = [], rvPick = null;        // multiple-choice mode: the five choices and the one taken
 let rvStats = { done: 0, again: 0 };
 let pendingLog = [], logT;
 
@@ -1397,7 +1417,40 @@ function startReview(){
 }
 function nextCard(){
   rvCur = rvQueue.shift() || null;
-  rvRevealed = false;
+  rvRevealed = false; rvPick = null;
+  rvOptions = (rvCur && state.settings.quiz) ? quizOptions(rvCur) : [];
+  renderReviewCard();
+}
+// Five choices: the answer plus four others — same part of speech from the
+// learner's own file first, then the rest of the file, then common
+// dictionary words — never two with the same text.
+function quizOptions(w){
+  const rev = !!state.settings.reverse;
+  const label = x => rev ? (x.ac ? acuteize(x.ac) : x.ru) : x.en;
+  const answer = label(w);
+  const seen = new Set([answer.toLowerCase()]);
+  const pool = [];
+  const consider = x => {
+    const t = label(x);
+    if (!t || seen.has(t.toLowerCase())) return;
+    seen.add(t.toLowerCase()); pool.push(t);
+  };
+  const others = shuffle(state.words.filter(x => keyOf(x) !== keyOf(w)));
+  others.filter(x => x.pos === w.pos).forEach(consider);
+  if (pool.length < 4) others.filter(x => x.pos !== w.pos).forEach(consider);
+  let guard = 0;
+  while (pool.length < 4 && dictReady && DICT.length && guard++ < 300){
+    const d = DICT[Math.floor(Math.random() * Math.min(DICT.length, 4000))];
+    consider({ ru: bareOf(d[0]), ac: d[0], en: d[1] });
+  }
+  const opts = pool.slice(0, 4).map(t => ({ text: t, correct: false }));
+  opts.push({ text: answer, correct: true });
+  return shuffle(opts);
+}
+function quizPick(i){
+  if (!rvCur || rvPick !== null || !rvOptions[i]) return;
+  rvPick = i; rvRevealed = true;
+  applyGrade(rvOptions[i].correct ? 3 : 1);
   renderReviewCard();
 }
 function renderReviewCard(){
@@ -1431,33 +1484,52 @@ function renderReviewCard(){
   const rev = !!state.settings.reverse;      // English first, recall the Russian
   const front = rev ? esc(w.en) + (gx ? ' <span class="gx">' + esc(gx) + '</span>' : "") : esc(main);
   let html = '<div class="rvcard" id="rvcard"><div class="rvru' + (rev ? ' rev' : "") + '">' + front + '</div>';
-  if (!rvRevealed){
+  const back = rev ? esc(main) : esc(w.en) + (gx ? ' <span class="gx">' + esc(gx) + '</span>' : "");
+  if (state.settings.quiz){
+    // Multiple choice: the pick decides correct or not; Next moves on.
+    const picked = rvPick !== null;
+    html += '<div class="qopts">' + rvOptions.map((o, i) =>
+      '<button class="qopt' + (picked ? (o.correct ? ' right' : (i === rvPick ? ' wrong' : '')) : '') +
+      '" data-i="' + i + '"' + (picked ? ' disabled' : '') + '><span class="qn">' + (i + 1) + '</span>' +
+      '<span>' + esc(o.text) + '</span></button>').join("") + '</div>';
+    if (!picked){
+      html += '<div class="rvtap">pick the ' + (rev ? 'Russian' : 'English') + ' · keys 1–5</div></div>';
+    } else {
+      const ok = rvOptions[rvPick].correct;
+      html += '<div class="rvans"><div class="rvq">' + (ok ? 'Correct.' : 'Not quite — it’s <b>' + back + '</b>.') + '</div>' +
+        (w.pr ? '<div class="rvpr">' + esc(w.pr) + '</div>' : "") +
+        '<div style="margin-top:8px">' + spkBtn(bareOf(w.ru)) + '</div>' +
+        '<div class="rvgrades"><button class="gbtn" id="qNext">Next<span class="ivl">space</span></button></div>' +
+        '</div></div>';
+    }
+  } else if (!rvRevealed){
     html += '<div class="rvtap">tap to reveal · space</div></div>';
   } else {
-    const now = new Date();
-    const rec = FS.repeat(cardOf(w), now);
-    const ivl = r => fmtIvl(+rec[r].card.due, +now);
-    const back = rev ? esc(main) : esc(w.en) + (gx ? ' <span class="gx">' + esc(gx) + '</span>' : "");
     html += '<div class="rvans"><div class="rven' + (rev ? ' rev' : "") + '">' + back + '</div>' +
       (w.pr ? '<div class="rvpr">' + esc(w.pr) + '</div>' : "") +
       '<div style="margin-top:8px">' + spkBtn(bareOf(w.ru)) + '</div>' +
+      '<div class="rvq">Did you get it right?</div>' +
       '<div class="rvgrades">' +
-      '<button class="gbtn again" data-g="1">Again<span class="ivl">' + ivl(1) + '</span></button>' +
-      '<button class="gbtn" data-g="2">Hard<span class="ivl">' + ivl(2) + '</span></button>' +
-      '<button class="gbtn" data-g="3">Good<span class="ivl">' + ivl(3) + '</span></button>' +
-      '<button class="gbtn" data-g="4">Easy<span class="ivl">' + ivl(4) + '</span></button>' +
+      '<button class="gbtn again" data-g="1">Incorrect<span class="ivl">1</span></button>' +
+      '<button class="gbtn" data-g="3">Correct<span class="ivl">2</span></button>' +
       '</div></div></div>';
   }
   html += '<div class="rvprog">' + (rvQueue.length + 1) + ' in session · ' + rvStats.done + ' done</div>';
   box.innerHTML = html;
   meta.textContent = (state.settings.deck ? "Deck: " + state.settings.deck + " · " : "") +
     (state.settings.reverse ? "English → Russian · " : "") + (sinceLabel() ? sinceLabel() + " · " : "") +
-    "Recall it, reveal, then grade yourself — 1 Again · 2 Hard · 3 Good · 4 Easy.";
+    (state.settings.quiz ? "Pick the right answer — keys 1–5, then space for the next card."
+      : "Recall it, reveal, then say whether you got it — 1 Incorrect · 2 Correct.");
   if (rvRevealed && state.settings.autoSay) speak(bareOf(w.ru));
 }
+// Correct is Good and Incorrect is Again underneath — FSRS still schedules.
 function gradeCur(r){
+  if (!rvCur || !rvRevealed || !(r >= 1 && r <= 4) || state.settings.quiz) return;
+  applyGrade(r);
+  nextCard();
+}
+function applyGrade(r){
   const w = rvCur;
-  if (!w || !rvRevealed || !(r >= 1 && r <= 4)) return;
   const wasNew = !w.c || w.c.s === 0;
   const now = new Date();
   const rec = FS.repeat(cardOf(w), now);
@@ -1472,7 +1544,6 @@ function gradeCur(r){
   if (+res.card.due <= Date.now() + 20 * 60e3) rvQueue.push(w);  // short steps return this session
   scheduleSave();
   renderDue();
-  nextCard();
 }
 
 // Ratings ride to Firestore in an append-only per-day log. Grades always
@@ -1518,11 +1589,25 @@ function syncReviewSettings(){
   $("#setReverse").textContent = rev ? "EN → RU" : "RU → EN";
   const since = String(+state.settings.since || 0);
   $("#setSince").value = [...$("#setSince").options].some(o => o.value === since) ? since : "0";
+  $("#setQuiz").checked = !!state.settings.quiz;
 }
+$("#setQuiz").addEventListener("change", () => {
+  state.settings.quiz = $("#setQuiz").checked;
+  scheduleSave();
+  // Re-deal the current card in the new mode without consuming it.
+  rvRevealed = false; rvPick = null;
+  rvOptions = (rvCur && state.settings.quiz) ? quizOptions(rvCur) : [];
+  renderReviewCard();
+});
 $("#setReverse").addEventListener("click", () => {
   state.settings.reverse = !state.settings.reverse;
   syncReviewSettings(); scheduleSave();
-  if (rvCur) renderReviewCard();
+  // Re-deal the current card the other way round (new choices in quiz mode).
+  if (rvCur){
+    rvRevealed = false; rvPick = null;
+    rvOptions = state.settings.quiz ? quizOptions(rvCur) : [];
+    renderReviewCard();
+  }
 });
 $("#setSince").addEventListener("change", () => {
   state.settings.since = parseInt($("#setSince").value, 10) || 0;
@@ -1575,13 +1660,17 @@ $("#setDeck").addEventListener("change", () => {
   startReview();
 });
 document.addEventListener("keydown", e => {
-  if (!rvOpen || e.target.matches("input,textarea,select")) return;
+  if (!rvOpen || !rvCur || e.target.matches("input,textarea,select")) return;
+  if (state.settings.quiz){
+    if (rvPick === null && /^[1-5]$/.test(e.key) && rvOptions[+e.key - 1]){ e.preventDefault(); quizPick(+e.key - 1); }
+    else if (rvPick !== null && (e.key === " " || e.key === "Enter")){ e.preventDefault(); nextCard(); }
+    return;
+  }
   if (e.key === " "){
     e.preventDefault();
-    if (!rvRevealed && rvCur){ rvRevealed = true; renderReviewCard(); }
-  } else if (rvRevealed && rvCur && ["1","2","3","4"].includes(e.key)){
-    gradeCur(Number(e.key));
-  }
+    if (!rvRevealed){ rvRevealed = true; renderReviewCard(); }
+  } else if (rvRevealed && e.key === "1"){ gradeCur(1); }
+  else if (rvRevealed && e.key === "2"){ gradeCur(3); }
 });
 
 /* ---------------- shareable word sets */

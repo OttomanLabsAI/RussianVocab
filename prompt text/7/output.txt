@@ -1,0 +1,15 @@
+Those four were Anki's grades — Again/Hard/Good/Easy with the interval each would set. Gone. v1.18 does what you described, on the website and in the iPhone app.
+
+## Self-check (the default)
+
+Reveal the card and the question is **Did you get it right?** with two buttons: **Incorrect** and **Correct**. Nothing else on the card. Underneath, Correct is "Good" and Incorrect is "Again", so the spaced-repetition scheduling is unchanged — a word you miss comes back in a minute, a word you know moves out as before. Keys: space reveals, 1 Incorrect, 2 Correct.
+
+## Multiple choice
+
+A checkbox at the top of the review settings: **Multiple choice · pick from 5**. Tick it and every card shows the word with five answers underneath — the right one plus four others. The others come from your own file first (same part of speech, so a noun is hidden among nouns), then the rest of the file, then common dictionary words, never two that read the same. Your pick decides it: the right answer fills in, a wrong pick turns red with the correct one shown, and **Next** moves on. It works both ways round — with Direction set to EN → RU the five choices are Russian words. Keys 1–5 pick, space goes to the next card.
+
+Phone: `git pull`, `xcodegen generate`, Archive and upload (app version 1.18).
+
+## Verified
+
+Headless in Chromium: the self-check card shows the question and exactly the two buttons; Correct logs a Good grade and Incorrect an Again; the multiple-choice card deals five distinct choices with exactly one answer; a wrong pick is graded Again, marks the right one and explains it; a right pick by key is graded Good; space advances; flipping to EN → RU re-deals the choices in Russian; no overflow at phone width. Swift can't be built here — the iOS version mirrors it, with a test that the choices come out five, distinct, one correct, nouns among nouns, Russian when reversed. Archive: `prompt text/7/` holds your words and the screenshot.

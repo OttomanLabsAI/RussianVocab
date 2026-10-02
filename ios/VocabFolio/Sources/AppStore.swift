@@ -182,6 +182,43 @@ final class AppStore: ObservableObject {
         changed()
     }
 
+    func setQuiz(_ on: Bool) {
+        settings.quiz = on
+        changed()
+    }
+
+    struct QuizOption: Identifiable, Equatable {
+        let text: String
+        let correct: Bool
+        var id: String { text }
+    }
+
+    /// Five choices: the answer plus four others — same part of speech from
+    /// the learner's own file first, then the rest of the file, then common
+    /// dictionary words — never two with the same text.
+    nonisolated static func quizOptions(for w: Word, words: [Word], dictionary: [DictEntry], reverse: Bool) -> [QuizOption] {
+        let answer = reverse ? w.display : w.en
+        var seen: Set<String> = [answer.lowercased()]
+        var pool: [String] = []
+        func consider(_ text: String) {
+            let key = text.lowercased()
+            guard !text.isEmpty, !seen.contains(key) else { return }
+            seen.insert(key); pool.append(text)
+        }
+        let others = words.filter { $0.key != w.key }.shuffled()
+        for x in others where x.pos == w.pos { consider(reverse ? x.display : x.en) }
+        if pool.count < 4 { for x in others where x.pos != w.pos { consider(reverse ? x.display : x.en) } }
+        if pool.count < 4, !dictionary.isEmpty {
+            let common = dictionary.prefix(4000)
+            for _ in 0..<300 where pool.count < 4 {
+                if let e = common.randomElement() { consider(reverse ? e.display : e.en) }
+            }
+        }
+        var opts = pool.prefix(4).map { QuizOption(text: $0, correct: false) }
+        opts.append(QuizOption(text: answer, correct: true))
+        return opts.shuffled()
+    }
+
     // MARK: Languages
 
     /// True once the learner has picked a supported pair; until then the
@@ -669,10 +706,14 @@ final class ReviewSession: ObservableObject {
     @Published var queue: [String] = []
     @Published var current: Word?
     @Published var revealed = false
-    @Published var preview: [Rating: Card] = [:]
     @Published var done = 0
     @Published var again = 0
     @Published var started = false
+    // Multiple-choice mode: the five choices for the current card and the one taken.
+    @Published var options: [AppStore.QuizOption] = []
+    @Published var pick: Int?
+    /// Dictionary entries, for filling out the choices (set by the view).
+    var dictionary: [DictEntry] = []
 
     func start(_ store: AppStore) {
         queue = store.buildQueue()
@@ -684,25 +725,55 @@ final class ReviewSession: ObservableObject {
 
     func next(_ store: AppStore) {
         revealed = false
-        preview = [:]
+        pick = nil
         if !queue.isEmpty {
             let key = queue.removeFirst()
             current = store.word(for: key)
-            if current == nil { next(store) }
+            if current == nil { next(store); return }
         } else {
             current = nil
+        }
+        deal(store)
+    }
+
+    /// Builds (or clears) the choices for the current card in the current mode.
+    func deal(_ store: AppStore) {
+        if let w = current, store.settings.quiz {
+            options = AppStore.quizOptions(for: w, words: store.words, dictionary: dictionary, reverse: store.settings.reverse)
+        } else {
+            options = []
         }
     }
 
     func reveal(_ store: AppStore) {
-        guard let w = current, !revealed else { return }
+        guard let w = current, !revealed, !store.settings.quiz else { return }
         revealed = true
-        preview = FSRSScheduler.preview(w, now: Date())
         if store.settings.autoSay { Pronouncer.shared.speak(w.ru) }
     }
 
+    /// Self-check: Correct is Good and Incorrect is Again underneath.
     func grade(_ rating: Rating, _ store: AppStore) {
-        guard let w = current, revealed else { return }
+        guard current != nil, revealed, !store.settings.quiz else { return }
+        apply(rating, store)
+        next(store)
+    }
+
+    /// Multiple choice: the pick decides the grade; Next moves on.
+    func choose(_ i: Int, _ store: AppStore) {
+        guard let w = current, store.settings.quiz, pick == nil, options.indices.contains(i) else { return }
+        pick = i
+        revealed = true
+        apply(options[i].correct ? .good : .again, store)
+        if store.settings.autoSay { Pronouncer.shared.speak(w.ru) }
+    }
+
+    func advance(_ store: AppStore) {
+        guard store.settings.quiz, pick != nil else { return }
+        next(store)
+    }
+
+    private func apply(_ rating: Rating, _ store: AppStore) {
+        guard let w = current else { return }
         done += 1
         if rating == .again { again += 1 }
         // Short learning steps come back within the session, like Again in Anki.
@@ -710,6 +781,5 @@ final class ReviewSession: ObservableObject {
            card.due.timeIntervalSinceNow <= 20 * 60 {
             queue.append(w.key)
         }
-        next(store)
     }
 }
