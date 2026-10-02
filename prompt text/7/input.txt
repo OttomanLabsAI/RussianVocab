@@ -1,1 +1,0 @@
-Those options at the bottom. Why are they there? It should be correct or incorrect, with a question above; did you get it right? There needs to be a simple check box at the top offering 5 options for the user to guess. That will decide if it was correct or not when choosing in that mode

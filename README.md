@@ -206,7 +206,7 @@ time: single words first check Wikimedia Commons for a Wiktionary
 `Ru-<word>.ogg` recording (cached by the service worker once heard);
 phrases and anything without a recording fall through silently to browser
 SpeechSynthesis with a ru-RU voice. Auto-play on reveal during reviews is
-a setting, default off.
+a checkbox in the review settings ("Play the word on reveal"), default off.
 
 ## Word sets (teacher → student)
 
