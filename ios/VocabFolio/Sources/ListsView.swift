@@ -23,6 +23,7 @@ import SwiftUI
                 .padding(14)
             }
             .paperBackground()
+            .keyboardDismissal()
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { ToolbarItem(placement: .topBarTrailing) { Button("Done") { dismiss() } } }
             .alert("Rename list", isPresented: Binding(get: { renaming != nil }, set: { if !$0 { renaming = nil } })) {

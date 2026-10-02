@@ -11,6 +11,11 @@ import SwiftUI
     @State private var signingIn = false
 
     var body: some View {
+        // A navigation context (bar hidden) so the keyboard's Done button shows here too.
+        NavigationStack { page.toolbar(.hidden, for: .navigationBar) }
+    }
+
+    private var page: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
                 if signingIn {
@@ -51,6 +56,7 @@ import SwiftUI
             .frame(maxWidth: .infinity)
         }
         .paperBackground()
+        .keyboardDismissal()
         .interactiveDismissDisabled()
         .onAppear {
             native = store.settings.native

@@ -34,6 +34,7 @@ import SwiftUI
             .padding(14)
         }
         .paperBackground()
+        .keyboardDismissal()
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadSets() }
     }

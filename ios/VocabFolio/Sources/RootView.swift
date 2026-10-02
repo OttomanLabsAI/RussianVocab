@@ -100,6 +100,7 @@ struct PageHeader: View {
                 .padding(14)
             }
             .paperBackground()
+            .keyboardDismissal()
             .toolbar(.hidden, for: .navigationBar)
         }
     }
@@ -112,6 +113,8 @@ struct PageHeader: View {
     @State private var creating = false
     @State private var message = ""
     @State private var busy = false
+    private enum FormField { case email, password }
+    @FocusState private var focus: FormField?
 
     var body: some View {
         Box(padding: 0) {
@@ -130,9 +133,15 @@ struct PageHeader: View {
                             .textInputAutocapitalization(.never)
                             .keyboardType(.emailAddress)
                             .autocorrectionDisabled()
+                            .focused($focus, equals: .email)
+                            .submitLabel(.next)
+                            .onSubmit { focus = .password }
                     }
                     Field(label: "Password") {
                         SecureField("", text: $password).textFieldStyle(InkTextFieldStyle())
+                            .focused($focus, equals: .password)
+                            .submitLabel(.go)
+                            .onSubmit { submit() }
                     }
                     if !message.isEmpty {
                         Text(message).font(Fonts.serifItalic(14)).foregroundStyle(Color.accent)
@@ -153,6 +162,7 @@ struct PageHeader: View {
     }
 
     private func submit() {
+        focus = nil
         busy = true
         message = ""
         Task {
