@@ -396,14 +396,16 @@ final class AppStore: ObservableObject {
         return list
     }
 
+    /// Everything due plus today's share of new cards (a random pick of
+    /// them), shuffled together so new words mix with reviews, like Anki —
+    /// a session never comes up in file order.
     func buildQueue() -> [String] {
         let now = Date().timeIntervalSince1970 * 1000
         var due: [Word] = [], fresh: [Word] = []
         for w in deckWords() {
             if let c = w.c, !c.isNew { if c.d <= now { due.append(w) } } else { fresh.append(w) }
         }
-        due.sort { ($0.c?.d ?? 0) < ($1.c?.d ?? 0) }
-        return (due + fresh.prefix(newCapLeft())).map(\.key)
+        return (due + fresh.shuffled().prefix(newCapLeft())).shuffled().map(\.key)
     }
 
     /// Next scheduled review across the whole file, for the empty state.
