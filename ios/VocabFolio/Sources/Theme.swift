@@ -161,6 +161,25 @@ extension View {
     func paperBackground() -> some View {
         background(DotGrid().ignoresSafeArea())
     }
+
+    /// Every screen with a text field gets a Done button above the keyboard
+    /// and drag-to-dismiss. On iPhone the keyboard covers the tab bar, so
+    /// without a way to put it away a page can trap the learner.
+    func keyboardDismissal() -> some View {
+        scrollDismissesKeyboard(.interactively)
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") { hideKeyboard() }
+                        .font(Fonts.micro(12)).tracking(2).textCase(.uppercase)
+                }
+            }
+    }
+}
+
+/// Resigns whichever field has the keyboard, wherever it is.
+func hideKeyboard() {
+    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
 }
 
 struct DotGrid: View {

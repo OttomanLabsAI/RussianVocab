@@ -26,6 +26,8 @@ import SwiftUI
                                     .textInputAutocapitalization(.never)
                                     .autocorrectionDisabled()
                                     .focused($focused)
+                                    .submitLabel(.search)
+                                    .onSubmit { focused = false }
                             }
                             Field(label: "Add new words to") {
                                 Menu {
@@ -54,6 +56,7 @@ import SwiftUI
                 .padding(14)
             }
             .paperBackground()
+            .keyboardDismissal()
             .toolbar(.hidden, for: .navigationBar)
             .onChange(of: query) { _, q in schedule(q) }
             .onChange(of: dictionary.ready) { _, _ in schedule(query) }

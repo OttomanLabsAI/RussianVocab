@@ -45,3 +45,4 @@ regenerate them.
 | v1.13 | The app no longer falls over its own address | 2 |
 | v1.14 | The archive remembers whose app it is | 3 |
 | v1.15 | Lists, a Saved tab, cards both ways, and teachers | 4 |
+| v1.16 | The keyboard learns to leave | 5 |

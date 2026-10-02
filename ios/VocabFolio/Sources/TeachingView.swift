@@ -37,6 +37,7 @@ import SwiftUI
             .padding(14)
         }
         .paperBackground()
+        .keyboardDismissal()
         .navigationBarTitleDisplayMode(.inline)
         .task { if !store.teachingLoaded { await store.loadTeaching() } }
         .refreshable { await store.loadTeaching() }
@@ -229,6 +230,7 @@ import SwiftUI
             .padding(14)
         }
         .paperBackground()
+        .keyboardDismissal()
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
