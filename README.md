@@ -154,7 +154,9 @@ with no schema migration: **a word without `c` is a new card**, which is
 also what makes the change reversible — delete `c` and you're back to a
 plain word list. New cards enter at a user-adjustable daily cap (default
 20, `settings.newPerDay`); the day's intake is tracked in
-`settings.introDay`/`introCount`. Word lists double as **decks** — pick one
+`settings.introDay`/`introCount`. A session is everything due plus a random
+pick of that day's new cards, shuffled together — new words mixed among
+reviews, never in file order. Word lists double as **decks** — pick one
 in the review screen (`settings.deck`) to review it alone. Every grade
 appends to a per-day log for future parameter optimisation, buffered
 locally when offline (`pendingLog` in localStorage) and flushed when back

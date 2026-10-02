@@ -1374,6 +1374,16 @@ function nextDueText(){
   if (capReached) t += (t ? " " : "") + "New cards resume tomorrow — the daily cap is done.";
   return t || "Search the dictionary and add words to keep the queue alive.";
 }
+// Fisher–Yates, so a session never comes up in file order.
+function shuffle(a){
+  for (let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    const t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+// Everything due plus today's share of new cards (a random pick of them),
+// shuffled together so new words are mixed among reviews, like Anki.
 function startReview(){
   const now = Date.now();
   const due = [], fresh = [];
@@ -1381,8 +1391,7 @@ function startReview(){
     if (w.c && w.c.s !== 0){ if (w.c.d <= now) due.push(w); }
     else fresh.push(w);
   });
-  due.sort((a, b) => a.c.d - b.c.d);
-  rvQueue = due.concat(fresh.slice(0, newCapLeft()));
+  rvQueue = shuffle(due.concat(shuffle(fresh).slice(0, newCapLeft())));
   rvStats = { done: 0, again: 0 };
   nextCard();
 }
