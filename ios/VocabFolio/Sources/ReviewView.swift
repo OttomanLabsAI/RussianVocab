@@ -68,6 +68,19 @@ import FSRS
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
+                Button {
+                    store.setAutoSay(!store.settings.autoSay)
+                    if store.settings.autoSay, session.revealed, let w = session.current { Pronouncer.shared.speak(w.ru) }
+                } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: store.settings.autoSay ? "checkmark.square" : "square")
+                            .font(.system(size: 18)).foregroundStyle(Color.ink)
+                        MicroLabel(text: "Play the word on reveal", color: .ink)
+                        Spacer()
+                    }
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
                 HStack(spacing: 10) {
                     MicroLabel(text: "Deck")
                     Menu {
@@ -91,11 +104,6 @@ import FSRS
                         Text("\(store.settings.newPerDay)").font(Fonts.serif(17)).foregroundStyle(Color.ink)
                     }
                     .fixedSize()
-                }
-                HStack(spacing: 10) {
-                    MicroLabel(text: "Auto-play audio on reveal")
-                    Button(store.settings.autoSay ? "On" : "Off") { store.setAutoSay(!store.settings.autoSay) }
-                        .buttonStyle(InkButtonStyle(filled: store.settings.autoSay, compact: true))
                 }
                 HStack(spacing: 10) {
                     MicroLabel(text: "Direction")
