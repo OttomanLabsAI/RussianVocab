@@ -49,3 +49,4 @@ regenerate them.
 | v1.17 | The cards are dealt, not stacked | 6 |
 | v1.18 | Right or wrong, and a five-way guess | 7 |
 | v1.19 | A tick to hear each word | 8 |
+| v1.20 | The iPhone app learns to ship itself | 9 |

@@ -1,0 +1,1 @@
+how do i get it to make the new build with every push to main like the other one?

@@ -1,5 +1,0 @@
-Done — v1.19. The review settings now start with two checkboxes: **Multiple choice · pick from 5** and **Play the word on reveal**. Tick the second and every card says its Russian word the moment it's revealed (or, in multiple choice, the moment you pick); tick it mid-card and it speaks the one you're on. It replaces the old On/Off button for auto-play, so there's one way to set it, and the choice saves to your account like the rest of the review settings. Website and iPhone app.
-
-Phone: `git pull`, `xcodegen generate`, Archive and upload (app version 1.19) — the screenshot is still the 1.14 build, so the new grading from v1.18 arrives in the same update.
-
-Verified: headless in Chromium the two checkboxes are there, the audio one is off by default and nothing is spoken while off; ticking it mid-card speaks that word, the next reveal speaks again, and the setting survives a reload. Swift can't be built here; the iOS change is the same checkbox row in the review settings. Archive: `prompt text/8/` holds your words and the screenshot.

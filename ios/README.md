@@ -84,6 +84,31 @@ the same ID in Firebase.
 Bump `MARKETING_VERSION` in `project.yml` to the site's release tag and
 `CURRENT_PROJECT_VERSION` for every upload, then regenerate.
 
+## Automatic builds (Xcode Cloud)
+
+Like Cloudflare for the site, Xcode Cloud can watch `main` and hand every
+push to TestFlight. The repo is ready for it: `ci_scripts/ci_post_clone.sh`
+installs XcodeGen and generates the project on the build machine, because
+the `.xcodeproj` is not committed. Set it up once, in Xcode, with the
+project open:
+
+1. **Product → Xcode Cloud → Create Workflow…**, product *VocabFolio*.
+2. In the workflow: start condition *Branch Changes* on `main`; actions
+   **Archive** (platform iOS, deployment preparation *TestFlight (Internal
+   Testing Only)*) and **Test** (the parity and model tests, on a
+   simulator); post-action **TestFlight Internal Testing** → your internal
+   group. Environment: the latest Xcode and macOS.
+3. Grant Xcode Cloud access to the GitHub repository when asked (it
+   installs the Xcode Cloud GitHub App on the repo), then **Create** — the
+   first build starts immediately.
+
+From then on each push to `main` builds, runs the tests, and lands in
+TestFlight about half an hour later; testers in the group get the update
+automatically. Xcode Cloud manages signing and the build number itself
+(`CURRENT_PROJECT_VERSION` is overridden), so only `MARKETING_VERSION`
+needs keeping in step with the release tag. The Developer Program includes
+25 compute hours a month — roughly 60 builds of this app.
+
 ## Notes
 
 - First launch asks for the learner's language and the language they're

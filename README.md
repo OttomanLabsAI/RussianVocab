@@ -197,7 +197,10 @@ data — sign in with the website's email and password and your file, lists,
 review history and progress are already there. Same dictionary (it bundles
 `dict.json`), the official Swift FSRS with the same FSRS-6 parameters, same
 design tokens and fonts. See `ios/README.md` for the Mac build steps
-(XcodeGen → Xcode) and the parity tests that prove the two schedulers agree.
+(XcodeGen → Xcode), the parity tests that prove the two schedulers agree,
+and the Xcode Cloud setup that turns every push to `main` into a TestFlight
+build (`ios/ci_scripts/ci_post_clone.sh` generates the project on the build
+machine).
 
 ## Pronunciation audio
 
