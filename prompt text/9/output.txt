@@ -1,0 +1,24 @@
+The site ships because Cloudflare watches `main`. The iPhone equivalent is **Xcode Cloud** — Apple's build service, part of your developer account and App Store Connect — watching the same branch and handing every build to TestFlight. No secrets, no certificates to manage, no Mac left running: Apple's machines archive, sign and upload.
+
+One thing stood in the way: the repo has no `.xcodeproj` (XcodeGen makes it from `project.yml`), and a build machine starting from a bare clone would find nothing to build. v1.20 adds `ios/ci_scripts/ci_post_clone.sh`, which Xcode Cloud runs right after cloning: it installs XcodeGen and generates the project, exactly what you do by hand. That's the whole repo side.
+
+## Set it up once, in Xcode (about five minutes)
+
+With the project open (`git pull`, `xcodegen generate` first):
+
+1. **Product → Xcode Cloud → Create Workflow…** Pick the product **VocabFolio**.
+2. Xcode shows a default workflow. **Edit** it:
+   - *Start Conditions*: **Branch Changes**, branch `main`.
+   - *Actions*: **Archive** — platform iOS, deployment preparation **TestFlight (Internal Testing Only)** — and **Test**, which runs the scheduler parity and model tests on a simulator. If a test fails, nothing ships.
+   - *Post-Actions*: **TestFlight Internal Testing**, choose your internal group.
+   - *Environment*: latest Xcode, latest macOS.
+3. **Grant access** to the GitHub repository when asked — this installs the Xcode Cloud GitHub App on `OttomanLabsAI/Vocab-Folio` (you'll approve it in the browser as the organisation owner).
+4. **Create**. The first build starts straight away; watch it under *Report Navigator → Cloud* in Xcode or in App Store Connect → Xcode Cloud.
+
+From then on every push to `main` builds, tests, and reaches TestFlight about half an hour later (Firebase takes a while to compile; then Apple processes the build), and everyone in the group gets the update automatically. Build numbers come from Xcode Cloud, so the only version housekeeping left is `MARKETING_VERSION` in `project.yml`, which I bump with each release anyway. Your Developer Program includes 25 compute hours a month — roughly sixty builds of this app, far more than we push.
+
+If you ever want it outside Apple's service, the alternative is GitHub Actions on macOS runners with an App Store Connect API key — more moving parts and paid minutes, so Xcode Cloud is the one to use here.
+
+## Verified
+
+The post-clone script is syntax-checked, executable, and follows Apple's documented hook (post-clone runs before packages are resolved, so the generated project is in place in time); `ios/` stays excluded from the website deploy. Xcode Cloud itself can't be driven from here — the first run is the proof, and if it fails, send me the build log from App Store Connect → Xcode Cloud. Archive: `prompt text/9/` holds your words.

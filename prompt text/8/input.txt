@@ -1,1 +1,0 @@
-Add a checkbox that asks if it should play the word on reveal
